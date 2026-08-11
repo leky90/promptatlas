@@ -64,7 +64,7 @@ Visual fingerprint confirmed:
 
 ## Deployment verification
 
-- Public repository: `https://github.com/leky90/image-styles`.
+- Public repository: `https://github.com/leky90/promptatlas`.
 - GitHub Pages workflow run `31491054525`: completed successfully.
 - Custom domain CNAME: `image-styles.ldktech.com` → `leky90.github.io` (Cloudflare DNS-only).
 - GitHub Pages certificate: approved for `image-styles.ldktech.com`; HTTPS enforcement enabled.
