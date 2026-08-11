@@ -90,6 +90,9 @@ export function createPromptAtlasValidator({ schema, taxonomy }) {
       }
 
       const valueIds = new Set(primitive.values.map((value) => value.id));
+      for (const duplicate of uniqueDuplicates(primitive.values.map((value) => value.id))) {
+        addError(`${primitivePath}/values`, `duplicate value ID ${duplicate}`);
+      }
       if (primitive.defaultValueId && !valueIds.has(primitive.defaultValueId)) {
         addError(`${primitivePath}/defaultValueId`, `unknown local value ${primitive.defaultValueId}`);
       }
@@ -138,9 +141,40 @@ export function createPromptAtlasValidator({ schema, taxonomy }) {
         if (!examples.has(exampleId)) addError(`${primitivePath}/exampleIds`, `unknown example ${exampleId}`);
       }
       for (const [noteIndex, note] of primitive.modelNotes.entries()) {
+        const notePath = `${primitivePath}/modelNotes/${noteIndex}`;
         for (const runId of note.evidenceRunIds) {
-          if (!runs.has(runId)) {
-            addError(`${primitivePath}/modelNotes/${noteIndex}/evidenceRunIds`, `unknown run ${runId}`);
+          const evidenceRun = runs.get(runId);
+          if (!evidenceRun) {
+            addError(`${notePath}/evidenceRunIds`, `unknown run ${runId}`);
+            continue;
+          }
+          if (evidenceRun.provider !== note.provider) {
+            addError(
+              `${notePath}/evidenceRunIds`,
+              `evidence run ${runId} provider ${evidenceRun.provider} does not match ${note.provider}`,
+            );
+          }
+          if (evidenceRun.modelFamily !== note.modelFamily) {
+            addError(
+              `${notePath}/evidenceRunIds`,
+              `evidence run ${runId} model family ${evidenceRun.modelFamily} does not match ${note.modelFamily}`,
+            );
+          }
+          if (evidenceRun.modelVersion.status !== note.modelVersion.status) {
+            addError(
+              `${notePath}/evidenceRunIds`,
+              `evidence run ${runId} version status ${evidenceRun.modelVersion.status} does not match ${note.modelVersion.status}`,
+            );
+          }
+          if (
+            evidenceRun.modelVersion.identifier !== undefined &&
+            note.modelVersion.identifier !== undefined &&
+            evidenceRun.modelVersion.identifier !== note.modelVersion.identifier
+          ) {
+            addError(
+              `${notePath}/evidenceRunIds`,
+              `evidence run ${runId} model version ${evidenceRun.modelVersion.identifier} does not match ${note.modelVersion.identifier}`,
+            );
           }
         }
       }
@@ -186,6 +220,9 @@ export function createPromptAtlasValidator({ schema, taxonomy }) {
         if (!ruleIds.has(conflictId)) {
           addError(`${recipePath}/unresolvedConflictIds`, `unknown compatibility rule ${conflictId}`);
         }
+      }
+      if (recipe.status === "approved" && recipe.unresolvedConflictIds.length > 0) {
+        addError(`${recipePath}/unresolvedConflictIds`, "approved recipe cannot retain unresolved conflicts");
       }
     }
 
