@@ -4,4 +4,5 @@ dist/
 playwright-report/
 test-results/
 .artifacts/
+.linear-ops/
 .DS_Store

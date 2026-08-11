@@ -1,0 +1,447 @@
+{
+  "$schema": "https://promptatlas.ldktech.com/schemas/prompt-atlas.v1.schema.json",
+  "schemaVersion": "1.0.0",
+  "taxonomyVersion": "1.0.0-draft",
+  "datasetVersion": "0.1.0",
+  "defaultLocale": "vi",
+  "primitives": [
+    {
+      "id": "primitive.subject.skin-texture",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "shared",
+      "category": "subject",
+      "dimensionId": "subject.person.skin-texture",
+      "label": { "vi": "Kết cấu da", "en": "Skin texture" },
+      "searchAliases": { "vi": ["da tự nhiên", "lỗ chân lông"], "en": ["natural skin", "pores"] },
+      "definition": { "vi": "Mức độ chi tiết bề mặt da có thể quan sát.", "en": "The observable level of skin surface detail." },
+      "prompt": { "template": "skin texture: {{value}}", "language": "en", "role": "attribute", "orderHint": 120, "variables": [] },
+      "values": [
+        { "id": "natural", "label": { "vi": "Tự nhiên", "en": "Natural" }, "fragment": { "language": "en", "text": "natural skin texture with visible pores" }, "intensity": 0.6, "sortOrder": 10 },
+        { "id": "smooth", "label": { "vi": "Mịn", "en": "Smooth" }, "fragment": { "language": "en", "text": "smooth, even skin texture" }, "intensity": 0.35, "sortOrder": 20 }
+      ],
+      "defaultValueId": "natural",
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.lighting.direction"], "conflictsWith": [] },
+      "exampleIds": ["example.image.editorial-portrait"],
+      "counterExampleIds": [],
+      "ambiguityNotes": { "vi": "Không dùng kết cấu da để suy đoán sức khỏe hoặc danh tính.", "en": "Do not use skin texture to infer health or identity." },
+      "modelNotes": [
+        {
+          "provider": "OpenAI",
+          "modelFamily": "ChatGPT image generation",
+          "modelVersion": "record-at-execution",
+          "observedAt": "2026-08-11T08:00:00Z",
+          "note": { "vi": "Fixture minh họa; cần thay bằng nhận xét từ run đã chấm.", "en": "Illustrative fixture; replace with notes from a scored run." },
+          "confidence": "low",
+          "evidenceRunIds": ["run.image.chatgpt.editorial-portrait"]
+        }
+      ],
+      "sensitivity": { "level": "contextual", "tags": ["human-trait"], "guidance": { "vi": "Dùng ngôn ngữ mô tả trung tính.", "en": "Use neutral descriptive language." } },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.object.material",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "shared",
+      "category": "object",
+      "dimensionId": "object.material",
+      "label": { "vi": "Chất liệu vật thể", "en": "Object material" },
+      "searchAliases": { "vi": ["vật liệu", "bề mặt"], "en": ["material", "surface"] },
+      "definition": { "vi": "Chất tạo nên vật thể và hành vi quang học đi kèm.", "en": "The substance of an object and its related optical behavior." },
+      "prompt": { "template": "made of {{value}}", "language": "en", "role": "attribute", "orderHint": 150, "variables": [] },
+      "values": [
+        { "id": "brushed-aluminum", "label": { "vi": "Nhôm xước", "en": "Brushed aluminum" }, "fragment": { "language": "en", "text": "brushed aluminum with fine directional grain" }, "intensity": 0.75, "sortOrder": 10 },
+        { "id": "clear-glass", "label": { "vi": "Kính trong", "en": "Clear glass" }, "fragment": { "language": "en", "text": "clear glass with realistic refraction" }, "intensity": 0.75, "sortOrder": 20 }
+      ],
+      "defaultValueId": "brushed-aluminum",
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.lighting.direction"], "conflictsWith": [] },
+      "exampleIds": ["example.image.editorial-portrait", "example.video.rainy-walk"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.scene.environment",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "shared",
+      "category": "scene",
+      "dimensionId": "scene.environment",
+      "label": { "vi": "Môi trường", "en": "Environment" },
+      "searchAliases": { "vi": ["bối cảnh", "không gian"], "en": ["setting", "location"] },
+      "definition": { "vi": "Loại không gian bao quanh chủ thể.", "en": "The type of space surrounding the subject." },
+      "prompt": { "template": "in {{value}}", "language": "en", "role": "environment", "orderHint": 300, "variables": [] },
+      "values": [
+        { "id": "minimal-studio", "label": { "vi": "Studio tối giản", "en": "Minimal studio" }, "fragment": { "language": "en", "text": "in a minimal photo studio" }, "intensity": 0.5, "sortOrder": 10 },
+        { "id": "rainy-alley", "label": { "vi": "Hẻm mưa", "en": "Rainy alley" }, "fragment": { "language": "en", "text": "in a rain-soaked city alley" }, "intensity": 0.8, "sortOrder": 20 }
+      ],
+      "defaultValueId": "minimal-studio",
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.audio.ambience"], "conflictsWith": [] },
+      "exampleIds": ["example.image.editorial-portrait", "example.video.rainy-walk"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.composition.negative-space",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "shared",
+      "category": "composition",
+      "dimensionId": "composition.negative-space",
+      "label": { "vi": "Khoảng trống", "en": "Negative space" },
+      "searchAliases": { "vi": ["không gian âm", "khoảng thở"], "en": ["empty space", "breathing room"] },
+      "definition": { "vi": "Tỷ lệ vùng khung hình không có chủ thể chính.", "en": "The proportion of the frame not occupied by the main subject." },
+      "prompt": { "template": "composition with {{value}}", "language": "en", "role": "composition", "orderHint": 400, "variables": [] },
+      "values": [
+        { "id": "generous", "label": { "vi": "Rộng", "en": "Generous" }, "fragment": { "language": "en", "text": "generous negative space around the subject" }, "intensity": 0.7, "sortOrder": 10 },
+        { "id": "tight", "label": { "vi": "Hẹp", "en": "Tight" }, "fragment": { "language": "en", "text": "tight composition with minimal negative space" }, "intensity": 0.7, "sortOrder": 20 }
+      ],
+      "defaultValueId": "generous",
+      "compatibility": { "requires": [], "compatibleWith": [], "conflictsWith": [] },
+      "exampleIds": ["example.image.editorial-portrait"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.camera.depth-of-field",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "shared",
+      "category": "camera",
+      "dimensionId": "camera.depth-of-field",
+      "label": { "vi": "Độ sâu trường ảnh", "en": "Depth of field" },
+      "searchAliases": { "vi": ["xóa phông", "trường nét"], "en": ["depth of field", "focus depth"] },
+      "definition": { "vi": "Khoảng chiều sâu được cảm nhận là sắc nét.", "en": "The perceived depth range rendered in focus." },
+      "prompt": { "template": "{{value}} depth of field", "language": "en", "role": "camera", "orderHint": 500, "variables": [] },
+      "values": [
+        { "id": "shallow", "label": { "vi": "Nông", "en": "Shallow" }, "fragment": { "language": "en", "text": "shallow depth of field, subject in crisp focus" }, "intensity": 0.75, "sortOrder": 10 },
+        { "id": "deep", "label": { "vi": "Sâu", "en": "Deep" }, "fragment": { "language": "en", "text": "deep focus from foreground to background" }, "intensity": 0.75, "sortOrder": 20 }
+      ],
+      "defaultValueId": "shallow",
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.subject.skin-texture"], "conflictsWith": [] },
+      "exampleIds": ["example.image.editorial-portrait", "example.video.rainy-walk"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.lighting.direction",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "shared",
+      "category": "lighting",
+      "dimensionId": "lighting.direction",
+      "label": { "vi": "Hướng sáng", "en": "Light direction" },
+      "searchAliases": { "vi": ["ánh sáng bên", "ánh sáng trước"], "en": ["side light", "front light"] },
+      "definition": { "vi": "Hướng nguồn sáng chính so với chủ thể.", "en": "The direction of the key light relative to the subject." },
+      "prompt": { "template": "{{value}} key light", "language": "en", "role": "lighting", "orderHint": 600, "variables": [] },
+      "values": [
+        { "id": "camera-left", "label": { "vi": "Từ trái máy", "en": "Camera left" }, "fragment": { "language": "en", "text": "soft key light from camera left" }, "intensity": 0.65, "sortOrder": 10 },
+        { "id": "backlight", "label": { "vi": "Ngược sáng", "en": "Backlight" }, "fragment": { "language": "en", "text": "controlled backlight outlining the subject" }, "intensity": 0.65, "sortOrder": 20 }
+      ],
+      "defaultValueId": "camera-left",
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.object.material", "primitive.subject.skin-texture"], "conflictsWith": [] },
+      "exampleIds": ["example.image.editorial-portrait", "example.video.rainy-walk"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.color.palette",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "shared",
+      "category": "color",
+      "dimensionId": "color.palette",
+      "label": { "vi": "Bảng màu", "en": "Color palette" },
+      "searchAliases": { "vi": ["phối màu", "màu chủ đạo"], "en": ["palette", "key colors"] },
+      "definition": { "vi": "Nhóm màu chi phối đầu ra.", "en": "The set of colors that dominates the output." },
+      "prompt": { "template": "{{value}} color palette", "language": "en", "role": "color", "orderHint": 700, "variables": [] },
+      "values": [
+        { "id": "teal-orange", "label": { "vi": "Xanh teal và cam", "en": "Teal and orange" }, "fragment": { "language": "en", "text": "restrained teal-and-orange palette" }, "intensity": 0.55, "sortOrder": 10 },
+        { "id": "neutral-earth", "label": { "vi": "Trung tính đất", "en": "Neutral earth" }, "fragment": { "language": "en", "text": "neutral earth-tone palette" }, "intensity": 0.5, "sortOrder": 20 }
+      ],
+      "defaultValueId": "neutral-earth",
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.style.medium"], "conflictsWith": [] },
+      "exampleIds": ["example.image.editorial-portrait"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.style.medium",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "shared",
+      "category": "style",
+      "dimensionId": "style.medium",
+      "label": { "vi": "Chất liệu thể hiện", "en": "Medium" },
+      "searchAliases": { "vi": ["chất liệu nghệ thuật", "medium"], "en": ["art medium", "medium"] },
+      "definition": { "vi": "Chất liệu hoặc quy trình thị giác được mô phỏng.", "en": "The visual medium or process being simulated." },
+      "prompt": { "template": "rendered as {{value}}", "language": "en", "role": "style", "orderHint": 800, "variables": [] },
+      "values": [
+        { "id": "editorial-photo", "label": { "vi": "Ảnh tạp chí", "en": "Editorial photo" }, "fragment": { "language": "en", "text": "contemporary editorial photography" }, "intensity": 0.7, "sortOrder": 10 },
+        { "id": "watercolor", "label": { "vi": "Màu nước", "en": "Watercolor" }, "fragment": { "language": "en", "text": "transparent watercolor on cold-pressed paper" }, "intensity": 0.8, "sortOrder": 20 }
+      ],
+      "defaultValueId": "editorial-photo",
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.color.palette"], "conflictsWith": [] },
+      "exampleIds": ["example.image.editorial-portrait"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.motion.subject-action",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "video",
+      "category": "motion",
+      "dimensionId": "motion.subject-action",
+      "label": { "vi": "Hành động chủ thể", "en": "Subject action" },
+      "searchAliases": { "vi": ["chuyển động người", "hành động"], "en": ["subject motion", "action"] },
+      "definition": { "vi": "Hành động có thể quan sát của chủ thể qua thời gian.", "en": "The subject's observable action over time." },
+      "prompt": { "template": "the subject {{value}}", "language": "en", "role": "motion", "orderHint": 900, "variables": [] },
+      "values": [
+        { "id": "walks-forward", "label": { "vi": "Đi về phía trước", "en": "Walks forward" }, "fragment": { "language": "en", "text": "walks forward at a steady natural pace" }, "intensity": 0.6, "sortOrder": 10 },
+        { "id": "turns-head", "label": { "vi": "Quay đầu", "en": "Turns head" }, "fragment": { "language": "en", "text": "slowly turns their head toward camera" }, "intensity": 0.45, "sortOrder": 20 }
+      ],
+      "defaultValueId": "walks-forward",
+      "compatibility": { "requires": ["primitive.temporal.continuity"], "compatibleWith": ["primitive.audio.ambience"], "conflictsWith": [] },
+      "exampleIds": ["example.video.rainy-walk"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.temporal.continuity",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "video",
+      "category": "temporal",
+      "dimensionId": "temporal.continuity",
+      "label": { "vi": "Tính liên tục", "en": "Continuity" },
+      "searchAliases": { "vi": ["ổn định thời gian", "liền mạch"], "en": ["temporal consistency", "continuity"] },
+      "definition": { "vi": "Mức ổn định của hình học, vị trí và thuộc tính qua các khung hình.", "en": "Stability of geometry, placement and attributes across frames." },
+      "prompt": { "template": "maintain {{value}} throughout", "language": "en", "role": "temporal", "orderHint": 1000, "variables": [] },
+      "values": [
+        { "id": "strict", "label": { "vi": "Nghiêm ngặt", "en": "Strict" }, "fragment": { "language": "en", "text": "strict visual and spatial continuity throughout the shot" }, "intensity": 0.9, "sortOrder": 10 },
+        { "id": "expressive", "label": { "vi": "Biểu cảm", "en": "Expressive" }, "fragment": { "language": "en", "text": "expressive continuity with controlled shape variation" }, "intensity": 0.55, "sortOrder": 20 }
+      ],
+      "defaultValueId": "strict",
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.motion.subject-action"], "conflictsWith": [] },
+      "exampleIds": ["example.video.rainy-walk"],
+      "counterExampleIds": [],
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "primitive.audio.ambience",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "video",
+      "category": "audio",
+      "dimensionId": "audio.ambience",
+      "label": { "vi": "Âm thanh môi trường", "en": "Ambience" },
+      "searchAliases": { "vi": ["âm nền", "không gian âm thanh"], "en": ["ambient sound", "soundscape"] },
+      "definition": { "vi": "Lớp âm thanh nền liên tục xác định không gian.", "en": "The continuous background sound layer that establishes place." },
+      "prompt": { "template": "audio ambience: {{value}}", "language": "en", "role": "audio", "orderHint": 1100, "variables": [] },
+      "values": [
+        { "id": "city-rain", "label": { "vi": "Mưa thành phố", "en": "City rain" }, "fragment": { "language": "en", "text": "soft city rain, distant traffic, no music" }, "intensity": 0.55, "sortOrder": 10 },
+        { "id": "silent", "label": { "vi": "Không âm thanh", "en": "Silent" }, "fragment": { "language": "en", "text": "no generated audio" }, "intensity": 0, "sortOrder": 20 }
+      ],
+      "defaultValueId": "city-rain",
+      "compatibility": { "requires": ["primitive.scene.environment"], "compatibleWith": ["primitive.motion.subject-action"], "conflictsWith": [] },
+      "exampleIds": ["example.video.rainy-walk"],
+      "counterExampleIds": [],
+      "ambiguityNotes": { "vi": "Mục này mô tả ý định; khả năng tạo audio phụ thuộc model và route.", "en": "This describes intent; audio generation depends on the model and route." },
+      "modelNotes": [],
+      "sensitivity": { "level": "none", "tags": [] },
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    }
+  ],
+  "recipes": [
+    {
+      "id": "recipe.image.editorial-portrait",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "image",
+      "title": { "vi": "Chân dung tạp chí tối giản", "en": "Minimal editorial portrait" },
+      "intent": { "vi": "Kiểm tra da, bố cục, ánh sáng và phong cách trong một khung tĩnh.", "en": "Test skin, composition, lighting and style in one still frame." },
+      "locale": "vi",
+      "items": [
+        { "primitiveId": "primitive.subject.skin-texture", "valueId": "natural", "order": 10, "enabled": true, "intensity": 0.6, "variables": {} },
+        { "primitiveId": "primitive.scene.environment", "valueId": "minimal-studio", "order": 20, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.composition.negative-space", "valueId": "generous", "order": 30, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.camera.depth-of-field", "valueId": "shallow", "order": 40, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.lighting.direction", "valueId": "camera-left", "order": 50, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.color.palette", "valueId": "neutral-earth", "order": 60, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.style.medium", "valueId": "editorial-photo", "order": 70, "enabled": true, "variables": {} }
+      ],
+      "freeTextBridge": "Portrait of an adult creative professional",
+      "outputSpec": { "aspectRatio": "4:5", "width": 1024, "height": 1280, "audioEnabled": false },
+      "rendererVersion": "1.0.0",
+      "renderedPrompts": [
+        { "language": "en", "providerTarget": "provider-neutral", "text": "Portrait of an adult creative professional in a minimal photo studio, natural skin texture with visible pores, generous negative space, shallow depth of field, soft key light from camera left, neutral earth-tone palette, contemporary editorial photography. Output 4:5." }
+      ],
+      "unresolvedConflictIds": [],
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "recipe.video.rainy-walk",
+      "version": "1.0.0",
+      "status": "in-review",
+      "modality": "video",
+      "title": { "vi": "Bước đi trong hẻm mưa", "en": "Rainy alley walk" },
+      "intent": { "vi": "Kiểm tra chuyển động, liên tục và ý định audio trong một cảnh ngắn.", "en": "Test motion, continuity and audio intent in a short shot." },
+      "locale": "vi",
+      "items": [
+        { "primitiveId": "primitive.object.material", "valueId": "brushed-aluminum", "order": 10, "enabled": true, "variables": {}, "userOverride": "a brushed-aluminum umbrella handle" },
+        { "primitiveId": "primitive.scene.environment", "valueId": "rainy-alley", "order": 20, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.camera.depth-of-field", "valueId": "deep", "order": 30, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.lighting.direction", "valueId": "backlight", "order": 40, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.motion.subject-action", "valueId": "walks-forward", "order": 50, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.temporal.continuity", "valueId": "strict", "order": 60, "enabled": true, "variables": {} },
+        { "primitiveId": "primitive.audio.ambience", "valueId": "city-rain", "order": 70, "enabled": true, "variables": {} }
+      ],
+      "freeTextBridge": "One continuous shot of a person holding an umbrella",
+      "outputSpec": { "aspectRatio": "16:9", "width": 1920, "height": 1080, "durationSeconds": 6, "frameRate": 24, "audioEnabled": true },
+      "rendererVersion": "1.0.0",
+      "renderedPrompts": [
+        { "language": "en", "providerTarget": "provider-neutral", "text": "One continuous six-second shot of a person holding an umbrella in a rain-soaked city alley. The subject walks forward at a steady natural pace. Controlled backlight, deep focus, strict visual and spatial continuity. Audio ambience: soft city rain and distant traffic, no music. 16:9, 24 fps." }
+      ],
+      "unresolvedConflictIds": [],
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    }
+  ],
+  "exampleAssets": [
+    {
+      "id": "example.image.editorial-portrait",
+      "kind": "benchmark-reference",
+      "primitiveIds": ["primitive.subject.skin-texture", "primitive.scene.environment", "primitive.composition.negative-space", "primitive.camera.depth-of-field", "primitive.lighting.direction", "primitive.color.palette", "primitive.style.medium"],
+      "recipeId": "recipe.image.editorial-portrait",
+      "generationRunId": "run.image.chatgpt.editorial-portrait",
+      "media": {
+        "id": "media.image.editorial-portrait",
+        "type": "image",
+        "src": "https://promptatlas.ldktech.com/examples/editorial-portrait.webp",
+        "thumbnailSrc": "https://promptatlas.ldktech.com/examples/editorial-portrait-thumb.webp",
+        "mimeType": "image/webp",
+        "width": 1024,
+        "height": 1280,
+        "alt": { "vi": "Chân dung tạp chí với khoảng trống rộng và ánh sáng từ trái.", "en": "Editorial portrait with generous negative space and light from camera left." },
+        "caption": { "vi": "Fixture minh họa, không phải asset production.", "en": "Illustrative fixture, not a production asset." },
+        "license": "CC BY 4.0",
+        "provenance": { "sourceType": "generated", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+      },
+      "isolatedDimensionIds": ["subject.person.skin-texture", "composition.negative-space", "lighting.direction"],
+      "confounders": ["camera.depth-of-field", "style.medium"],
+      "expectedClaims": [
+        { "id": "claim.image.skin-texture", "dimensionId": "subject.person.skin-texture", "description": { "vi": "Có chi tiết da tự nhiên, không bị làm mịn hoàn toàn.", "en": "Natural skin detail remains visible rather than fully smoothed." }, "evaluationType": "ordinal", "weight": 1 },
+        { "id": "claim.image.light-direction", "dimensionId": "lighting.direction", "description": { "vi": "Nguồn sáng chính đến từ trái máy.", "en": "The key light comes from camera left." }, "evaluationType": "spatial", "weight": 1 }
+      ],
+      "notes": { "vi": "Asset URL là placeholder để minh họa hợp đồng.", "en": "Asset URL is a placeholder for contract illustration." },
+      "reviewStatus": "in-review",
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "example.video.rainy-walk",
+      "kind": "benchmark-reference",
+      "primitiveIds": ["primitive.object.material", "primitive.scene.environment", "primitive.camera.depth-of-field", "primitive.lighting.direction", "primitive.motion.subject-action", "primitive.temporal.continuity", "primitive.audio.ambience"],
+      "recipeId": "recipe.video.rainy-walk",
+      "generationRunId": "run.video.gemini.rainy-walk",
+      "media": {
+        "id": "media.video.rainy-walk",
+        "type": "video",
+        "src": "https://promptatlas.ldktech.com/examples/rainy-walk.mp4",
+        "posterSrc": "https://promptatlas.ldktech.com/examples/rainy-walk-poster.webp",
+        "mimeType": "video/mp4",
+        "width": 1920,
+        "height": 1080,
+        "durationSeconds": 6,
+        "frameRate": 24,
+        "caption": { "vi": "Fixture minh họa, không phải asset production.", "en": "Illustrative fixture, not a production asset." },
+        "temporalDescription": { "vi": "Chủ thể đi thẳng trong sáu giây, không cắt cảnh; mưa và phản chiếu chuyển động liên tục.", "en": "The subject walks forward for six seconds without a cut; rain and reflections move continuously." },
+        "license": "CC BY 4.0",
+        "provenance": { "sourceType": "generated", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+      },
+      "isolatedDimensionIds": ["motion.subject-action", "temporal.continuity", "audio.ambience"],
+      "confounders": ["scene.environment", "camera.depth-of-field"],
+      "expectedClaims": [
+        { "id": "claim.video.walk", "dimensionId": "motion.subject-action", "description": { "vi": "Chủ thể đi về phía trước với tốc độ ổn định.", "en": "The subject walks forward at a steady pace." }, "evaluationType": "temporal", "weight": 1 },
+        { "id": "claim.video.continuity", "dimensionId": "temporal.continuity", "description": { "vi": "Trang phục, ô và cấu trúc hẻm ổn định qua cảnh.", "en": "Wardrobe, umbrella and alley geometry stay stable through the shot." }, "evaluationType": "temporal", "weight": 1 },
+        { "id": "claim.video.audio", "dimensionId": "audio.ambience", "description": { "vi": "Có âm mưa và giao thông xa, không có nhạc.", "en": "Rain and distant traffic are audible, with no music." }, "evaluationType": "binary", "weight": 0.5 }
+      ],
+      "notes": { "vi": "Asset URL là placeholder để minh họa hợp đồng.", "en": "Asset URL is a placeholder for contract illustration." },
+      "reviewStatus": "in-review",
+      "provenance": { "sourceType": "original", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    }
+  ],
+  "generationRuns": [
+    {
+      "id": "run.image.chatgpt.editorial-portrait",
+      "recipeId": "recipe.image.editorial-portrait",
+      "testCaseId": "test.image.editorial-portrait.v1",
+      "attempt": 1,
+      "provider": "OpenAI",
+      "modelFamily": "ChatGPT image generation",
+      "modelVersion": "record-at-execution",
+      "route": "ui",
+      "runAt": "2026-08-11T08:00:00Z",
+      "prompt": { "language": "en", "providerTarget": "OpenAI", "modelFamilyTarget": "ChatGPT image generation", "text": "Portrait of an adult creative professional in a minimal photo studio, natural skin texture with visible pores, generous negative space, shallow depth of field, soft key light from camera left, neutral earth-tone palette, contemporary editorial photography. Output 4:5." },
+      "settings": [
+        { "name": "aspect-ratio", "requestedValue": "4:5", "appliedValue": "4:5", "supportStatus": "supported" },
+        { "name": "seed", "requestedValue": null, "appliedValue": null, "supportStatus": "unsupported", "notes": "No stable seed exposed through this route." }
+      ],
+      "seed": null,
+      "selectionPolicy": "all-attempts",
+      "outputAssetIds": ["media.image.editorial-portrait"],
+      "outcome": "success",
+      "moderation": { "status": "passed", "categories": [] },
+      "expectedClaims": [
+        { "id": "claim.image.skin-texture", "dimensionId": "subject.person.skin-texture", "description": { "vi": "Có chi tiết da tự nhiên, không bị làm mịn hoàn toàn.", "en": "Natural skin detail remains visible rather than fully smoothed." }, "evaluationType": "ordinal", "weight": 1 }
+      ],
+      "reviewIds": [],
+      "provenance": { "sourceType": "generated", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    },
+    {
+      "id": "run.video.gemini.rainy-walk",
+      "recipeId": "recipe.video.rainy-walk",
+      "testCaseId": "test.video.rainy-walk.v1",
+      "attempt": 1,
+      "provider": "Google",
+      "modelFamily": "Gemini video generation",
+      "modelVersion": "record-at-execution",
+      "route": "cli",
+      "runAt": "2026-08-11T08:00:00Z",
+      "prompt": { "language": "en", "providerTarget": "Google", "modelFamilyTarget": "Gemini video generation", "text": "One continuous six-second shot of a person holding an umbrella in a rain-soaked city alley. The subject walks forward at a steady natural pace. Controlled backlight, deep focus, strict visual and spatial continuity. Audio ambience: soft city rain and distant traffic, no music. 16:9, 24 fps." },
+      "settings": [
+        { "name": "aspect-ratio", "requestedValue": "16:9", "appliedValue": "16:9", "supportStatus": "supported" },
+        { "name": "duration-seconds", "requestedValue": 6, "appliedValue": 6, "supportStatus": "supported" },
+        { "name": "audio", "requestedValue": true, "appliedValue": true, "supportStatus": "supported" }
+      ],
+      "seed": null,
+      "selectionPolicy": "all-attempts",
+      "outputAssetIds": ["media.video.rainy-walk"],
+      "outcome": "success",
+      "moderation": { "status": "passed", "categories": [] },
+      "expectedClaims": [
+        { "id": "claim.video.walk", "dimensionId": "motion.subject-action", "description": { "vi": "Chủ thể đi về phía trước với tốc độ ổn định.", "en": "The subject walks forward at a steady pace." }, "evaluationType": "temporal", "weight": 1 },
+        { "id": "claim.video.audio", "dimensionId": "audio.ambience", "description": { "vi": "Có âm mưa và giao thông xa, không có nhạc.", "en": "Rain and distant traffic are audible, with no music." }, "evaluationType": "binary", "weight": 0.5 }
+      ],
+      "reviewIds": [],
+      "provenance": { "sourceType": "generated", "author": "LDKTech", "reviewer": "tech-lead", "sourceUrls": [], "license": "CC BY 4.0", "createdAt": "2026-08-11T08:00:00Z", "updatedAt": "2026-08-11T08:00:00Z" }
+    }
+  ]
+}

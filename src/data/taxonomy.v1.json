@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "1.0.0",
+  "taxonomyVersion": "1.0.0-draft",
+  "defaultLocale": "vi",
+  "supportedLocales": ["vi", "en"],
+  "principles": [
+    "Describe observable output rather than hidden intent.",
+    "Keep one primitive focused on one controllable concept.",
+    "Separate subject, scene, camera, light, style and time so they can be recombined.",
+    "Use respectful, neutral language for human traits.",
+    "Record conflicts and prerequisites instead of silently rewriting a recipe.",
+    "Scope model notes to evidence, model version and observation date."
+  ],
+  "categories": [
+    {
+      "id": "subject",
+      "label": { "vi": "Con người & chủ thể", "en": "People & subjects" },
+      "description": { "vi": "Đặc điểm nhận diện được của nhân vật hoặc sinh vật.", "en": "Observable attributes of a person, character or living subject." },
+      "modalities": ["image", "video"],
+      "order": 10,
+      "dimensions": [
+        { "id": "subject.person.role", "label": { "vi": "Vai trò", "en": "Role" }, "promptRole": "subject" },
+        { "id": "subject.person.age-presentation", "label": { "vi": "Biểu hiện độ tuổi", "en": "Age presentation" }, "promptRole": "subject" },
+        { "id": "subject.person.face-shape", "label": { "vi": "Dáng khuôn mặt", "en": "Face shape" }, "promptRole": "attribute" },
+        { "id": "subject.person.face-proportion", "label": { "vi": "Tỷ lệ khuôn mặt", "en": "Facial proportions" }, "promptRole": "attribute" },
+        { "id": "subject.person.skin-tone", "label": { "vi": "Tông da", "en": "Skin tone" }, "promptRole": "attribute" },
+        { "id": "subject.person.skin-undertone", "label": { "vi": "Sắc độ nền của da", "en": "Skin undertone" }, "promptRole": "attribute" },
+        { "id": "subject.person.skin-texture", "label": { "vi": "Kết cấu da", "en": "Skin texture" }, "promptRole": "attribute" },
+        { "id": "subject.person.skin-detail", "label": { "vi": "Chi tiết da", "en": "Skin detail" }, "promptRole": "attribute" },
+        { "id": "subject.person.eye-shape", "label": { "vi": "Dáng mắt", "en": "Eye shape" }, "promptRole": "attribute" },
+        { "id": "subject.person.eye-color", "label": { "vi": "Màu mắt", "en": "Eye color" }, "promptRole": "attribute" },
+        { "id": "subject.person.gaze", "label": { "vi": "Hướng nhìn", "en": "Gaze direction" }, "promptRole": "attribute" },
+        { "id": "subject.person.catchlight", "label": { "vi": "Điểm sáng trong mắt", "en": "Eye catchlight" }, "promptRole": "lighting" },
+        { "id": "subject.person.hair-length", "label": { "vi": "Độ dài tóc", "en": "Hair length" }, "promptRole": "attribute" },
+        { "id": "subject.person.hair-texture", "label": { "vi": "Kết cấu tóc", "en": "Hair texture" }, "promptRole": "attribute" },
+        { "id": "subject.person.hair-style", "label": { "vi": "Kiểu tóc", "en": "Hairstyle" }, "promptRole": "attribute" },
+        { "id": "subject.person.hair-motion", "label": { "vi": "Chuyển động tóc", "en": "Hair motion" }, "promptRole": "motion" },
+        { "id": "subject.person.body-build", "label": { "vi": "Dáng người", "en": "Body build" }, "promptRole": "attribute" },
+        { "id": "subject.person.body-proportion", "label": { "vi": "Tỷ lệ cơ thể", "en": "Body proportions" }, "promptRole": "attribute" },
+        { "id": "subject.person.pose", "label": { "vi": "Tư thế", "en": "Pose" }, "promptRole": "action" },
+        { "id": "subject.person.gesture", "label": { "vi": "Cử chỉ", "en": "Gesture" }, "promptRole": "action" },
+        { "id": "subject.person.hand-placement", "label": { "vi": "Vị trí bàn tay", "en": "Hand placement" }, "promptRole": "action" },
+        { "id": "subject.person.expression", "label": { "vi": "Biểu cảm", "en": "Expression" }, "promptRole": "attribute" },
+        { "id": "subject.person.emotion", "label": { "vi": "Cảm xúc", "en": "Emotion" }, "promptRole": "attribute" },
+        { "id": "subject.person.wardrobe", "label": { "vi": "Trang phục", "en": "Wardrobe" }, "promptRole": "attribute" },
+        { "id": "subject.person.accessory", "label": { "vi": "Phụ kiện", "en": "Accessory" }, "promptRole": "attribute" }
+      ]
+    },
+    {
+      "id": "object",
+      "label": { "vi": "Vật thể", "en": "Objects" },
+      "description": { "vi": "Định danh, hình học, vật liệu, trạng thái và vị trí của vật thể.", "en": "Identity, geometry, material, state and placement of objects." },
+      "modalities": ["image", "video"],
+      "order": 20,
+      "dimensions": [
+        { "id": "object.identity", "label": { "vi": "Định danh", "en": "Identity" }, "promptRole": "subject" },
+        { "id": "object.function", "label": { "vi": "Công năng", "en": "Function" }, "promptRole": "attribute" },
+        { "id": "object.geometry", "label": { "vi": "Hình học", "en": "Geometry" }, "promptRole": "attribute" },
+        { "id": "object.dimension", "label": { "vi": "Kích thước", "en": "Dimensions" }, "promptRole": "attribute" },
+        { "id": "object.scale", "label": { "vi": "Tỷ lệ", "en": "Scale" }, "promptRole": "attribute" },
+        { "id": "object.count", "label": { "vi": "Số lượng", "en": "Count" }, "promptRole": "attribute" },
+        { "id": "object.orientation", "label": { "vi": "Hướng", "en": "Orientation" }, "promptRole": "composition" },
+        { "id": "object.position", "label": { "vi": "Vị trí", "en": "Position" }, "promptRole": "composition" },
+        { "id": "object.material", "label": { "vi": "Chất liệu", "en": "Material" }, "promptRole": "attribute" },
+        { "id": "object.surface", "label": { "vi": "Bề mặt", "en": "Surface finish" }, "promptRole": "attribute" },
+        { "id": "object.translucency", "label": { "vi": "Độ xuyên sáng", "en": "Translucency" }, "promptRole": "attribute" },
+        { "id": "object.reflectivity", "label": { "vi": "Độ phản chiếu", "en": "Reflectivity" }, "promptRole": "attribute" },
+        { "id": "object.wear", "label": { "vi": "Dấu hao mòn", "en": "Wear" }, "promptRole": "attribute" },
+        { "id": "object.physical-state", "label": { "vi": "Trạng thái vật lý", "en": "Physical state" }, "promptRole": "attribute" },
+        { "id": "object.spatial-relation", "label": { "vi": "Quan hệ không gian", "en": "Spatial relation" }, "promptRole": "composition" }
+      ]
+    },
+    {
+      "id": "scene",
+      "label": { "vi": "Bối cảnh", "en": "Scene" },
+      "description": { "vi": "Không gian, thời điểm, thời tiết và lớp chiều sâu của cảnh.", "en": "Environment, time, weather and depth layers of a scene." },
+      "modalities": ["image", "video"],
+      "order": 30,
+      "dimensions": [
+        { "id": "scene.environment", "label": { "vi": "Môi trường", "en": "Environment" }, "promptRole": "environment" },
+        { "id": "scene.location", "label": { "vi": "Địa điểm", "en": "Location" }, "promptRole": "environment" },
+        { "id": "scene.time-of-day", "label": { "vi": "Thời điểm", "en": "Time of day" }, "promptRole": "environment" },
+        { "id": "scene.weather", "label": { "vi": "Thời tiết", "en": "Weather" }, "promptRole": "environment" },
+        { "id": "scene.atmosphere", "label": { "vi": "Bầu không khí", "en": "Atmosphere" }, "promptRole": "environment" },
+        { "id": "scene.narrative-context", "label": { "vi": "Ngữ cảnh kể chuyện", "en": "Narrative context" }, "promptRole": "environment" },
+        { "id": "scene.depth-layer", "label": { "vi": "Lớp chiều sâu", "en": "Depth layer" }, "promptRole": "composition" },
+        { "id": "scene.density", "label": { "vi": "Mật độ cảnh", "en": "Scene density" }, "promptRole": "composition" }
+      ]
+    },
+    {
+      "id": "composition",
+      "label": { "vi": "Bố cục", "en": "Composition" },
+      "description": { "vi": "Cách tổ chức chủ thể, khoảng trống và nhịp thị giác trong khung.", "en": "Arrangement of subjects, space and visual rhythm in the frame." },
+      "modalities": ["image", "video"],
+      "order": 40,
+      "dimensions": [
+        { "id": "composition.subject-placement", "label": { "vi": "Vị trí chủ thể", "en": "Subject placement" }, "promptRole": "composition" },
+        { "id": "composition.balance", "label": { "vi": "Cân bằng", "en": "Balance" }, "promptRole": "composition" },
+        { "id": "composition.symmetry", "label": { "vi": "Đối xứng", "en": "Symmetry" }, "promptRole": "composition" },
+        { "id": "composition.rule-of-thirds", "label": { "vi": "Quy tắc một phần ba", "en": "Rule of thirds" }, "promptRole": "composition" },
+        { "id": "composition.leading-lines", "label": { "vi": "Đường dẫn thị giác", "en": "Leading lines" }, "promptRole": "composition" },
+        { "id": "composition.negative-space", "label": { "vi": "Khoảng trống", "en": "Negative space" }, "promptRole": "composition" },
+        { "id": "composition.visual-hierarchy", "label": { "vi": "Phân cấp thị giác", "en": "Visual hierarchy" }, "promptRole": "composition" },
+        { "id": "composition.occlusion", "label": { "vi": "Che khuất", "en": "Occlusion" }, "promptRole": "composition" },
+        { "id": "composition.overlap", "label": { "vi": "Chồng lớp", "en": "Overlap" }, "promptRole": "composition" },
+        { "id": "composition.aspect-ratio", "label": { "vi": "Tỷ lệ khung", "en": "Aspect ratio" }, "promptRole": "output" }
+      ]
+    },
+    {
+      "id": "camera",
+      "label": { "vi": "Máy quay & ống kính", "en": "Camera & lens" },
+      "description": { "vi": "Kích cỡ cảnh, góc nhìn, phối cảnh, ống kính, lấy nét và chuyển động máy.", "en": "Shot size, viewpoint, perspective, lens, focus and camera movement." },
+      "modalities": ["image", "video"],
+      "order": 50,
+      "dimensions": [
+        { "id": "camera.shot-size", "label": { "vi": "Cỡ cảnh", "en": "Shot size" }, "promptRole": "camera" },
+        { "id": "camera.angle", "label": { "vi": "Góc máy", "en": "Camera angle" }, "promptRole": "camera" },
+        { "id": "camera.perspective", "label": { "vi": "Phối cảnh", "en": "Perspective" }, "promptRole": "camera" },
+        { "id": "camera.subject-distance", "label": { "vi": "Khoảng cách tới chủ thể", "en": "Subject distance" }, "promptRole": "camera" },
+        { "id": "camera.lens-family", "label": { "vi": "Nhóm ống kính", "en": "Lens family" }, "promptRole": "camera" },
+        { "id": "camera.focal-length", "label": { "vi": "Tiêu cự", "en": "Focal length" }, "promptRole": "camera" },
+        { "id": "camera.aperture", "label": { "vi": "Khẩu độ", "en": "Aperture" }, "promptRole": "camera" },
+        { "id": "camera.depth-of-field", "label": { "vi": "Độ sâu trường ảnh", "en": "Depth of field" }, "promptRole": "camera" },
+        { "id": "camera.focus-plane", "label": { "vi": "Mặt phẳng lấy nét", "en": "Focus plane" }, "promptRole": "camera" },
+        { "id": "camera.bokeh", "label": { "vi": "Đặc tính bokeh", "en": "Bokeh character" }, "promptRole": "camera" },
+        { "id": "camera.framing", "label": { "vi": "Đóng khung", "en": "Framing" }, "promptRole": "camera" },
+        { "id": "camera.crop", "label": { "vi": "Cách cắt hình", "en": "Crop behavior" }, "promptRole": "camera" },
+        { "id": "camera.movement", "label": { "vi": "Chuyển động máy", "en": "Camera movement" }, "promptRole": "motion" },
+        { "id": "camera.movement-axis", "label": { "vi": "Trục chuyển động", "en": "Movement axis" }, "promptRole": "motion" },
+        { "id": "camera.movement-speed", "label": { "vi": "Tốc độ máy", "en": "Movement speed" }, "promptRole": "motion" },
+        { "id": "camera.stabilization", "label": { "vi": "Ổn định máy", "en": "Stabilization" }, "promptRole": "motion" },
+        { "id": "camera.focus-transition", "label": { "vi": "Chuyển nét", "en": "Focus transition" }, "promptRole": "motion" }
+      ]
+    },
+    {
+      "id": "lighting",
+      "label": { "vi": "Ánh sáng", "en": "Lighting" },
+      "description": { "vi": "Nguồn, hướng, chất lượng, tương phản và hành vi ánh sáng.", "en": "Source, direction, quality, contrast and behavior of light." },
+      "modalities": ["image", "video"],
+      "order": 60,
+      "dimensions": [
+        { "id": "lighting.source", "label": { "vi": "Nguồn sáng", "en": "Light source" }, "promptRole": "lighting" },
+        { "id": "lighting.source-count", "label": { "vi": "Số nguồn sáng", "en": "Light count" }, "promptRole": "lighting" },
+        { "id": "lighting.direction", "label": { "vi": "Hướng sáng", "en": "Light direction" }, "promptRole": "lighting" },
+        { "id": "lighting.motivation", "label": { "vi": "Động cơ nguồn sáng", "en": "Light motivation" }, "promptRole": "lighting" },
+        { "id": "lighting.hardness", "label": { "vi": "Độ cứng", "en": "Hardness" }, "promptRole": "lighting" },
+        { "id": "lighting.falloff", "label": { "vi": "Độ suy giảm", "en": "Falloff" }, "promptRole": "lighting" },
+        { "id": "lighting.contrast-ratio", "label": { "vi": "Tỷ lệ tương phản", "en": "Contrast ratio" }, "promptRole": "lighting" },
+        { "id": "lighting.exposure", "label": { "vi": "Phơi sáng", "en": "Exposure" }, "promptRole": "lighting" },
+        { "id": "lighting.dynamic-range", "label": { "vi": "Dải tương phản", "en": "Dynamic range" }, "promptRole": "lighting" },
+        { "id": "lighting.shadow", "label": { "vi": "Đặc tính bóng đổ", "en": "Shadow character" }, "promptRole": "lighting" },
+        { "id": "lighting.specular", "label": { "vi": "Phản xạ gương", "en": "Specular behavior" }, "promptRole": "lighting" },
+        { "id": "lighting.volumetric", "label": { "vi": "Ánh sáng thể tích", "en": "Volumetric light" }, "promptRole": "lighting" },
+        { "id": "lighting.temperature", "label": { "vi": "Nhiệt độ màu nguồn sáng", "en": "Light temperature" }, "promptRole": "lighting" }
+      ]
+    },
+    {
+      "id": "color",
+      "label": { "vi": "Màu sắc", "en": "Color" },
+      "description": { "vi": "Bảng màu, quan hệ màu, độ bão hòa và hoàn thiện màu.", "en": "Palette, color relationships, saturation and grading." },
+      "modalities": ["image", "video"],
+      "order": 70,
+      "dimensions": [
+        { "id": "color.palette", "label": { "vi": "Bảng màu", "en": "Palette" }, "promptRole": "color" },
+        { "id": "color.harmony", "label": { "vi": "Hòa sắc", "en": "Color harmony" }, "promptRole": "color" },
+        { "id": "color.temperature", "label": { "vi": "Nhiệt độ màu tổng thể", "en": "Overall color temperature" }, "promptRole": "color" },
+        { "id": "color.saturation", "label": { "vi": "Độ bão hòa", "en": "Saturation" }, "promptRole": "color" },
+        { "id": "color.contrast", "label": { "vi": "Tương phản màu", "en": "Color contrast" }, "promptRole": "color" },
+        { "id": "color.grade", "label": { "vi": "Color grade", "en": "Color grade" }, "promptRole": "color" }
+      ]
+    },
+    {
+      "id": "style",
+      "label": { "vi": "Phong cách & chất liệu thể hiện", "en": "Style & medium" },
+      "description": { "vi": "Medium, kỹ thuật, texture và cách hoàn thiện quan sát được.", "en": "Observable medium, technique, texture and finish." },
+      "modalities": ["image", "video"],
+      "order": 80,
+      "dimensions": [
+        { "id": "style.medium", "label": { "vi": "Chất liệu thể hiện", "en": "Medium" }, "promptRole": "style" },
+        { "id": "style.technique", "label": { "vi": "Kỹ thuật", "en": "Technique" }, "promptRole": "style" },
+        { "id": "style.movement", "label": { "vi": "Trường phái", "en": "Art movement" }, "promptRole": "style" },
+        { "id": "style.production-design", "label": { "vi": "Thiết kế sản xuất", "en": "Production design" }, "promptRole": "style" },
+        { "id": "style.texture", "label": { "vi": "Texture", "en": "Texture" }, "promptRole": "style" },
+        { "id": "style.mark-making", "label": { "vi": "Dấu vết tạo hình", "en": "Mark-making" }, "promptRole": "style" },
+        { "id": "style.rendering", "label": { "vi": "Cách render", "en": "Rendering" }, "promptRole": "style" },
+        { "id": "style.finish", "label": { "vi": "Hoàn thiện", "en": "Finish" }, "promptRole": "style" }
+      ]
+    },
+    {
+      "id": "motion",
+      "label": { "vi": "Chuyển động", "en": "Motion" },
+      "description": { "vi": "Hành động và đặc tính chuyển động của chủ thể, vật thể hoặc môi trường.", "en": "Actions and motion characteristics of subjects, objects or the environment." },
+      "modalities": ["video"],
+      "order": 90,
+      "dimensions": [
+        { "id": "motion.subject-action", "label": { "vi": "Hành động chủ thể", "en": "Subject action" }, "promptRole": "motion" },
+        { "id": "motion.object-action", "label": { "vi": "Hành động vật thể", "en": "Object action" }, "promptRole": "motion" },
+        { "id": "motion.environmental", "label": { "vi": "Chuyển động môi trường", "en": "Environmental motion" }, "promptRole": "motion" },
+        { "id": "motion.trajectory", "label": { "vi": "Quỹ đạo", "en": "Trajectory" }, "promptRole": "motion" },
+        { "id": "motion.direction", "label": { "vi": "Hướng chuyển động", "en": "Direction" }, "promptRole": "motion" },
+        { "id": "motion.speed", "label": { "vi": "Tốc độ", "en": "Speed" }, "promptRole": "motion" },
+        { "id": "motion.acceleration", "label": { "vi": "Gia tốc", "en": "Acceleration" }, "promptRole": "motion" },
+        { "id": "motion.rhythm", "label": { "vi": "Nhịp chuyển động", "en": "Motion rhythm" }, "promptRole": "motion" },
+        { "id": "motion.physics", "label": { "vi": "Hành vi vật lý", "en": "Physics" }, "promptRole": "motion" },
+        { "id": "motion.weight", "label": { "vi": "Cảm giác trọng lượng", "en": "Weight" }, "promptRole": "motion" },
+        { "id": "motion.secondary", "label": { "vi": "Chuyển động thứ cấp", "en": "Secondary motion" }, "promptRole": "motion" }
+      ]
+    },
+    {
+      "id": "temporal",
+      "label": { "vi": "Thời gian & liên tục", "en": "Time & continuity" },
+      "description": { "vi": "Trình tự, thời lượng, nhịp khung hình, chuyển cảnh và tính liên tục.", "en": "Sequence, duration, frame timing, transitions and continuity." },
+      "modalities": ["video"],
+      "order": 100,
+      "dimensions": [
+        { "id": "temporal.start-state", "label": { "vi": "Trạng thái đầu", "en": "Start state" }, "promptRole": "temporal" },
+        { "id": "temporal.action-phase", "label": { "vi": "Giai đoạn hành động", "en": "Action phase" }, "promptRole": "temporal" },
+        { "id": "temporal.end-state", "label": { "vi": "Trạng thái cuối", "en": "End state" }, "promptRole": "temporal" },
+        { "id": "temporal.duration", "label": { "vi": "Thời lượng", "en": "Duration" }, "promptRole": "output" },
+        { "id": "temporal.frame-rate", "label": { "vi": "Tốc độ khung hình", "en": "Frame rate" }, "promptRole": "output" },
+        { "id": "temporal.shutter-impression", "label": { "vi": "Cảm giác màn trập", "en": "Shutter impression" }, "promptRole": "camera" },
+        { "id": "temporal.speed-treatment", "label": { "vi": "Xử lý tốc độ", "en": "Speed treatment" }, "promptRole": "temporal" },
+        { "id": "temporal.continuity", "label": { "vi": "Tính liên tục", "en": "Continuity" }, "promptRole": "temporal" },
+        { "id": "temporal.identity-stability", "label": { "vi": "Ổn định nhận diện", "en": "Identity stability" }, "promptRole": "temporal" },
+        { "id": "temporal.causality", "label": { "vi": "Quan hệ nhân quả", "en": "Causality" }, "promptRole": "temporal" },
+        { "id": "temporal.transition", "label": { "vi": "Chuyển cảnh", "en": "Transition" }, "promptRole": "temporal" },
+        { "id": "temporal.loop", "label": { "vi": "Vòng lặp", "en": "Loop behavior" }, "promptRole": "temporal" }
+      ]
+    },
+    {
+      "id": "audio",
+      "label": { "vi": "Ý định âm thanh", "en": "Audio intent" },
+      "description": { "vi": "Mô tả ý định âm thanh; việc generation audio thuộc model matrix được duyệt riêng.", "en": "Audio intent descriptors; actual generation depends on the approved model matrix." },
+      "modalities": ["video"],
+      "order": 110,
+      "dimensions": [
+        { "id": "audio.ambience", "label": { "vi": "Âm thanh môi trường", "en": "Ambience" }, "promptRole": "audio" },
+        { "id": "audio.dialogue-intent", "label": { "vi": "Ý định thoại", "en": "Dialogue intent" }, "promptRole": "audio" },
+        { "id": "audio.sound-event", "label": { "vi": "Sự kiện âm thanh", "en": "Sound event" }, "promptRole": "audio" },
+        { "id": "audio.music-mood", "label": { "vi": "Sắc thái âm nhạc", "en": "Music mood" }, "promptRole": "audio" },
+        { "id": "audio.timing", "label": { "vi": "Thời điểm âm thanh", "en": "Audio timing" }, "promptRole": "audio" }
+      ]
+    }
+  ]
+}

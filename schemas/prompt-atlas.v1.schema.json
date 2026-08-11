@@ -1,0 +1,726 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://promptatlas.ldktech.com/schemas/prompt-atlas.v1.schema.json",
+  "title": "Prompt Atlas dataset v1",
+  "description": "Canonical contract for prompt primitives, recipes, example assets and generation runs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "taxonomyVersion",
+    "datasetVersion",
+    "defaultLocale",
+    "primitives",
+    "recipes",
+    "exampleAssets",
+    "generationRuns"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "schemaVersion": { "const": "1.0.0" },
+    "taxonomyVersion": { "$ref": "#/$defs/version" },
+    "datasetVersion": { "$ref": "#/$defs/version" },
+    "defaultLocale": { "$ref": "#/$defs/locale" },
+    "primitives": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/primitive" }
+    },
+    "recipes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/recipe" }
+    },
+    "exampleAssets": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/exampleAsset" }
+    },
+    "generationRuns": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/generationRun" }
+    }
+  },
+  "$defs": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-z0-9.-]+)?$"
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "entityId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+    },
+    "dimensionId": {
+      "type": "string",
+      "pattern": "^(subject|object|scene|composition|camera|lighting|color|style|motion|temporal|audio)\\.[a-z0-9]+(?:-[a-z0-9]+|\\.[a-z0-9]+)*$"
+    },
+    "localizedText": {
+      "type": "object",
+      "required": ["vi", "en"],
+      "properties": {
+        "vi": { "type": "string", "minLength": 1 },
+        "en": { "type": "string", "minLength": 1 }
+      },
+      "patternProperties": {
+        "^[a-z]{2}(?:-[A-Z]{2})?$": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "localizedStringList": {
+      "type": "object",
+      "required": ["vi", "en"],
+      "properties": {
+        "vi": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "en": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "scalar": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" }
+      ]
+    },
+    "promptText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["language", "text"],
+      "properties": {
+        "language": {
+          "enum": ["vi", "en", "model-native"]
+        },
+        "text": { "type": "string", "minLength": 1 }
+      }
+    },
+    "promptVariable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "label", "valueType", "required"],
+      "properties": {
+        "key": { "$ref": "#/$defs/slug" },
+        "label": { "$ref": "#/$defs/localizedText" },
+        "valueType": {
+          "enum": ["enum", "number", "text", "boolean"]
+        },
+        "required": { "type": "boolean" },
+        "allowedValues": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/scalar" }
+        },
+        "defaultValue": { "$ref": "#/$defs/scalar" },
+        "unit": { "type": "string", "minLength": 1 }
+      }
+    },
+    "promptFragment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["template", "language", "role", "orderHint"],
+      "properties": {
+        "template": { "type": "string", "minLength": 1 },
+        "language": {
+          "enum": ["vi", "en", "model-native"]
+        },
+        "role": {
+          "enum": [
+            "subject",
+            "attribute",
+            "action",
+            "environment",
+            "composition",
+            "camera",
+            "lighting",
+            "color",
+            "style",
+            "motion",
+            "temporal",
+            "audio",
+            "output",
+            "constraint",
+            "negative"
+          ]
+        },
+        "orderHint": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "variables": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/promptVariable" }
+        }
+      }
+    },
+    "primitiveValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "fragment"],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "label": { "$ref": "#/$defs/localizedText" },
+        "description": { "$ref": "#/$defs/localizedText" },
+        "fragment": { "$ref": "#/$defs/promptText" },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "sortOrder": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requires", "compatibleWith", "conflictsWith"],
+      "properties": {
+        "requires": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "compatibleWith": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "conflictsWith": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "resolutionGuidance": { "$ref": "#/$defs/localizedText" }
+      }
+    },
+    "modelNote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "modelFamily", "observedAt", "note", "confidence", "evidenceRunIds"],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "modelFamily": { "type": "string", "minLength": 1 },
+        "modelVersion": { "type": "string", "minLength": 1 },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "note": { "$ref": "#/$defs/localizedText" },
+        "confidence": {
+          "enum": ["low", "medium", "high"]
+        },
+        "evidenceRunIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        }
+      }
+    },
+    "sensitivity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "tags"],
+      "properties": {
+        "level": {
+          "enum": ["none", "contextual", "sensitive", "restricted"]
+        },
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/slug" }
+        },
+        "guidance": { "$ref": "#/$defs/localizedText" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceType", "author", "createdAt", "updatedAt", "license"],
+      "properties": {
+        "sourceType": {
+          "enum": ["original", "research", "licensed", "generated", "migrated", "user-submitted"]
+        },
+        "author": { "type": "string", "minLength": 1 },
+        "reviewer": { "type": "string", "minLength": 1 },
+        "sourceUrls": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "format": "uri" }
+        },
+        "license": { "type": "string", "minLength": 1 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "checksum": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "primitive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "status",
+        "modality",
+        "category",
+        "dimensionId",
+        "label",
+        "searchAliases",
+        "definition",
+        "prompt",
+        "values",
+        "compatibility",
+        "exampleIds",
+        "counterExampleIds",
+        "modelNotes",
+        "sensitivity",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "version": { "$ref": "#/$defs/version" },
+        "status": {
+          "enum": ["draft", "in-review", "approved", "deprecated"]
+        },
+        "modality": {
+          "enum": ["image", "video", "shared"]
+        },
+        "category": {
+          "enum": ["subject", "object", "scene", "composition", "camera", "lighting", "color", "style", "motion", "temporal", "audio"]
+        },
+        "dimensionId": { "$ref": "#/$defs/dimensionId" },
+        "label": { "$ref": "#/$defs/localizedText" },
+        "searchAliases": { "$ref": "#/$defs/localizedStringList" },
+        "definition": { "$ref": "#/$defs/localizedText" },
+        "prompt": { "$ref": "#/$defs/promptFragment" },
+        "values": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/primitiveValue" }
+        },
+        "defaultValueId": { "$ref": "#/$defs/slug" },
+        "compatibility": { "$ref": "#/$defs/compatibility" },
+        "exampleIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "counterExampleIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "ambiguityNotes": { "$ref": "#/$defs/localizedText" },
+        "modelNotes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/modelNote" }
+        },
+        "sensitivity": { "$ref": "#/$defs/sensitivity" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "recipeItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primitiveId", "order", "enabled", "variables"],
+      "properties": {
+        "primitiveId": { "$ref": "#/$defs/entityId" },
+        "valueId": { "$ref": "#/$defs/slug" },
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "enabled": { "type": "boolean" },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "variables": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/scalar" }
+        },
+        "userOverride": { "type": "string", "minLength": 1 }
+      }
+    },
+    "outputSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["aspectRatio"],
+      "properties": {
+        "aspectRatio": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*:[1-9][0-9]*$"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "durationSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "frameRate": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "audioEnabled": { "type": "boolean" }
+      }
+    },
+    "renderedPrompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["language", "text"],
+      "properties": {
+        "language": {
+          "enum": ["vi", "en", "model-native"]
+        },
+        "providerTarget": { "type": "string", "minLength": 1 },
+        "modelFamilyTarget": { "type": "string", "minLength": 1 },
+        "text": { "type": "string", "minLength": 1 }
+      }
+    },
+    "recipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "status",
+        "modality",
+        "title",
+        "locale",
+        "items",
+        "outputSpec",
+        "rendererVersion",
+        "renderedPrompts",
+        "unresolvedConflictIds",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "version": { "$ref": "#/$defs/version" },
+        "status": {
+          "enum": ["draft", "in-review", "approved", "deprecated"]
+        },
+        "modality": {
+          "enum": ["image", "video"]
+        },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "intent": { "$ref": "#/$defs/localizedText" },
+        "locale": { "$ref": "#/$defs/locale" },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/recipeItem" }
+        },
+        "freeTextBridge": { "type": "string" },
+        "outputSpec": { "$ref": "#/$defs/outputSpec" },
+        "rendererVersion": { "$ref": "#/$defs/version" },
+        "renderedPrompts": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/renderedPrompt" }
+        },
+        "unresolvedConflictIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "mediaAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "src", "mimeType", "license", "provenance"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "type": {
+          "enum": ["image", "video", "audio"]
+        },
+        "src": { "type": "string", "minLength": 1 },
+        "thumbnailSrc": { "type": "string", "minLength": 1 },
+        "posterSrc": { "type": "string", "minLength": 1 },
+        "mimeType": { "type": "string", "minLength": 1 },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "durationSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "frameRate": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "alt": { "$ref": "#/$defs/localizedText" },
+        "caption": { "$ref": "#/$defs/localizedText" },
+        "temporalDescription": { "$ref": "#/$defs/localizedText" },
+        "checksum": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "license": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "image" } },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["width", "height", "alt"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "video" } },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["width", "height", "durationSeconds", "posterSrc", "temporalDescription"]
+          }
+        }
+      ]
+    },
+    "expectedClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "dimensionId", "description", "evaluationType"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "dimensionId": { "$ref": "#/$defs/dimensionId" },
+        "description": { "$ref": "#/$defs/localizedText" },
+        "evaluationType": {
+          "enum": ["binary", "ordinal", "count", "spatial", "temporal"]
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "exampleAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "primitiveIds",
+        "media",
+        "isolatedDimensionIds",
+        "confounders",
+        "expectedClaims",
+        "reviewStatus",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "kind": {
+          "enum": ["positive", "counterexample", "composition", "benchmark-reference"]
+        },
+        "primitiveIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "recipeId": { "$ref": "#/$defs/entityId" },
+        "generationRunId": { "$ref": "#/$defs/entityId" },
+        "media": { "$ref": "#/$defs/mediaAsset" },
+        "isolatedDimensionIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/dimensionId" }
+        },
+        "confounders": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/dimensionId" }
+        },
+        "expectedClaims": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/expectedClaim" }
+        },
+        "notes": { "$ref": "#/$defs/localizedText" },
+        "reviewStatus": {
+          "enum": ["unreviewed", "in-review", "accepted", "rejected"]
+        },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      },
+      "anyOf": [
+        { "properties": { "primitiveIds": { "type": "array", "minItems": 1 } } },
+        { "required": ["recipeId"], "properties": { "recipeId": { "$ref": "#/$defs/entityId" } } }
+      ]
+    },
+    "providerSetting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "requestedValue", "supportStatus"],
+      "properties": {
+        "name": { "$ref": "#/$defs/slug" },
+        "requestedValue": { "$ref": "#/$defs/scalar" },
+        "appliedValue": { "$ref": "#/$defs/scalar" },
+        "supportStatus": {
+          "enum": ["supported", "unsupported", "unknown", "provider-default"]
+        },
+        "notes": { "type": "string", "minLength": 1 }
+      }
+    },
+    "runError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "retryable"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "retryable": { "type": "boolean" }
+      }
+    },
+    "moderation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "enum": ["not-reported", "passed", "flagged", "blocked"]
+        },
+        "categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "providerMessage": { "type": "string" }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inputUnits": {
+          "type": "number",
+          "minimum": 0
+        },
+        "outputUnits": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "estimatedCost": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "generationRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "recipeId",
+        "attempt",
+        "provider",
+        "modelFamily",
+        "route",
+        "runAt",
+        "prompt",
+        "settings",
+        "selectionPolicy",
+        "outputAssetIds",
+        "outcome",
+        "moderation",
+        "expectedClaims",
+        "reviewIds",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "recipeId": { "$ref": "#/$defs/entityId" },
+        "testCaseId": { "$ref": "#/$defs/entityId" },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "provider": { "type": "string", "minLength": 1 },
+        "modelFamily": { "type": "string", "minLength": 1 },
+        "modelVersion": { "type": "string", "minLength": 1 },
+        "route": {
+          "enum": ["api", "ui", "cli", "unknown"]
+        },
+        "runAt": { "type": "string", "format": "date-time" },
+        "prompt": { "$ref": "#/$defs/renderedPrompt" },
+        "settings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/providerSetting" }
+        },
+        "seed": { "$ref": "#/$defs/scalar" },
+        "selectionPolicy": {
+          "enum": ["all-attempts", "provider-default", "best-of-declared"]
+        },
+        "outputAssetIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "outcome": {
+          "enum": ["success", "partial", "failure", "refusal", "moderated"]
+        },
+        "error": { "$ref": "#/$defs/runError" },
+        "moderation": { "$ref": "#/$defs/moderation" },
+        "usage": { "$ref": "#/$defs/usage" },
+        "expectedClaims": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/expectedClaim" }
+        },
+        "reviewIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": ["failure", "refusal", "moderated"]
+              }
+            },
+            "required": ["outcome"]
+          },
+          "then": {
+            "required": ["error"]
+          }
+        }
+      ]
+    }
+  }
+}
