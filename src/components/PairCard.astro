@@ -2,6 +2,7 @@
 import type { StyleRecord } from "../lib/styles";
 import { paddedId, winnerLabel } from "../lib/styles";
 import FavoriteButton from "./FavoriteButton.astro";
+import Icon from "./Icon.astro";
 
 type Props = { style: StyleRecord; eager?: boolean };
 const { style, eager = false } = Astro.props;
@@ -58,6 +59,16 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
       </div>
     </div>
   </a>
-  <FavoriteButton slug={style.slug} name={style.name} compact />
+  <div class="style-card__actions" aria-label={`Thao tác với ${style.name}`}>
+    <button
+      class="card-action card-action--copy"
+      type="button"
+      data-copy-value={style.generationPrompt}
+      aria-label={`Sao chép prompt ${style.name}`}
+    >
+      <Icon name="copy" size={18} />
+      <span data-copy-label>Sao chép prompt</span>
+    </button>
+    <FavoriteButton slug={style.slug} name={style.name} />
+  </div>
 </article>
-

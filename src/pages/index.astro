@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PairCard from "../components/PairCard.astro";
+import Icon from "../components/Icon.astro";
 import { families, styles } from "../lib/styles";
 
 const featured = styles.find((style) => style.id === 88) ?? styles[0];
@@ -22,8 +23,8 @@ const jsonLd = {
       <h1 id="hero-title">Đừng đoán một phong cách.<br /><em>Hãy nhìn nó.</em></h1>
       <p class="hero__lead">Tìm trong 90 phong cách, xem cùng prompt qua hai model và sao chép công thức bạn muốn thử.</p>
       <div class="hero__actions">
-        <a class="button button--primary" href="#atlas">Khám phá 90 phong cách <span aria-hidden="true">↓</span></a>
-        <a class="button button--ghost" href={`/compare/?style=${featured.slug}`}>Mở bàn so sánh <span aria-hidden="true">↗</span></a>
+        <a class="button button--primary" href="#atlas">Khám phá 90 phong cách <Icon name="arrow-down" /></a>
+        <a class="button button--ghost" href={`/compare/?style=${featured.slug}`}>Mở bàn so sánh <Icon name="arrow-up-right" /></a>
       </div>
       <dl class="hero__metrics" aria-label="Quy mô dữ liệu">
         <div><dt>Phong cách</dt><dd>90</dd></div>
@@ -42,7 +43,7 @@ const jsonLd = {
           <img src={featured.images.gemini.full} width={featured.images.gemini.width} height={featured.images.gemini.height} alt={`${featured.name}, kết quả Gemini.`} fetchpriority="high" />
           <figcaption><b>GEMINI</b><span>{featured.scores.gemini.average.toFixed(2)}</span></figcaption>
         </figure>
-        <span class="hero__seam" aria-hidden="true"></span>
+        <span class="hero__seam" aria-hidden="true"><Icon name="swap" size={19} /></span>
       </div>
       <div class="hero__caption">
         <span>{String(featured.id).padStart(3, "0")}</span>
@@ -57,7 +58,7 @@ const jsonLd = {
       <div class="atlas-toolbar shell">
         <div class="search-field">
           <label for="style-search">Tìm phong cách hoặc ý tưởng</label>
-          <span class="search-field__icon" aria-hidden="true">⌕</span>
+          <span class="search-field__icon"><Icon name="search" size={18} /></span>
           <input id="style-search" type="search" autocomplete="off" placeholder="mực tàu, retro, 3D, Sài Gòn…" data-style-search />
           <kbd>⌘ K</kbd>
         </div>
@@ -68,7 +69,7 @@ const jsonLd = {
         <div class="toolbar-status">
           <p><strong data-result-count>90</strong> / 90 phong cách</p>
           <button type="button" class="saved-filter" data-saved-filter aria-pressed="false">
-            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.6L6 21V4.75Z" /></svg>
+            <Icon name="bookmark" size={18} />
             Chỉ xem đã lưu
           </button>
         </div>
@@ -91,8 +92,8 @@ const jsonLd = {
       <div><p class="eyebrow">ĐỌC KẾT QUẢ</p><h2>Không chỉ là một gallery đẹp.</h2></div>
       <p>Mỗi cặp dùng cùng prompt và được chấm theo năm tiêu chí: bám prompt, đúng phong cách, bố cục, chất lượng kỹ thuật và chi tiết/artifact.</p>
       <div class="evidence-strip__actions">
-        <a href="/compare/">Xem toàn bộ điểm <span aria-hidden="true">→</span></a>
-        <a href="/methodology/">Đọc phương pháp <span aria-hidden="true">→</span></a>
+        <a href="/compare/">Xem toàn bộ điểm <Icon name="arrow-right" /></a>
+        <a href="/methodology/">Đọc phương pháp <Icon name="arrow-right" /></a>
       </div>
     </div>
   </section>

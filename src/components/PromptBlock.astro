@@ -1,4 +1,6 @@
 ---
+import Icon from "./Icon.astro";
+
 type Props = {
   sourcePrompt: string;
   generationPrompt: string;
@@ -15,7 +17,7 @@ const { sourcePrompt, generationPrompt, id = "generation-prompt" } = Astro.props
       <h2 id={`${id}-title`}>Sao chép, rồi thay chủ thể.</h2>
     </div>
     <button class="button button--primary" type="button" data-copy-target={`#${id}`}>
-      <span data-copy-label>Sao chép prompt</span><span aria-hidden="true">⌘C</span>
+      <Icon name="copy" size={19} /><span data-copy-label>Sao chép prompt</span><kbd>⌘C</kbd>
     </button>
   </div>
   <p class="prompt-block__source"><b>Ý tưởng gốc</b>{sourcePrompt}</p>

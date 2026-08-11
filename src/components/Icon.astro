@@ -1,0 +1,43 @@
+---
+type IconName =
+  | "arrow-down"
+  | "arrow-right"
+  | "arrow-up-right"
+  | "bookmark"
+  | "chevron-left"
+  | "chevron-right"
+  | "copy"
+  | "menu"
+  | "plus"
+  | "search"
+  | "swap";
+
+type Props = { name: IconName; size?: number; strokeWidth?: number };
+const { name, size = 18, strokeWidth = 1.9 } = Astro.props;
+---
+
+<svg
+  class:list={["icon", `icon--${name}`]}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {name === "arrow-down" && <><path d="M12 4v15" /><path d="m6.5 13.5 5.5 5.5 5.5-5.5" /></>}
+  {name === "arrow-right" && <><path d="M4 12h15" /><path d="m13.5 6.5 5.5 5.5-5.5 5.5" /></>}
+  {name === "arrow-up-right" && <><path d="M7 17 17 7" /><path d="M8 7h9v9" /></>}
+  {name === "bookmark" && <path d="M6.5 5.25A2.25 2.25 0 0 1 8.75 3h6.5a2.25 2.25 0 0 1 2.25 2.25V21L12 17.7 6.5 21V5.25Z" />}
+  {name === "chevron-left" && <path d="m15 18-6-6 6-6" />}
+  {name === "chevron-right" && <path d="m9 18 6-6-6-6" />}
+  {name === "copy" && <><rect x="8" y="8" width="11" height="11" rx="1.5" /><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-10A1.5 1.5 0 0 0 3 5.5v10A1.5 1.5 0 0 0 4.5 17H8" /></>}
+  {name === "menu" && <><path d="M4 6.5h16" /><path d="M4 12h16" /><path d="M4 17.5h16" /></>}
+  {name === "plus" && <><path d="M12 5v14" /><path d="M5 12h14" /></>}
+  {name === "search" && <><circle cx="10.75" cy="10.75" r="6.25" /><path d="m15.5 15.5 4 4" /></>}
+  {name === "swap" && <><path d="M4 8h14" /><path d="m14 4 4 4-4 4" /><path d="M20 16H6" /><path d="m10 12-4 4 4 4" /></>}
+</svg>

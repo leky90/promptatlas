@@ -6,7 +6,7 @@ Live site: [image-styles.ldktech.com](https://image-styles.ldktech.com)
 
 ## What is included
 
-- 90 searchable and filterable style entries.
+- 90 searchable and filterable style entries with one-click prompt copying on every card.
 - 180 full comparison images and 180 optimized thumbnails.
 - A client-side ChatGPT/Gemini comparison workbench.
 - 90 static, indexable detail pages with copyable prompts.

@@ -4,6 +4,7 @@ import FavoriteButton from "../../components/FavoriteButton.astro";
 import PairCard from "../../components/PairCard.astro";
 import PromptBlock from "../../components/PromptBlock.astro";
 import ScoreRail from "../../components/ScoreRail.astro";
+import Icon from "../../components/Icon.astro";
 import { paddedId, styleBySlug, styles, winnerLabel, type StyleRecord } from "../../lib/styles";
 
 export function getStaticPaths() {
@@ -54,7 +55,7 @@ const jsonLd = {
           </ul>
           <div class="detail-hero__actions">
             <FavoriteButton slug={style.slug} name={style.name} />
-            <a class="button button--ghost" href={`/compare/?style=${style.slug}`}>Mở bàn so sánh <span aria-hidden="true">↗</span></a>
+            <a class="button button--ghost" href={`/compare/?style=${style.slug}`}>Mở bàn so sánh <Icon name="arrow-up-right" /></a>
           </div>
         </div>
       </div>
@@ -94,7 +95,7 @@ const jsonLd = {
     <section class="related-section shell" aria-labelledby="related-title">
       <div class="section-heading">
         <div><p class="eyebrow">TIẾP TỤC KHÁM PHÁ</p><h2 id="related-title">Phong cách cùng mạch.</h2></div>
-        <a href="/#atlas">Xem đủ 90 phong cách <span aria-hidden="true">→</span></a>
+        <a href="/#atlas">Xem đủ 90 phong cách <Icon name="arrow-right" /></a>
       </div>
       <div class="style-grid style-grid--related">
         {related.map((item) => <PairCard style={item} />)}

@@ -7,13 +7,18 @@ const styles = JSON.parse(readFileSync(new URL("../src/data/styles.json", import
   images: { chatgpt: { full: string; thumb: string }; gemini: { full: string; thumb: string } };
 }>;
 
-test("atlas supports search, filters, favorites and empty recovery", async ({ page }) => {
+test("atlas supports copy, search, filters, favorites and empty recovery", async ({ context, page }) => {
   const errors: string[] = [];
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4321" });
   page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
 
   await expect(page.locator("[data-style-card]")).toHaveCount(90);
+  const firstCopy = page.locator("[data-style-card] [data-copy-value]").first();
+  await firstCopy.click();
+  await expect(firstCopy.locator("[data-copy-label]")).toHaveText("Đã sao chép");
+  expect((await page.evaluate(() => navigator.clipboard.readText())).length).toBeGreaterThan(100);
   await page.locator("[data-style-search]").fill("sumi-e");
   await expect(page.locator("[data-result-count]")).toHaveText("01");
   await expect(page.locator('[data-style-card][data-slug="sumi-e"]')).toBeVisible();

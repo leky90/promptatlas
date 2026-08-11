@@ -15,7 +15,7 @@ Target: `https://image-styles.ldktech.com`
 
 Command: `npm run test:e2e`
 
-Result: 9/9 Playwright tests passed.
+Result after the UI/UX remediation pass: 10/10 Playwright tests passed.
 
 Covered behaviors:
 
@@ -24,9 +24,11 @@ Covered behaviors:
 - Favorites persist in local storage and work with the saved-only filter.
 - Compare workbench loads a style from the query string and moves to adjacent records.
 - Detail pages expose both full outputs and copy the structured prompt.
+- Every catalog card can copy its prompt directly.
 - All 90 detail routes respond successfully.
 - All 360 published full/thumbnail media URLs respond successfully.
 - Mobile navigation and primary search/compare flows work at 390×844.
+- Methodology anchor links clear the sticky mobile header.
 - Axe found no serious or critical accessibility violations on home, compare, detail, or methodology pages, including color contrast.
 
 ## Visual QA

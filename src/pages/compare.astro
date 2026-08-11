@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
 import { scoreLabels, styles } from "../lib/styles";
 
 const initial = styles.find((style) => style.id === 88) ?? styles[0];
@@ -47,14 +48,14 @@ const compareData = JSON.stringify(styles);
         </select>
       </div>
       <div class="compare-toolbar__pager" aria-label="Điều hướng phong cách">
-        <button type="button" class="button button--ghost" data-compare-prev aria-label="Phong cách trước">← Trước</button>
-        <button type="button" class="button button--ghost" data-compare-next>Tiếp →</button>
+        <button type="button" class="button button--ghost" data-compare-prev><Icon name="chevron-left" /> Trước</button>
+        <button type="button" class="button button--ghost" data-compare-next>Tiếp <Icon name="chevron-right" /></button>
       </div>
     </div>
 
     <div class="shell workbench-title">
       <div><p class="eyebrow" data-compare-meta>{initial.family} / {String(initial.id).padStart(3, "0")}</p><h2 id="workbench-title" data-compare-name>{initial.name}</h2></div>
-      <a class="button button--primary" data-compare-detail href={`/styles/${initial.slug}/`}>Xem prompt đầy đủ <span aria-hidden="true">↗</span></a>
+      <a class="button button--primary" data-compare-detail href={`/styles/${initial.slug}/`}>Xem prompt đầy đủ <Icon name="arrow-up-right" /></a>
     </div>
 
     <div class="shell compare-stage">
@@ -88,7 +89,7 @@ const compareData = JSON.stringify(styles);
 
   <section class="compare-method shell">
     <p><b>Cách đọc:</b> điểm 1–10 do cùng một quy trình đánh giá có cấu trúc. Chênh lệch nhỏ hơn 0,25 được xem là hòa.</p>
-    <a href="/methodology/">Xem phương pháp và giới hạn <span aria-hidden="true">→</span></a>
+    <a href="/methodology/">Xem phương pháp và giới hạn <Icon name="arrow-right" /></a>
   </section>
 
   <script is:inline id="compare-data" type="application/json" set:html={compareData}></script>

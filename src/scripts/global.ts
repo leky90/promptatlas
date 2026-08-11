@@ -63,11 +63,11 @@ function initializeFavorites() {
 }
 
 function initializeCopy() {
-  document.querySelectorAll<HTMLButtonElement>("[data-copy-target]").forEach((button) => {
+  document.querySelectorAll<HTMLButtonElement>("[data-copy-target], [data-copy-value]").forEach((button) => {
     button.addEventListener("click", async () => {
-      const target = document.querySelector<HTMLElement>(button.dataset.copyTarget ?? "");
-      if (!target) return;
-      const value = target.innerText.trim();
+      const selector = button.dataset.copyTarget;
+      const target = selector ? document.querySelector<HTMLElement>(selector) : null;
+      const value = (button.dataset.copyValue ?? target?.innerText ?? "").trim();
       if (!value) return;
       try {
         await navigator.clipboard.writeText(value);
@@ -79,13 +79,17 @@ function initializeCopy() {
           if (label) label.textContent = previous ?? "Sao chép prompt";
         }, 1800);
       } catch {
-        target.focus();
-        const selection = window.getSelection();
-        const range = document.createRange();
-        range.selectNodeContents(target);
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-        showToast("Không thể truy cập clipboard. Prompt đã được chọn để bạn sao chép.", "error");
+        if (target) {
+          target.focus();
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(target);
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+          showToast("Không thể truy cập clipboard. Prompt đã được chọn để bạn sao chép.", "error");
+        } else {
+          showToast("Không thể truy cập clipboard trong trình duyệt này.", "error");
+        }
       }
     });
   });

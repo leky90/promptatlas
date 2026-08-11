@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
 ---
 
 <BaseLayout
@@ -30,11 +31,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <p>Mỗi phong cách bắt đầu từ một ý tưởng gốc và được chuyển thành prompt có cấu trúc gồm mục đích, chủ thể, medium, bố cục, ánh sáng và ràng buộc. Cùng prompt đó được đưa vào hai luồng tạo ảnh.</p>
         <div class="method-flow" aria-label="Quy trình tạo mẫu">
           <div><b>01</b><span>Ý tưởng + tên phong cách</span></div>
-          <i aria-hidden="true">→</i>
+          <i aria-hidden="true"><Icon name="arrow-right" size={18} /></i>
           <div><b>02</b><span>Prompt có cấu trúc dùng chung</span></div>
-          <i aria-hidden="true">→</i>
+          <i aria-hidden="true"><Icon name="arrow-right" size={18} /></i>
           <div><b>03A</b><span>ChatGPT / OpenAI</span></div>
-          <i aria-hidden="true">+</i>
+          <i aria-hidden="true"><Icon name="plus" size={18} /></i>
           <div><b>03B</b><span>Gemini qua gflow-cli</span></div>
         </div>
         <p>Ảnh ChatGPT được tạo qua công cụ tạo ảnh của OpenAI. Ảnh Gemini được tạo bằng gflow-cli với Nano Banana Pro. Kích thước nguồn khác nhau nên giao diện luôn hiển thị trọn khung khi đánh giá chi tiết.</p>
@@ -80,8 +81,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <h2>Dữ liệu có thể kiểm tra</h2>
         <p>Manifest media liệt kê toàn bộ file đã tối ưu cho website. Mã nguồn, dữ liệu đã chuẩn hóa và lịch sử deploy được công khai trên GitHub.</p>
         <div class="method-links">
-          <a class="button button--primary" href="/media/manifest.json">Mở media manifest <span aria-hidden="true">↗</span></a>
-          <a class="button button--ghost" href="https://github.com/leky90/image-styles">Xem mã nguồn <span aria-hidden="true">↗</span></a>
+          <a class="button button--primary" href="/media/manifest.json">Mở media manifest <Icon name="arrow-up-right" /></a>
+          <a class="button button--ghost" href="https://github.com/leky90/image-styles">Xem mã nguồn <Icon name="arrow-up-right" /></a>
         </div>
       </section>
     </div>

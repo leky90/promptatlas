@@ -1,4 +1,6 @@
 ---
+import Icon from "./Icon.astro";
+
 type Props = { slug: string; name: string; compact?: boolean };
 const { slug, name, compact = false } = Astro.props;
 ---
@@ -11,7 +13,6 @@ const { slug, name, compact = false } = Astro.props;
   aria-pressed="false"
   aria-label={`Lưu phong cách ${name}`}
 >
-  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.6L6 21V4.75Z" /></svg>
+  <Icon name="bookmark" size={18} />
   <span data-favorite-label>{compact ? "" : "Lưu"}</span>
 </button>
-
