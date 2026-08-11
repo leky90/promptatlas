@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { scoreLabels, styles } from "../lib/styles";
+
+const initial = styles.find((style) => style.id === 88) ?? styles[0];
+const providerAverage = (provider: "chatgpt" | "gemini") => styles.reduce((sum, style) => sum + style.scores[provider].average, 0) / styles.length;
+const chatgptAverage = providerAverage("chatgpt");
+const geminiAverage = providerAverage("gemini");
+const winCounts = styles.reduce((result, style) => {
+  result[style.winner] += 1;
+  return result;
+}, { ChatGPT: 0, Gemini: 0, Hòa: 0 });
+const compareData = JSON.stringify(styles);
+---
+
+<BaseLayout
+  title="So sánh ChatGPT và Gemini qua 90 prompt | Prompt Atlas"
+  description="Bảng so sánh trực quan 90 phong cách tạo ảnh từ ChatGPT và Gemini, gồm điểm tổng, điểm từng tiêu chí và output cùng prompt."
+  canonicalPath="/compare/"
+  bodyClass="compare-page"
+>
+  <header class="compare-header shell">
+    <p class="eyebrow">MODEL COMPARISON / 90 PAIRED SAMPLES</p>
+    <div class="compare-header__grid">
+      <h1>So sánh bằng hình.<br /><em>Không bằng cảm giác.</em></h1>
+      <p>Mỗi hàng là cùng một prompt, chấm trên cùng năm tiêu chí. Chọn phong cách để xem chênh lệch và đọc output ở kích thước lớn.</p>
+    </div>
+  </header>
+
+  <section class="aggregate shell" aria-labelledby="aggregate-title">
+    <div class="aggregate__intro">
+      <p class="eyebrow">TOÀN BỘ BỘ MẪU</p>
+      <h2 id="aggregate-title">Điểm trung bình</h2>
+      <p>Đây là phép đo trên bộ 90 prompt này, không phải tuyên bố chất lượng tuyệt đối của model.</p>
+    </div>
+    <div class="aggregate__score aggregate__score--chatgpt"><span>ChatGPT</span><strong>{chatgptAverage.toFixed(2)}</strong><small>{winCounts.ChatGPT} thắng</small></div>
+    <div class="aggregate__score aggregate__score--gemini"><span>Gemini</span><strong>{geminiAverage.toFixed(2)}</strong><small>{winCounts.Gemini} thắng</small></div>
+    <div class="aggregate__ties"><strong>{winCounts.Hòa}</strong><span>kết quả hòa<br />trong biên độ 0,25</span></div>
+  </section>
+
+  <section class="compare-workbench" aria-labelledby="workbench-title">
+    <div class="compare-toolbar shell">
+      <div>
+        <label for="compare-style">Phong cách đang xem</label>
+        <select id="compare-style" data-compare-select>
+          {styles.map((style) => <option value={style.slug} selected={style.slug === initial.slug}>{String(style.id).padStart(3, "0")} — {style.name}</option>)}
+        </select>
+      </div>
+      <div class="compare-toolbar__pager" aria-label="Điều hướng phong cách">
+        <button type="button" class="button button--ghost" data-compare-prev aria-label="Phong cách trước">← Trước</button>
+        <button type="button" class="button button--ghost" data-compare-next>Tiếp →</button>
+      </div>
+    </div>
+
+    <div class="shell workbench-title">
+      <div><p class="eyebrow" data-compare-meta>{initial.family} / {String(initial.id).padStart(3, "0")}</p><h2 id="workbench-title" data-compare-name>{initial.name}</h2></div>
+      <a class="button button--primary" data-compare-detail href={`/styles/${initial.slug}/`}>Xem prompt đầy đủ <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <div class="shell compare-stage">
+      <figure class="compare-stage__side compare-stage__side--chatgpt">
+        <div><img data-compare-image="chatgpt" src={initial.images.chatgpt.full} width={initial.images.chatgpt.width} height={initial.images.chatgpt.height} alt={`${initial.name}: kết quả ChatGPT.`} fetchpriority="high" /></div>
+        <figcaption><span>CHATGPT</span><strong data-compare-average="chatgpt">{initial.scores.chatgpt.average.toFixed(2)}</strong></figcaption>
+      </figure>
+      <figure class="compare-stage__side compare-stage__side--gemini">
+        <div><img data-compare-image="gemini" src={initial.images.gemini.full} width={initial.images.gemini.width} height={initial.images.gemini.height} alt={`${initial.name}: kết quả Gemini.`} fetchpriority="high" /></div>
+        <figcaption><span>GEMINI / GFLOW-CLI</span><strong data-compare-average="gemini">{initial.scores.gemini.average.toFixed(2)}</strong></figcaption>
+      </figure>
+      <span class="compare-stage__seam" aria-hidden="true">VS</span>
+    </div>
+
+    <div class="shell compare-reading">
+      <div class="compare-reading__note">
+        <p class="eyebrow">NHẬN XÉT</p>
+        <h3 data-compare-winner>{initial.winner === "Hòa" ? "Hòa trong biên độ 0,25" : `${initial.winner} nhỉnh hơn`}</h3>
+        <p data-compare-observation>{initial.observation}</p>
+      </div>
+      <div class="compare-score-table" data-compare-scores>
+        <div class="compare-score-table__head"><span>Tiêu chí</span><span>ChatGPT</span><span>Gemini</span></div>
+        {scoreLabels.map(([key, label]) => (
+          <div class="compare-score-table__row" data-score-key={key}>
+            <span>{label}</span><strong data-score-provider="chatgpt">{initial.scores.chatgpt[key].toFixed(1)}</strong><strong data-score-provider="gemini">{initial.scores.gemini[key].toFixed(1)}</strong>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="compare-method shell">
+    <p><b>Cách đọc:</b> điểm 1–10 do cùng một quy trình đánh giá có cấu trúc. Chênh lệch nhỏ hơn 0,25 được xem là hòa.</p>
+    <a href="/methodology/">Xem phương pháp và giới hạn <span aria-hidden="true">→</span></a>
+  </section>
+
+  <script is:inline id="compare-data" type="application/json" set:html={compareData}></script>
+  <script>
+    type CompareStyle = (typeof import("../data/styles.json"))[number];
+    const dataNode = document.querySelector<HTMLScriptElement>("#compare-data");
+    const records = JSON.parse(dataNode?.textContent ?? "[]") as CompareStyle[];
+    const select = document.querySelector<HTMLSelectElement>("[data-compare-select]");
+
+    function render(slug: string, sync = true) {
+      const style = records.find((item) => item.slug === slug) ?? records[0];
+      if (!style || !select) return;
+      select.value = style.slug;
+      const meta = document.querySelector<HTMLElement>("[data-compare-meta]");
+      const name = document.querySelector<HTMLElement>("[data-compare-name]");
+      const detail = document.querySelector<HTMLAnchorElement>("[data-compare-detail]");
+      const winner = document.querySelector<HTMLElement>("[data-compare-winner]");
+      const observation = document.querySelector<HTMLElement>("[data-compare-observation]");
+      if (meta) meta.textContent = `${style.family} / ${String(style.id).padStart(3, "0")}`;
+      if (name) name.textContent = style.name;
+      if (detail) detail.href = `/styles/${style.slug}/`;
+      if (winner) winner.textContent = style.winner === "Hòa" ? "Hòa trong biên độ 0,25" : `${style.winner} nhỉnh hơn`;
+      if (observation) observation.textContent = style.observation;
+      (["chatgpt", "gemini"] as const).forEach((provider) => {
+        const image = document.querySelector<HTMLImageElement>(`[data-compare-image="${provider}"]`);
+        const average = document.querySelector<HTMLElement>(`[data-compare-average="${provider}"]`);
+        if (image) {
+          image.src = style.images[provider].full;
+          image.width = style.images[provider].width;
+          image.height = style.images[provider].height;
+          image.alt = `${style.name}: kết quả ${provider === "chatgpt" ? "ChatGPT" : "Gemini"}.`;
+        }
+        if (average) average.textContent = style.scores[provider].average.toFixed(2);
+      });
+      document.querySelectorAll<HTMLElement>("[data-score-key]").forEach((row) => {
+        const key = row.dataset.scoreKey as keyof Omit<CompareStyle["scores"]["chatgpt"], "average">;
+        (["chatgpt", "gemini"] as const).forEach((provider) => {
+          const cell = row.querySelector<HTMLElement>(`[data-score-provider="${provider}"]`);
+          if (cell) cell.textContent = style.scores[provider][key].toFixed(1);
+        });
+      });
+      if (sync) history.replaceState(null, "", `${location.pathname}?style=${style.slug}`);
+    }
+
+    const requested = new URLSearchParams(location.search).get("style");
+    render(requested ?? select?.value ?? records[0]?.slug, false);
+    select?.addEventListener("change", () => render(select.value));
+    document.querySelector("[data-compare-prev]")?.addEventListener("click", () => {
+      if (!select) return;
+      const index = Math.max(0, records.findIndex((item) => item.slug === select.value));
+      render(records[(index - 1 + records.length) % records.length].slug);
+    });
+    document.querySelector("[data-compare-next]")?.addEventListener("click", () => {
+      if (!select) return;
+      const index = Math.max(0, records.findIndex((item) => item.slug === select.value));
+      render(records[(index + 1) % records.length].slug);
+    });
+  </script>
+</BaseLayout>

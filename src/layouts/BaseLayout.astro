@@ -1,0 +1,66 @@
+---
+import "@fontsource-variable/instrument-sans";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/600.css";
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+type Props = {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  image?: string;
+  bodyClass?: string;
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+};
+
+const {
+  title = "Prompt Atlas — 90 phong cách tạo ảnh AI | LDKTech",
+  description = "So sánh ChatGPT và Gemini qua 90 prompt tạo ảnh, xem 180 output thực tế và tìm phong cách phù hợp cho dự án của bạn.",
+  canonicalPath = Astro.url.pathname,
+  image = "/media/og-cover.webp",
+  bodyClass = "",
+  jsonLd,
+} = Astro.props;
+
+const canonical = new URL(canonicalPath, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#121311" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:site_name" content="Prompt Atlas by LDKTech" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <title>{title}</title>
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
+    <SiteHeader />
+    <main id="main-content">
+      <slot />
+    </main>
+    <SiteFooter />
+    <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+    <script src="../scripts/global.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+---
+import type { StyleRecord } from "../lib/styles";
+import { paddedId, winnerLabel } from "../lib/styles";
+import FavoriteButton from "./FavoriteButton.astro";
+
+type Props = { style: StyleRecord; eager?: boolean };
+const { style, eager = false } = Astro.props;
+const searchText = [style.name, style.title, style.subtitle, style.family, style.summary, style.sourcePrompt, ...style.cues]
+  .join(" ")
+  .toLocaleLowerCase("vi");
+---
+
+<article
+  class="style-card"
+  data-style-card
+  data-slug={style.slug}
+  data-family={style.family}
+  data-search={searchText}
+>
+  <a class="style-card__link" href={`/styles/${style.slug}/`} aria-label={`Xem phong cách ${style.name}`}>
+    <div class="pair-visual">
+      <figure class="pair-visual__side pair-visual__side--chatgpt">
+        <img
+          src={style.images.chatgpt.thumb}
+          width="560"
+          height="373"
+          alt={`${style.name} — ${style.sourcePrompt}, kết quả ChatGPT.`}
+          loading={eager ? "eager" : "lazy"}
+          fetchpriority={eager ? "high" : "auto"}
+          decoding="async"
+        />
+        <figcaption>CHATGPT</figcaption>
+      </figure>
+      <figure class="pair-visual__side pair-visual__side--gemini">
+        <img
+          src={style.images.gemini.thumb}
+          width="560"
+          height="373"
+          alt={`${style.name} — ${style.sourcePrompt}, kết quả Gemini.`}
+          loading={eager ? "eager" : "lazy"}
+          fetchpriority={eager ? "high" : "auto"}
+          decoding="async"
+        />
+        <figcaption>GEMINI</figcaption>
+      </figure>
+      <span class="pair-visual__score" aria-hidden="true">{style.scores.chatgpt.average.toFixed(1)} / {style.scores.gemini.average.toFixed(1)}</span>
+    </div>
+    <div class="style-card__body">
+      <div class="style-card__meta">
+        <span>{paddedId(style.id)}</span>
+        <span>{style.family}</span>
+      </div>
+      <h2>{style.name}</h2>
+      <p>{style.subtitle}</p>
+      <div class="style-card__verdict">
+        <span class:list={["winner-dot", `winner-dot--${style.winner.toLowerCase().replace("ò", "o")}`]} aria-hidden="true"></span>
+        {winnerLabel(style.winner)}
+      </div>
+    </div>
+  </a>
+  <FavoriteButton slug={style.slug} name={style.name} compact />
+</article>
+

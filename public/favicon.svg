@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Prompt Atlas">
+  <rect width="64" height="64" fill="#121311"/>
+  <rect x="8" y="8" width="22" height="48" fill="#C94828"/>
+  <rect x="34" y="8" width="22" height="48" fill="#3157FF"/>
+  <path d="M32 5v54" stroke="#D8FF45" stroke-width="4"/>
+  <circle cx="32" cy="32" r="8" fill="#D8FF45" stroke="#121311" stroke-width="3"/>
+</svg>
+

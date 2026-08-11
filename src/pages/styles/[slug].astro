@@ -1,0 +1,104 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FavoriteButton from "../../components/FavoriteButton.astro";
+import PairCard from "../../components/PairCard.astro";
+import PromptBlock from "../../components/PromptBlock.astro";
+import ScoreRail from "../../components/ScoreRail.astro";
+import { paddedId, styleBySlug, styles, winnerLabel, type StyleRecord } from "../../lib/styles";
+
+export function getStaticPaths() {
+  return styles.map((style) => ({ params: { slug: style.slug }, props: { style } }));
+}
+
+type Props = { style: StyleRecord };
+const { style } = Astro.props;
+const related = style.related.map(styleBySlug).filter((item): item is StyleRecord => Boolean(item));
+const description = `${style.name}: xem cùng prompt qua ChatGPT và Gemini, điểm chi tiết và prompt có thể sao chép.`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: `${style.name} — Prompt Atlas`,
+  description,
+  url: `https://image-styles.ldktech.com/styles/${style.slug}/`,
+  image: [
+    `https://image-styles.ldktech.com${style.images.chatgpt.full}`,
+    `https://image-styles.ldktech.com${style.images.gemini.full}`,
+  ],
+  isPartOf: { "@type": "CollectionPage", name: "Prompt Atlas" },
+};
+---
+
+<BaseLayout
+  title={`${style.name}: ChatGPT vs Gemini | Prompt Atlas`}
+  description={description}
+  canonicalPath={`/styles/${style.slug}/`}
+  image={style.images.chatgpt.full}
+  bodyClass="detail-page"
+  jsonLd={jsonLd}
+>
+  <article>
+    <header class="detail-hero shell">
+      <nav class="breadcrumb" aria-label="Đường dẫn">
+        <a href="/">Atlas</a><span aria-hidden="true">/</span><span>{paddedId(style.id)}</span>
+      </nav>
+      <div class="detail-hero__grid">
+        <div>
+          <p class="eyebrow">{style.family} / PHONG CÁCH {paddedId(style.id)}</p>
+          <h1>{style.name}</h1>
+          <p class="detail-hero__subtitle">{style.subtitle}</p>
+        </div>
+        <div class="detail-hero__summary">
+          <p>{style.summary}</p>
+          <ul aria-label="Dấu hiệu nhận biết">
+            {style.cues.map((cue) => <li>{cue}</li>)}
+          </ul>
+          <div class="detail-hero__actions">
+            <FavoriteButton slug={style.slug} name={style.name} />
+            <a class="button button--ghost" href={`/compare/?style=${style.slug}`}>Mở bàn so sánh <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="detail-specimens" aria-labelledby="specimen-title">
+      <div class="shell detail-specimens__head">
+        <div><p class="eyebrow">CÙNG MỘT PROMPT</p><h2 id="specimen-title">Hai cách diễn giải.</h2></div>
+        <p>Ảnh được hiển thị trọn khung, không crop, để bạn đọc bố cục và artifact chính xác hơn.</p>
+      </div>
+      <div class="shell specimen-grid">
+        <figure class="specimen specimen--chatgpt">
+          <div class="specimen__image"><img src={style.images.chatgpt.full} width={style.images.chatgpt.width} height={style.images.chatgpt.height} alt={`${style.name}: kết quả tạo bởi ChatGPT.`} fetchpriority="high" /></div>
+          <figcaption><span>CHATGPT</span><strong>{style.scores.chatgpt.average.toFixed(2)}</strong></figcaption>
+        </figure>
+        <figure class="specimen specimen--gemini">
+          <div class="specimen__image"><img src={style.images.gemini.full} width={style.images.gemini.width} height={style.images.gemini.height} alt={`${style.name}: kết quả tạo bởi Gemini.`} fetchpriority="high" /></div>
+          <figcaption><span>GEMINI / GFLOW-CLI</span><strong>{style.scores.gemini.average.toFixed(2)}</strong></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="detail-evaluation shell" aria-labelledby="evaluation-title">
+      <div class="detail-evaluation__verdict">
+        <p class="eyebrow">KẾT LUẬN MẪU NÀY</p>
+        <h2 id="evaluation-title">{winnerLabel(style.winner)}</h2>
+        <p>{style.observation}</p>
+        <span class:list={["verdict-stamp", `verdict-stamp--${style.winner === "Hòa" ? "hoa" : style.winner.toLowerCase()}`]}>{style.winner}</span>
+      </div>
+      <ScoreRail scores={style.scores} />
+    </section>
+
+    <div class="shell detail-prompt-wrap">
+      <PromptBlock sourcePrompt={style.sourcePrompt} generationPrompt={style.generationPrompt} id={`prompt-${style.slug}`} />
+    </div>
+
+    <section class="related-section shell" aria-labelledby="related-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">TIẾP TỤC KHÁM PHÁ</p><h2 id="related-title">Phong cách cùng mạch.</h2></div>
+        <a href="/#atlas">Xem đủ 90 phong cách <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="style-grid style-grid--related">
+        {related.map((item) => <PairCard style={item} />)}
+      </div>
+    </section>
+  </article>
+</BaseLayout>

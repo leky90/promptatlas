@@ -1,0 +1,4949 @@
+[
+  {
+    "id": 1,
+    "slug": "glitch-art",
+    "name": "Glitch Art",
+    "title": "Glitch Art (Nghệ thuật nhiễu)",
+    "subtitle": "Nghệ thuật nhiễu",
+    "family": "Kỹ thuật số",
+    "summary": "Nhiễu số có chủ đích, lệch kênh màu và nhịp quét như màn hình lỗi.",
+    "cues": [
+      "RGB split",
+      "scanline",
+      "digital displacement"
+    ],
+    "sourcePrompt": "A beautiful adult female gamer looks directly into the camera.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A beautiful adult female gamer looks directly into the camera.\nStyle/medium: Glitch Art (Nghệ thuật nhiễu). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/glitch-art-chatgpt.webp",
+        "thumb": "/media/thumbs/glitch-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/glitch-art-gemini.webp",
+        "thumb": "/media/thumbs/glitch-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 8,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 8.8
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "GFlow thể hiện thao tác chơi game rõ hơn; OpenAI có ánh sáng và gương mặt sạch hơn.",
+    "related": [
+      "cyberpunk",
+      "vaporwave",
+      "lego"
+    ]
+  },
+  {
+    "id": 2,
+    "slug": "art-deco-revival",
+    "name": "Art Deco Revival",
+    "title": "Art Deco Revival (nghệ thuật trang trí từ 1920s)",
+    "subtitle": "nghệ thuật trang trí từ 1920s",
+    "family": "Minh họa",
+    "summary": "Hình học đối xứng, vật liệu sang trọng và nhịp trang trí của thập niên 1920.",
+    "cues": [
+      "gold geometry",
+      "symmetry",
+      "luxury"
+    ],
+    "sourcePrompt": "A luxury hotel lobby with gold geometric lines.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A luxury hotel lobby with gold geometric lines.\nStyle/medium: Art Deco Revival (nghệ thuật trang trí từ 1920s). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/art-deco-revival-chatgpt.webp",
+        "thumb": "/media/thumbs/art-deco-revival-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/art-deco-revival-gemini.webp",
+        "thumb": "/media/thumbs/art-deco-revival-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Art Deco Revival cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "pop-surrealism",
+      "risograph",
+      "anime"
+    ]
+  },
+  {
+    "id": 3,
+    "slug": "pop-surrealism",
+    "name": "Pop Surrealism",
+    "title": "Pop Surrealism (giao thoa giữa nghệ thuật đại chúng và chủ nghĩa siêu thực)",
+    "subtitle": "giao thoa giữa nghệ thuật đại chúng và chủ nghĩa siêu thực",
+    "family": "Minh họa",
+    "summary": "Nhân vật đại chúng gặp tỷ lệ mộng mị và những vật thể phi lý.",
+    "cues": [
+      "big eyes",
+      "dream logic",
+      "polished surrealism"
+    ],
+    "sourcePrompt": "A young adult Vietnamese woman with big eyes holding a floating fish.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A young adult Vietnamese woman with big eyes holding a floating fish.\nStyle/medium: Pop Surrealism (giao thoa giữa nghệ thuật đại chúng và chủ nghĩa siêu thực). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/pop-surrealism-chatgpt.webp",
+        "thumb": "/media/thumbs/pop-surrealism-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/pop-surrealism-gemini.webp",
+        "thumb": "/media/thumbs/pop-surrealism-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 9,
+        "styleFidelity": 8,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 8.8
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "Hòa",
+    "observation": "GFlow đẩy mắt lớn và tính siêu thực rõ hơn; OpenAI giàu chất hội họa hơn.",
+    "related": [
+      "art-deco-revival",
+      "risograph",
+      "anime"
+    ]
+  },
+  {
+    "id": 4,
+    "slug": "risograph",
+    "name": "Risograph",
+    "title": "Risograph (kỹ thuật in máy đặc biệt đến từ Nhật)",
+    "subtitle": "kỹ thuật in máy đặc biệt đến từ Nhật",
+    "family": "Minh họa",
+    "summary": "Màu in giới hạn, hạt giấy và độ lệch mực tạo cảm giác thủ công.",
+    "cues": [
+      "limited inks",
+      "paper grain",
+      "misregistration"
+    ],
+    "sourcePrompt": "A vintage space travel poster. (Áp phích du lịch không gian mang phong cách in ấn cổ điển.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A vintage space travel poster. (Áp phích du lịch không gian mang phong cách in ấn cổ điển.)\nStyle/medium: Risograph (kỹ thuật in máy đặc biệt đến từ Nhật). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/risograph-chatgpt.webp",
+        "thumb": "/media/thumbs/risograph-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/risograph-gemini.webp",
+        "thumb": "/media/thumbs/risograph-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Risograph cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "pop-surrealism",
+      "anime",
+      "art-deco-revival"
+    ]
+  },
+  {
+    "id": 5,
+    "slug": "anime",
+    "name": "Anime",
+    "title": "Anime (phong cách hoạt hình nổi tiếng của Nhật)",
+    "subtitle": "phong cách hoạt hình nổi tiếng của Nhật",
+    "family": "Minh họa",
+    "summary": "Nét viền rõ, biểu cảm lớn và màu phẳng giàu ánh sáng.",
+    "cues": [
+      "clean linework",
+      "expressive eyes",
+      "cel color"
+    ],
+    "sourcePrompt": "A cute young adult woman looking straight into the frame. (một cô gái dễ thương nhìn thẳng vào khung hình)",
+    "generationPrompt": "Use case: illustration-story\nAsset type: image style catalog sample\nPrimary request: A cute young adult woman looking straight into the frame. (một cô gái dễ thương nhìn thẳng vào khung hình)\nStyle/medium: Anime (phong cách hoạt hình nổi tiếng của Nhật). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/anime-chatgpt.webp",
+        "thumb": "/media/thumbs/anime-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/anime-gemini.webp",
+        "thumb": "/media/thumbs/anime-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 9,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Anime cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "risograph",
+      "pop-surrealism",
+      "art-deco-revival"
+    ]
+  },
+  {
+    "id": 6,
+    "slug": "puppet",
+    "name": "Puppet",
+    "title": "Puppet (phong cách lấy cảm hứng từ đồ vải len)",
+    "subtitle": "phong cách lấy cảm hứng từ đồ vải len",
+    "family": "Thủ công",
+    "summary": "Nhân vật như rối vải với đường may, len nỉ và tỷ lệ thân thiện.",
+    "cues": [
+      "felt texture",
+      "visible seams",
+      "puppet proportions"
+    ],
+    "sourcePrompt": "A cute bear made of felt fabric (Chú gấu dễ thương được làm bằng vải nỉ)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A cute bear made of felt fabric (Chú gấu dễ thương được làm bằng vải nỉ)\nStyle/medium: Puppet (phong cách lấy cảm hứng từ đồ vải len). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/puppet-chatgpt.webp",
+        "thumb": "/media/thumbs/puppet-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/puppet-gemini.webp",
+        "thumb": "/media/thumbs/puppet-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Puppet cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "origami",
+      "claymation",
+      "paper-cut-craft"
+    ]
+  },
+  {
+    "id": 7,
+    "slug": "origami",
+    "name": "Origami",
+    "title": "Origami (Kỹ thuật gấp giấy của Nhật)",
+    "subtitle": "Kỹ thuật gấp giấy của Nhật",
+    "family": "Thủ công",
+    "summary": "Chủ thể được cấu tạo từ nếp gấp giấy và mặt phẳng sắc.",
+    "cues": [
+      "paper folds",
+      "faceted silhouette",
+      "clean background"
+    ],
+    "sourcePrompt": "A dragonfly flying in the sky (Con chuồn chuồn bay trên bầu trời)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A dragonfly flying in the sky (Con chuồn chuồn bay trên bầu trời)\nStyle/medium: Origami (Kỹ thuật gấp giấy của Nhật). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/origami-chatgpt.webp",
+        "thumb": "/media/thumbs/origami-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/origami-gemini.webp",
+        "thumb": "/media/thumbs/origami-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Origami cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "puppet",
+      "claymation",
+      "paper-cut-craft"
+    ]
+  },
+  {
+    "id": 8,
+    "slug": "cyberpunk",
+    "name": "Cyberpunk",
+    "title": "Cyberpunk (Tương lai công nghệ)",
+    "subtitle": "Tương lai công nghệ",
+    "family": "Kỹ thuật số",
+    "summary": "Đô thị tương lai, neon, mưa và công nghệ dày đặc trong bóng tối.",
+    "cues": [
+      "neon rain",
+      "future city",
+      "high contrast"
+    ],
+    "sourcePrompt": "A rainy street with neon signs and flying cars (Phố mưa với biển hiệu neon và xe bay)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A rainy street with neon signs and flying cars (Phố mưa với biển hiệu neon và xe bay)\nStyle/medium: Cyberpunk (Tương lai công nghệ). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/cyberpunk-chatgpt.webp",
+        "thumb": "/media/thumbs/cyberpunk-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/cyberpunk-gemini.webp",
+        "thumb": "/media/thumbs/cyberpunk-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Cyberpunk cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "vaporwave",
+      "lego",
+      "glitch-art"
+    ]
+  },
+  {
+    "id": 9,
+    "slug": "watercolor",
+    "name": "Watercolor",
+    "title": "Watercolor (Màu nước)",
+    "subtitle": "Màu nước",
+    "family": "Hội họa",
+    "summary": "Lớp màu trong, mép loang và khoảng trắng tự nhiên của giấy.",
+    "cues": [
+      "transparent wash",
+      "soft blooms",
+      "paper texture"
+    ],
+    "sourcePrompt": "A soft landscape of a lake at sunrise (Phong cảnh hồ nước êm đềm lúc bình minh.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A soft landscape of a lake at sunrise (Phong cảnh hồ nước êm đềm lúc bình minh.)\nStyle/medium: Watercolor (Màu nước). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/watercolor-chatgpt.webp",
+        "thumb": "/media/thumbs/watercolor-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/watercolor-gemini.webp",
+        "thumb": "/media/thumbs/watercolor-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Watercolor cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "art-nouveau",
+      "oil-painting",
+      "baroque"
+    ]
+  },
+  {
+    "id": 10,
+    "slug": "claymation",
+    "name": "Claymation",
+    "title": "Claymation (Hoạt hình đất sét)",
+    "subtitle": "Hoạt hình đất sét",
+    "family": "Thủ công",
+    "summary": "Hình khối đất sét, dấu tay nhẹ và chuyển động stop-motion vui nhộn.",
+    "cues": [
+      "clay texture",
+      "stop motion",
+      "playful motion"
+    ],
+    "sourcePrompt": "A funny dog chasing a ball. (Chú chó vui nhộn đang đuổi bắt bóng)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A funny dog chasing a ball. (Chú chó vui nhộn đang đuổi bắt bóng)\nStyle/medium: Claymation (Hoạt hình đất sét). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/claymation-chatgpt.webp",
+        "thumb": "/media/thumbs/claymation-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/claymation-gemini.webp",
+        "thumb": "/media/thumbs/claymation-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Claymation cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "origami",
+      "puppet",
+      "paper-cut-craft"
+    ]
+  },
+  {
+    "id": 11,
+    "slug": "fantasy-storybook",
+    "name": "Fantasy Storybook",
+    "title": "Fantasy Storybook (Truyện cổ tích)",
+    "subtitle": "Truyện cổ tích",
+    "family": "Minh họa",
+    "summary": "Minh họa kể chuyện với phép màu, hình khối thân thiện và ánh sáng mơ mộng.",
+    "cues": [
+      "storybook line",
+      "magic",
+      "gentle palette"
+    ],
+    "sourcePrompt": "A magical castle in the clouds. (Tòa lâu đài phép thuật nằm giữa những đám mây.)",
+    "generationPrompt": "Use case: illustration-story\nAsset type: image style catalog sample\nPrimary request: A magical castle in the clouds. (Tòa lâu đài phép thuật nằm giữa những đám mây.)\nStyle/medium: Fantasy Storybook (Truyện cổ tích). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/fantasy-storybook-chatgpt.webp",
+        "thumb": "/media/thumbs/fantasy-storybook-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/fantasy-storybook-gemini.webp",
+        "thumb": "/media/thumbs/fantasy-storybook-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 8,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "GFlow giống minh họa sách truyện hơn; OpenAI có quy mô và chiều sâu nổi bật.",
+    "related": [
+      "illustration",
+      "anime",
+      "typography-art"
+    ]
+  },
+  {
+    "id": 12,
+    "slug": "vaporwave",
+    "name": "Vaporwave",
+    "title": "Vaporwave (        ＡＥＳＴＨＥＴＩＣ - Thẩm mỹ 1990s)",
+    "subtitle": "ＡＥＳＴＨＥＴＩＣ - Thẩm mỹ 1990s",
+    "family": "Kỹ thuật số",
+    "summary": "Hoài niệm máy tính 1990s, hồng–tím, lưới phối cảnh và mặt trời retro.",
+    "cues": [
+      "pink cyan",
+      "grid horizon",
+      "retro computer"
+    ],
+    "sourcePrompt": "A retro computer on a pink beach.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A retro computer on a pink beach.\nStyle/medium: Vaporwave (        ＡＥＳＴＨＥＴＩＣ - Thẩm mỹ 1990s). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/vaporwave-chatgpt.webp",
+        "thumb": "/media/thumbs/vaporwave-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/vaporwave-gemini.webp",
+        "thumb": "/media/thumbs/vaporwave-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Vaporwave cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "lego",
+      "cyberpunk",
+      "xeno-art"
+    ]
+  },
+  {
+    "id": 13,
+    "slug": "lego",
+    "name": "LEGO",
+    "title": "LEGO",
+    "subtitle": "LEGO",
+    "family": "Kỹ thuật số",
+    "summary": "Mọi bề mặt được lắp từ khối đồ chơi có chốt nối và tỷ lệ mô hình.",
+    "cues": [
+      "toy bricks",
+      "studs",
+      "diorama"
+    ],
+    "sourcePrompt": "A bustling city street built as an interlocking toy-brick diorama.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A bustling city street built as an interlocking toy-brick diorama.\nStyle/medium: interlocking plastic toy-brick miniature diorama aesthetic, clean studs, block-built architecture, playful physical materials. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/lego-chatgpt.webp",
+        "thumb": "/media/thumbs/lego-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/lego-gemini.webp",
+        "thumb": "/media/thumbs/lego-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "LEGO cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "vaporwave",
+      "cyberpunk",
+      "xeno-art"
+    ]
+  },
+  {
+    "id": 14,
+    "slug": "art-nouveau",
+    "name": "Art Nouveau",
+    "title": "Art Nouveau (Tân nghệ thuật)",
+    "subtitle": "Tân nghệ thuật",
+    "family": "Hội họa",
+    "summary": "Đường cong hữu cơ, tóc chảy và hoa văn bao khung giàu trang trí.",
+    "cues": [
+      "whiplash curves",
+      "floral frame",
+      "ornament"
+    ],
+    "sourcePrompt": "A woman with flowing hair and floral patterns.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A woman with flowing hair and floral patterns.\nStyle/medium: Art Nouveau (Tân nghệ thuật). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/art-nouveau-chatgpt.webp",
+        "thumb": "/media/thumbs/art-nouveau-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/art-nouveau-gemini.webp",
+        "thumb": "/media/thumbs/art-nouveau-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Art Nouveau cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "oil-painting",
+      "watercolor",
+      "baroque"
+    ]
+  },
+  {
+    "id": 15,
+    "slug": "illustration",
+    "name": "Illustration",
+    "title": "Illustration (Tranh minh họa)",
+    "subtitle": "Tranh minh họa",
+    "family": "Minh họa",
+    "summary": "Tranh minh họa tập trung vào hình, bảng màu và nét cọ có chủ đích.",
+    "cues": [
+      "editorial figure",
+      "controlled palette",
+      "painted marks"
+    ],
+    "sourcePrompt": "A portrait of A young adult woman with yellow hair. (Chân dung một cô gái tóc vàng.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A portrait of A young adult woman with yellow hair. (Chân dung một cô gái tóc vàng.)\nStyle/medium: Illustration (Tranh minh họa). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/illustration-chatgpt.webp",
+        "thumb": "/media/thumbs/illustration-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/illustration-gemini.webp",
+        "thumb": "/media/thumbs/illustration-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 8,
+        "composition": 7,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Illustration cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "typography-art",
+      "one-line-drawing",
+      "fantasy-storybook"
+    ]
+  },
+  {
+    "id": 16,
+    "slug": "oil-painting",
+    "name": "Oil Painting",
+    "title": "Oil Painting (Tranh sơn dầu)",
+    "subtitle": "Tranh sơn dầu",
+    "family": "Hội họa",
+    "summary": "Lớp sơn dày, ánh sáng cổ điển và bề mặt canvas tạo chiều sâu.",
+    "cues": [
+      "oil impasto",
+      "classical light",
+      "canvas"
+    ],
+    "sourcePrompt": "A beautiful Vietnamese girl from the feudal era.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A beautiful Vietnamese girl from the feudal era.\nStyle/medium: Oil Painting (Tranh sơn dầu). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/oil-painting-chatgpt.webp",
+        "thumb": "/media/thumbs/oil-painting-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/oil-painting-gemini.webp",
+        "thumb": "/media/thumbs/oil-painting-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Oil Painting cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "art-nouveau",
+      "watercolor",
+      "baroque"
+    ]
+  },
+  {
+    "id": 17,
+    "slug": "typography-art",
+    "name": "Typography Art",
+    "title": "Typography Art (Nghệ thuật chữ)",
+    "subtitle": "Nghệ thuật chữ",
+    "family": "Minh họa",
+    "summary": "Chữ hoặc con số trở thành hình ảnh, vừa đọc được vừa mang tính biểu tượng.",
+    "cues": [
+      "letterform image",
+      "readability",
+      "visual metaphor"
+    ],
+    "sourcePrompt": "The number 2026 is stylized with the image of a horse.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: The number 2026 is stylized with the image of a horse.\nStyle/medium: Typography Art (Nghệ thuật chữ). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/typography-art-chatgpt.webp",
+        "thumb": "/media/thumbs/typography-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/typography-art-gemini.webp",
+        "thumb": "/media/thumbs/typography-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 8,
+        "styleFidelity": 8,
+        "composition": 7,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 7.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "OpenAI giữ số 2026 dễ đọc và biến nét số thành hình ngựa thuyết phục hơn.",
+    "related": [
+      "one-line-drawing",
+      "illustration",
+      "scandinavian"
+    ]
+  },
+  {
+    "id": 18,
+    "slug": "one-line-drawing",
+    "name": "One Line Drawing",
+    "title": "One Line Drawing (Vẽ một nét)",
+    "subtitle": "Vẽ một nét",
+    "family": "Minh họa",
+    "summary": "Một đường liên tục tối giản tạo toàn bộ chân dung hoặc vật thể.",
+    "cues": [
+      "continuous line",
+      "negative space",
+      "minimalism"
+    ],
+    "sourcePrompt": "A serene face drawn with a continuous line.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A serene face drawn with a continuous line.\nStyle/medium: One Line Drawing (Vẽ một nét). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/one-line-drawing-chatgpt.webp",
+        "thumb": "/media/thumbs/one-line-drawing-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/one-line-drawing-gemini.webp",
+        "thumb": "/media/thumbs/one-line-drawing-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "One Line Drawing cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "typography-art",
+      "scandinavian",
+      "illustration"
+    ]
+  },
+  {
+    "id": 19,
+    "slug": "scandinavian",
+    "name": "Scandinavian",
+    "title": "Scandinavian (Bắc Âu tối giản)",
+    "subtitle": "Bắc Âu tối giản",
+    "family": "Minh họa",
+    "summary": "Không gian sáng, gỗ nhạt, công năng rõ và trang trí tiết chế.",
+    "cues": [
+      "light wood",
+      "bright neutral",
+      "functional calm"
+    ],
+    "sourcePrompt": "A minimalist living room with bright colors. (Phòng khách tối giản với tông màu sáng.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A minimalist living room with bright colors. (Phòng khách tối giản với tông màu sáng.)\nStyle/medium: Scandinavian (Bắc Âu tối giản). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/scandinavian-chatgpt.webp",
+        "thumb": "/media/thumbs/scandinavian-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/scandinavian-gemini.webp",
+        "thumb": "/media/thumbs/scandinavian-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Scandinavian cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "one-line-drawing",
+      "typography-art",
+      "illustration"
+    ]
+  },
+  {
+    "id": 20,
+    "slug": "xeno-art",
+    "name": "Xeno-Art",
+    "title": "Xeno-Art (Sinh vật ngoài hành tinh)",
+    "subtitle": "Sinh vật ngoài hành tinh",
+    "family": "Kỹ thuật số",
+    "summary": "Sinh vật hoặc thực vật xa lạ với phát quang sinh học và cấu trúc ngoài Trái Đất.",
+    "cues": [
+      "alien biology",
+      "bioluminescence",
+      "strange anatomy"
+    ],
+    "sourcePrompt": "A strange glowing plant inside Son Doong cave.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A strange glowing plant inside Son Doong cave.\nStyle/medium: Xeno-Art (Sinh vật ngoài hành tinh). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/xeno-art-chatgpt.webp",
+        "thumb": "/media/thumbs/xeno-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/xeno-art-gemini.webp",
+        "thumb": "/media/thumbs/xeno-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 8,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Xeno-Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "lego",
+      "vaporwave",
+      "steampunk"
+    ]
+  },
+  {
+    "id": 21,
+    "slug": "paper-cut-craft",
+    "name": "Paper Cut Craft",
+    "title": "Paper Cut Craft (Cắt giấy thủ công)",
+    "subtitle": "Cắt giấy thủ công",
+    "family": "Thủ công",
+    "summary": "Các lớp giấy cắt chồng lên nhau tạo tiền cảnh, trung cảnh và bóng đổ.",
+    "cues": [
+      "layered paper",
+      "cut edges",
+      "shallow depth"
+    ],
+    "sourcePrompt": "A layered landscape of mountains and deer. (Phong cảnh núi và hươu)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A layered landscape of mountains and deer. (Phong cảnh núi và hươu)\nStyle/medium: Paper Cut Craft (Cắt giấy thủ công). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/paper-cut-craft-chatgpt.webp",
+        "thumb": "/media/thumbs/paper-cut-craft-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/paper-cut-craft-gemini.webp",
+        "thumb": "/media/thumbs/paper-cut-craft-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Paper Cut Craft cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "fluid-art",
+      "mosaic",
+      "leather-work"
+    ]
+  },
+  {
+    "id": 22,
+    "slug": "fluid-art",
+    "name": "Fluid Art",
+    "title": "Fluid Art (Nghệ thuật chất lỏng)",
+    "subtitle": "Nghệ thuật chất lỏng",
+    "family": "Thủ công",
+    "summary": "Màu lỏng tự chảy thành vân, tế bào và xoáy không thể lặp lại.",
+    "cues": [
+      "fluid marbling",
+      "organic cells",
+      "flow"
+    ],
+    "sourcePrompt": "Swirling brown coffee and white condensed milk mixing together.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Swirling brown coffee and white condensed milk mixing together.\nStyle/medium: Fluid Art (Nghệ thuật chất lỏng). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/fluid-art-chatgpt.webp",
+        "thumb": "/media/thumbs/fluid-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/fluid-art-gemini.webp",
+        "thumb": "/media/thumbs/fluid-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Fluid Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "paper-cut-craft",
+      "mosaic",
+      "leather-work"
+    ]
+  },
+  {
+    "id": 23,
+    "slug": "baroque",
+    "name": "Baroque",
+    "title": "Baroque (Trào lưu nghệ thuật thế kỷ 17 bắt đầu ở Ý)",
+    "subtitle": "Trào lưu nghệ thuật thế kỷ 17 bắt đầu ở Ý",
+    "family": "Hội họa",
+    "summary": "Kịch tính, chuyển động xoáy, ánh sáng sân khấu và tương phản mạnh.",
+    "cues": [
+      "dramatic light",
+      "swirling motion",
+      "ornate scale"
+    ],
+    "sourcePrompt": "The Dragon Bridge in Da Nang with dramatic lighting and swirling clouds.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: The Dragon Bridge in Da Nang with dramatic lighting and swirling clouds.\nStyle/medium: Baroque (Trào lưu nghệ thuật thế kỷ 17 bắt đầu ở Ý). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/baroque-chatgpt.webp",
+        "thumb": "/media/thumbs/baroque-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/baroque-gemini.webp",
+        "thumb": "/media/thumbs/baroque-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Baroque cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "renaissance",
+      "gothic",
+      "expressionism"
+    ]
+  },
+  {
+    "id": 24,
+    "slug": "renaissance",
+    "name": "Renaissance",
+    "title": "Renaissance (Phục hưng)",
+    "subtitle": "Phục hưng",
+    "family": "Hội họa",
+    "summary": "Bố cục chân dung cân bằng, ánh sáng mềm và không gian phong cảnh cổ điển.",
+    "cues": [
+      "balanced portrait",
+      "sfumato",
+      "classical landscape"
+    ],
+    "sourcePrompt": "A young adult Vietnamese woman in Ao Dai holding a lotus flower, posing like Mona Lisa.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A young adult Vietnamese woman in Ao Dai holding a lotus flower, posing like Mona Lisa.\nStyle/medium: Renaissance (Phục hưng). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/renaissance-chatgpt.webp",
+        "thumb": "/media/thumbs/renaissance-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/renaissance-gemini.webp",
+        "thumb": "/media/thumbs/renaissance-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Renaissance cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "baroque",
+      "gothic",
+      "expressionism"
+    ]
+  },
+  {
+    "id": 25,
+    "slug": "mosaic",
+    "name": "Mosaic",
+    "title": "Mosaic (Tranh khảm)",
+    "subtitle": "Tranh khảm",
+    "family": "Thủ công",
+    "summary": "Hình ảnh ghép từ mảnh nhỏ, đường grout và màu vật liệu rời.",
+    "cues": [
+      "tesserae",
+      "grout lines",
+      "fragmented color"
+    ],
+    "sourcePrompt": "A Vietnamese football player is celebrating.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A Vietnamese football player is celebrating.\nStyle/medium: Mosaic (Tranh khảm). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/mosaic-chatgpt.webp",
+        "thumb": "/media/thumbs/mosaic-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/mosaic-gemini.webp",
+        "thumb": "/media/thumbs/mosaic-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.8
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Mosaic cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "fluid-art",
+      "leather-work",
+      "paper-cut-craft"
+    ]
+  },
+  {
+    "id": 26,
+    "slug": "gothic",
+    "name": "Gothic",
+    "title": "Gothic (nghệ thuật Trung cổ phát triển tại miền Bắc nước Pháp)",
+    "subtitle": "nghệ thuật Trung cổ phát triển tại miền Bắc nước Pháp",
+    "family": "Hội họa",
+    "summary": "Kiến trúc vươn cao, sương tối và cảm giác linh thiêng pha bất an.",
+    "cues": [
+      "pointed arches",
+      "mist",
+      "medieval gloom"
+    ],
+    "sourcePrompt": "Da Lat Cathedral covered in thick fog at twilight.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Da Lat Cathedral covered in thick fog at twilight.\nStyle/medium: Gothic (nghệ thuật Trung cổ phát triển tại miền Bắc nước Pháp). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/gothic-chatgpt.webp",
+        "thumb": "/media/thumbs/gothic-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/gothic-gemini.webp",
+        "thumb": "/media/thumbs/gothic-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 8,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Gothic cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "expressionism",
+      "renaissance",
+      "baroque"
+    ]
+  },
+  {
+    "id": 27,
+    "slug": "expressionism",
+    "name": "Expressionism",
+    "title": "Expressionism (Chủ nghĩa Biểu hiện)",
+    "subtitle": "Chủ nghĩa Biểu hiện",
+    "family": "Hội họa",
+    "summary": "Màu sắc và nét cọ bóp méo hiện thực để đẩy cảm xúc lên trước.",
+    "cues": [
+      "emotional distortion",
+      "urgent brushwork",
+      "charged color"
+    ],
+    "sourcePrompt": "A chaotic traffic scene in Saigon with swirling colors.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A chaotic traffic scene in Saigon with swirling colors.\nStyle/medium: Expressionism (Chủ nghĩa Biểu hiện). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/expressionism-chatgpt.webp",
+        "thumb": "/media/thumbs/expressionism-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/expressionism-gemini.webp",
+        "thumb": "/media/thumbs/expressionism-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Expressionism cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "gothic",
+      "ukiyo-e",
+      "renaissance"
+    ]
+  },
+  {
+    "id": 28,
+    "slug": "leather-work",
+    "name": "Leather Work",
+    "title": "Leather Work (Điêu khắc da thuộc)",
+    "subtitle": "Điêu khắc da thuộc",
+    "family": "Thủ công",
+    "summary": "Da thuộc dày được dập, chạm và nhuộm để tạo họa tiết nổi.",
+    "cues": [
+      "tooled leather",
+      "embossed relief",
+      "warm brown"
+    ],
+    "sourcePrompt": "An intricate floral pattern carved into thick leather.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: An intricate floral pattern carved into thick leather.\nStyle/medium: Leather Work (Điêu khắc da thuộc). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/leather-work-chatgpt.webp",
+        "thumb": "/media/thumbs/leather-work-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/leather-work-gemini.webp",
+        "thumb": "/media/thumbs/leather-work-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Leather Work cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "mosaic",
+      "fluid-art",
+      "paper-cut-craft"
+    ]
+  },
+  {
+    "id": 29,
+    "slug": "ukiyo-e",
+    "name": "Ukiyo-E",
+    "title": "Ukiyo-E (Tranh khắc gỗ Nhật)",
+    "subtitle": "Tranh khắc gỗ Nhật",
+    "family": "Hội họa",
+    "summary": "Mảng màu phẳng, đường viền khắc gỗ và sóng mây cách điệu Nhật Bản.",
+    "cues": [
+      "woodblock line",
+      "flat color",
+      "stylized waves"
+    ],
+    "sourcePrompt": "Ha Long Bay with junk boats and stylized waves.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Ha Long Bay with junk boats and stylized waves.\nStyle/medium: Ukiyo-E (Tranh khắc gỗ Nhật). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/ukiyo-e-chatgpt.webp",
+        "thumb": "/media/thumbs/ukiyo-e-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/ukiyo-e-gemini.webp",
+        "thumb": "/media/thumbs/ukiyo-e-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Ukiyo-E cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "expressionism",
+      "impressionism",
+      "gothic"
+    ]
+  },
+  {
+    "id": 30,
+    "slug": "steampunk",
+    "name": "Steampunk",
+    "title": "Steampunk (Hơi nước & Bánh răng)",
+    "subtitle": "Hơi nước & Bánh răng",
+    "family": "Kỹ thuật số",
+    "summary": "Đồng thau, bánh răng, hơi nước và cơ khí giả tưởng thời Victoria.",
+    "cues": [
+      "brass gears",
+      "steam",
+      "retro machinery"
+    ],
+    "sourcePrompt": "A futuristic cyclo powered by steam and brass gears.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A futuristic cyclo powered by steam and brass gears.\nStyle/medium: Steampunk (Hơi nước & Bánh răng). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/steampunk-chatgpt.webp",
+        "thumb": "/media/thumbs/steampunk-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/steampunk-gemini.webp",
+        "thumb": "/media/thumbs/steampunk-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Steampunk cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "pixel-art",
+      "xeno-art",
+      "neo-futurism"
+    ]
+  },
+  {
+    "id": 31,
+    "slug": "impressionism",
+    "name": "Impressionism",
+    "title": "Impressionism (Trường phái ấn tượng)",
+    "subtitle": "Trường phái ấn tượng",
+    "family": "Hội họa",
+    "summary": "Nét cọ rời ghi lại ánh sáng tức thời hơn là mô tả chi tiết tuyệt đối.",
+    "cues": [
+      "broken brushwork",
+      "atmospheric light",
+      "color shimmer"
+    ],
+    "sourcePrompt": "A sunset over the Mekong River with loose brushstrokes.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A sunset over the Mekong River with loose brushstrokes.\nStyle/medium: Impressionism (Trường phái ấn tượng). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/impressionism-chatgpt.webp",
+        "thumb": "/media/thumbs/impressionism-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/impressionism-gemini.webp",
+        "thumb": "/media/thumbs/impressionism-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Impressionism cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "ukiyo-e",
+      "pastel",
+      "dripping-paint"
+    ]
+  },
+  {
+    "id": 32,
+    "slug": "pixel-art",
+    "name": "Pixel Art",
+    "title": "Pixel Art (Nghệ thuật điểm ảnh)",
+    "subtitle": "Nghệ thuật điểm ảnh",
+    "family": "Kỹ thuật số",
+    "summary": "Hình ảnh xây từ pixel vuông, bảng màu giới hạn và nhịp game cổ điển.",
+    "cues": [
+      "hard pixels",
+      "limited palette",
+      "8-bit clarity"
+    ],
+    "sourcePrompt": "Ben Thanh Market facade in 8-bit retro game style.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Ben Thanh Market facade in 8-bit retro game style.\nStyle/medium: Pixel Art (Nghệ thuật điểm ảnh). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/pixel-art-chatgpt.webp",
+        "thumb": "/media/thumbs/pixel-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/pixel-art-gemini.webp",
+        "thumb": "/media/thumbs/pixel-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      }
+    },
+    "winner": "Hòa",
+    "observation": "Hai bên đều bám tốt kiến trúc chợ Bến Thành và ngôn ngữ pixel art.",
+    "related": [
+      "steampunk",
+      "xeno-art",
+      "neo-futurism"
+    ]
+  },
+  {
+    "id": 33,
+    "slug": "pastel",
+    "name": "Pastel",
+    "title": "Pastel (Màu phấn)",
+    "subtitle": "Màu phấn",
+    "family": "Hội họa",
+    "summary": "Bề mặt phấn mềm, màu dịu và chuyển sắc mờ như bụi pigment.",
+    "cues": [
+      "powdery color",
+      "soft edge",
+      "dreamy palette"
+    ],
+    "sourcePrompt": "A dreamy scene of Hue Imperial City with soft pink and mint colors.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A dreamy scene of Hue Imperial City with soft pink and mint colors.\nStyle/medium: Pastel (Màu phấn). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/pastel-chatgpt.webp",
+        "thumb": "/media/thumbs/pastel-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/pastel-gemini.webp",
+        "thumb": "/media/thumbs/pastel-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Pastel cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "dripping-paint",
+      "impressionism",
+      "ukiyo-e"
+    ]
+  },
+  {
+    "id": 34,
+    "slug": "dripping-paint",
+    "name": "Dripping Paint",
+    "title": "Dripping Paint (Sơn nhỏ giọt)",
+    "subtitle": "Sơn nhỏ giọt",
+    "family": "Hội họa",
+    "summary": "Sơn chảy dọc bề mặt, tạo vệt dài và cảm giác hình ảnh đang tan.",
+    "cues": [
+      "vertical drips",
+      "melting form",
+      "wet paint"
+    ],
+    "sourcePrompt": "The face of a beautiful Vietnamese woman",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: The face of a beautiful Vietnamese woman\nStyle/medium: Dripping Paint (Sơn nhỏ giọt). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/dripping-paint-chatgpt.webp",
+        "thumb": "/media/thumbs/dripping-paint-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/dripping-paint-gemini.webp",
+        "thumb": "/media/thumbs/dripping-paint-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Dripping Paint cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "pastel",
+      "impressionism",
+      "pointillism"
+    ]
+  },
+  {
+    "id": 35,
+    "slug": "stained-glass",
+    "name": "Stained Glass",
+    "title": "Stained Glass (Kính màu)",
+    "subtitle": "Kính màu",
+    "family": "Thủ công",
+    "summary": "Mảng kính màu được giữ bởi đường chì, phát sáng như cửa sổ nhà thờ.",
+    "cues": [
+      "lead lines",
+      "colored glass",
+      "luminous panels"
+    ],
+    "sourcePrompt": "A horse is running in the meadow (một con ngựa đang chạy trên đồng cỏ)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A horse is running in the meadow (một con ngựa đang chạy trên đồng cỏ)\nStyle/medium: Stained Glass (Kính màu). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/stained-glass-chatgpt.webp",
+        "thumb": "/media/thumbs/stained-glass-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/stained-glass-gemini.webp",
+        "thumb": "/media/thumbs/stained-glass-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Stained Glass cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "cyanotype",
+      "leather-work",
+      "blacklight-painting"
+    ]
+  },
+  {
+    "id": 36,
+    "slug": "graffiti",
+    "name": "Graffiti",
+    "title": "Graffiti (Tranh phun sơn)",
+    "subtitle": "Tranh phun sơn",
+    "family": "Minh họa",
+    "summary": "Chữ lớn, outline mạnh, sơn xịt và năng lượng bề mặt đô thị.",
+    "cues": [
+      "spray texture",
+      "bold lettering",
+      "brick wall"
+    ],
+    "sourcePrompt": "The word \"SAIGON\" in bold street art letters on a brick wall.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: The word \"SAIGON\" in bold street art letters on a brick wall.\nStyle/medium: Graffiti (Tranh phun sơn). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: Render quoted text exactly once and verbatim: \"SAIGON\"; no extra text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/graffiti-chatgpt.webp",
+        "thumb": "/media/thumbs/graffiti-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/graffiti-gemini.webp",
+        "thumb": "/media/thumbs/graffiti-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Graffiti cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "pop-art",
+      "ballpoint-pen-sketch",
+      "pencil-sketch"
+    ]
+  },
+  {
+    "id": 37,
+    "slug": "pointillism",
+    "name": "Pointillism",
+    "title": "Pointillism (Tranh chấm)",
+    "subtitle": "Tranh chấm",
+    "family": "Hội họa",
+    "summary": "Hàng nghìn chấm màu nhỏ hòa lại thành hình khi nhìn từ xa.",
+    "cues": [
+      "color dots",
+      "optical mixing",
+      "patient rhythm"
+    ],
+    "sourcePrompt": "Turtle Tower in Hoan Kiem Lake made of thousands of dots.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Turtle Tower in Hoan Kiem Lake made of thousands of dots.\nStyle/medium: Pointillism (Tranh chấm). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/pointillism-chatgpt.webp",
+        "thumb": "/media/thumbs/pointillism-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/pointillism-gemini.webp",
+        "thumb": "/media/thumbs/pointillism-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 8,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Pointillism cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "block-print",
+      "dripping-paint",
+      "pastel"
+    ]
+  },
+  {
+    "id": 38,
+    "slug": "pop-art",
+    "name": "Pop Art",
+    "title": "Pop Art (Nghệ thuật đại chúng)",
+    "subtitle": "Nghệ thuật đại chúng",
+    "family": "Minh họa",
+    "summary": "Màu cơ bản mạnh, halftone và hình ảnh hàng hóa kiểu truyện tranh.",
+    "cues": [
+      "halftone",
+      "bold primaries",
+      "commercial icon"
+    ],
+    "sourcePrompt": "A can of Vietnamese condensed milk with bold comic colors.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A can of Vietnamese condensed milk with bold comic colors.\nStyle/medium: Pop Art (Nghệ thuật đại chúng). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/pop-art-chatgpt.webp",
+        "thumb": "/media/thumbs/pop-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/pop-art-gemini.webp",
+        "thumb": "/media/thumbs/pop-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 9,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Pop Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "graffiti",
+      "ballpoint-pen-sketch",
+      "pencil-sketch"
+    ]
+  },
+  {
+    "id": 39,
+    "slug": "block-print",
+    "name": "Block Print",
+    "title": "Block Print (In mộc bản)",
+    "subtitle": "In mộc bản",
+    "family": "Hội họa",
+    "summary": "Mảng đen–màu rõ, vết dao khắc và độ lặp của bản in thủ công.",
+    "cues": [
+      "carved block",
+      "flat impression",
+      "folk rhythm"
+    ],
+    "sourcePrompt": "A Dong Ho folk painting of a pig family. (Tranh dân gian Đông Hồ về đàn lợn.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A Dong Ho folk painting of a pig family. (Tranh dân gian Đông Hồ về đàn lợn.)\nStyle/medium: Block Print (In mộc bản). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/block-print-chatgpt.webp",
+        "thumb": "/media/thumbs/block-print-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/block-print-gemini.webp",
+        "thumb": "/media/thumbs/block-print-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Block Print cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "pointillism",
+      "dripping-paint",
+      "pastel"
+    ]
+  },
+  {
+    "id": 40,
+    "slug": "ballpoint-pen-sketch",
+    "name": "Ballpoint Pen Sketch",
+    "title": "Ballpoint Pen Sketch (Ký họa bút bi)",
+    "subtitle": "Ký họa bút bi",
+    "family": "Minh họa",
+    "summary": "Nét bút bi xanh dày mỏng, cross-hatching và cảm giác ghi chép tức thời.",
+    "cues": [
+      "blue ink",
+      "cross hatch",
+      "quick sketch"
+    ],
+    "sourcePrompt": "A quick sketch of a Banh Mi street cart. (Ký họa nhanh xe bánh mì đường phố.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A quick sketch of a Banh Mi street cart. (Ký họa nhanh xe bánh mì đường phố.)\nStyle/medium: Ballpoint Pen Sketch (Ký họa bút bi). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/ballpoint-pen-sketch-chatgpt.webp",
+        "thumb": "/media/thumbs/ballpoint-pen-sketch-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/ballpoint-pen-sketch-gemini.webp",
+        "thumb": "/media/thumbs/ballpoint-pen-sketch-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Ballpoint Pen Sketch cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "pop-art",
+      "pencil-sketch",
+      "graffiti"
+    ]
+  },
+  {
+    "id": 41,
+    "slug": "cyanotype",
+    "name": "Cyanotype",
+    "title": "Cyanotype (In đơn sắc xanh)",
+    "subtitle": "In đơn sắc xanh",
+    "family": "Thủ công",
+    "summary": "Silhouette trắng trên nền Prussian blue với mép phủ hóa chất tự nhiên.",
+    "cues": [
+      "Prussian blue",
+      "photogram silhouette",
+      "rough border"
+    ],
+    "sourcePrompt": "A silhouette of bamboo leaves against a deep blue background.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A silhouette of bamboo leaves against a deep blue background.\nStyle/medium: Cyanotype (In đơn sắc xanh). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/cyanotype-chatgpt.webp",
+        "thumb": "/media/thumbs/cyanotype-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/cyanotype-gemini.webp",
+        "thumb": "/media/thumbs/cyanotype-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Cyanotype cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "blacklight-painting",
+      "cross-stitch",
+      "acrylic-pour"
+    ]
+  },
+  {
+    "id": 42,
+    "slug": "pencil-sketch",
+    "name": "Pencil Sketch",
+    "title": "Pencil Sketch (Phác thảo chì)",
+    "subtitle": "Phác thảo chì",
+    "family": "Minh họa",
+    "summary": "Graphite, nét dựng hình và vùng shading để lộ quá trình phác.",
+    "cues": [
+      "graphite line",
+      "construction marks",
+      "shading"
+    ],
+    "sourcePrompt": "A rough drawing of the Notre Dame Cathedral of Saigon.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A rough drawing of the Notre Dame Cathedral of Saigon.\nStyle/medium: Pencil Sketch (Phác thảo chì). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/pencil-sketch-chatgpt.webp",
+        "thumb": "/media/thumbs/pencil-sketch-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/pencil-sketch-gemini.webp",
+        "thumb": "/media/thumbs/pencil-sketch-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Pencil Sketch cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "ballpoint-pen-sketch",
+      "pop-art",
+      "graffiti"
+    ]
+  },
+  {
+    "id": 43,
+    "slug": "blacklight-painting",
+    "name": "Blacklight Painting",
+    "title": "Blacklight Painting (Tranh dạ quang)",
+    "subtitle": "Tranh dạ quang",
+    "family": "Thủ công",
+    "summary": "Pigment huỳnh quang bùng lên trên nền tối dưới ánh sáng UV.",
+    "cues": [
+      "fluorescent pigment",
+      "black ground",
+      "UV glow"
+    ],
+    "sourcePrompt": "Hoi An lanterns glowing neon in the dark. (Đèn lồng Hội An phát sáng neon trong bóng tối.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Hoi An lanterns glowing neon in the dark. (Đèn lồng Hội An phát sáng neon trong bóng tối.)\nStyle/medium: Blacklight Painting (Tranh dạ quang). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/blacklight-painting-chatgpt.webp",
+        "thumb": "/media/thumbs/blacklight-painting-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/blacklight-painting-gemini.webp",
+        "thumb": "/media/thumbs/blacklight-painting-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 7,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Blacklight Painting cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "cross-stitch",
+      "cyanotype",
+      "acrylic-pour"
+    ]
+  },
+  {
+    "id": 44,
+    "slug": "cross-stitch",
+    "name": "Cross Stitch",
+    "title": "Cross Stitch (Thêu chữ thập)",
+    "subtitle": "Thêu chữ thập",
+    "family": "Thủ công",
+    "summary": "Hình được tạo từ các mũi X đều đặn trên nền vải lưới.",
+    "cues": [
+      "x stitches",
+      "fabric grid",
+      "thread color"
+    ],
+    "sourcePrompt": "A pattern of a red lotus flower. (Mẫu thêu hoa sen đỏ.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A pattern of a red lotus flower. (Mẫu thêu hoa sen đỏ.)\nStyle/medium: Cross Stitch (Thêu chữ thập). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/cross-stitch-chatgpt.webp",
+        "thumb": "/media/thumbs/cross-stitch-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/cross-stitch-gemini.webp",
+        "thumb": "/media/thumbs/cross-stitch-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 7,
+        "styleFidelity": 9,
+        "composition": 7,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 7.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "GFlow biến hoa sen thành họa tiết gần giống hoa hồng và lặp lại nhiều bông.",
+    "related": [
+      "blacklight-painting",
+      "acrylic-pour",
+      "cyanotype"
+    ]
+  },
+  {
+    "id": 45,
+    "slug": "acrylic-pour",
+    "name": "Acrylic Pour",
+    "title": "Acrylic Pour (Đổ màu Acrylic)",
+    "subtitle": "Đổ màu Acrylic",
+    "family": "Thủ công",
+    "summary": "Acrylic được đổ và kéo tự do tạo vân tế bào, dòng chảy và lớp màu.",
+    "cues": [
+      "poured acrylic",
+      "cells",
+      "marbled layers"
+    ],
+    "sourcePrompt": "Abstract colors representing the Marble Mountains.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Abstract colors representing the Marble Mountains.\nStyle/medium: Acrylic Pour (Đổ màu Acrylic). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/acrylic-pour-chatgpt.webp",
+        "thumb": "/media/thumbs/acrylic-pour-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/acrylic-pour-gemini.webp",
+        "thumb": "/media/thumbs/acrylic-pour-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 8,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "Hòa",
+    "observation": "GFlow biểu đạt kỹ thuật acrylic pour trực tiếp hơn; OpenAI kể cảnh Ngũ Hành Sơn tốt hơn.",
+    "related": [
+      "cross-stitch",
+      "blacklight-painting",
+      "cyanotype"
+    ]
+  },
+  {
+    "id": 46,
+    "slug": "neo-futurism",
+    "name": "Neo-Futurism",
+    "title": "Neo-Futurism (Tân tương lai)",
+    "subtitle": "Tân tương lai",
+    "family": "Kỹ thuật số",
+    "summary": "Kiến trúc và cơ thể tương lai dùng đường cong liên tục, vật liệu mới và lạc quan công nghệ.",
+    "cues": [
+      "future curves",
+      "bio-tech",
+      "optimism"
+    ],
+    "sourcePrompt": "A Vietnamese woman who is half human, half machine in the future.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A Vietnamese woman who is half human, half machine in the future.\nStyle/medium: Neo-Futurism (Tân tương lai). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/neo-futurism-chatgpt.webp",
+        "thumb": "/media/thumbs/neo-futurism-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/neo-futurism-gemini.webp",
+        "thumb": "/media/thumbs/neo-futurism-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 9
+      }
+    },
+    "winner": "Hòa",
+    "observation": "GFlow cho thêm bối cảnh tương lai; OpenAI sạch và nhất quán hơn ở chân dung bán máy.",
+    "related": [
+      "low-poly",
+      "3d-voxel-art",
+      "neon-line-drawing"
+    ]
+  },
+  {
+    "id": 47,
+    "slug": "low-poly",
+    "name": "Low Poly",
+    "title": "Low Poly (Đa giác thấp)",
+    "subtitle": "Đa giác thấp",
+    "family": "Kỹ thuật số",
+    "summary": "Bề mặt 3D được giản lược thành ít đa giác phẳng có cạnh rõ.",
+    "cues": [
+      "faceted 3D",
+      "simple geometry",
+      "flat shading"
+    ],
+    "sourcePrompt": "The white rabbit in the green field (Con thỏ trắng trên đồng cỏ xanh)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: The white rabbit in the green field (Con thỏ trắng trên đồng cỏ xanh)\nStyle/medium: Low Poly (Đa giác thấp). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/low-poly-chatgpt.webp",
+        "thumb": "/media/thumbs/low-poly-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/low-poly-gemini.webp",
+        "thumb": "/media/thumbs/low-poly-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Low Poly cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "neo-futurism",
+      "3d-voxel-art",
+      "neon-line-drawing"
+    ]
+  },
+  {
+    "id": 48,
+    "slug": "vector-art",
+    "name": "Vector Art",
+    "title": "Vector Art (Đồ họa Vector)",
+    "subtitle": "Đồ họa Vector",
+    "family": "Minh họa",
+    "summary": "Hình phẳng, đường sạch và tỷ lệ icon rõ ở kích thước nhỏ.",
+    "cues": [
+      "clean paths",
+      "flat shape",
+      "scalable icon"
+    ],
+    "sourcePrompt": "A clean flat icon of a Phin Coffee filter (Biểu tượng phin cà phê phẳng, sạch sẽ.)",
+    "generationPrompt": "Use case: logo-brand\nAsset type: image style catalog sample\nPrimary request: A clean flat icon of a Phin Coffee filter (Biểu tượng phin cà phê phẳng, sạch sẽ.)\nStyle/medium: Vector Art (Đồ họa Vector). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/vector-art-chatgpt.webp",
+        "thumb": "/media/thumbs/vector-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/vector-art-gemini.webp",
+        "thumb": "/media/thumbs/vector-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 7,
+        "styleFidelity": 8,
+        "composition": 7,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 7.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Biểu tượng GFlow giống nồi/thiết bị lọc chung hơn là phin cà phê Việt Nam.",
+    "related": [
+      "pencil-sketch",
+      "ballpoint-pen-sketch",
+      "pop-art"
+    ]
+  },
+  {
+    "id": 49,
+    "slug": "macro-photography",
+    "name": "Macro Photography",
+    "title": "Macro Photography (Nhiếp ảnh siêu cận)",
+    "subtitle": "Nhiếp ảnh siêu cận",
+    "family": "Nhiếp ảnh",
+    "summary": "Phóng đại chi tiết rất nhỏ với độ sâu trường ảnh mỏng và texture sắc.",
+    "cues": [
+      "extreme close-up",
+      "shallow depth",
+      "micro texture"
+    ],
+    "sourcePrompt": "A close-up of a dew-covered flower petal illuminated by sunlight.",
+    "generationPrompt": "Use case: photorealistic-natural\nAsset type: image style catalog sample\nPrimary request: A close-up of a dew-covered flower petal illuminated by sunlight.\nStyle/medium: Macro Photography (Nhiếp ảnh siêu cận). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/macro-photography-chatgpt.webp",
+        "thumb": "/media/thumbs/macro-photography-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/macro-photography-gemini.webp",
+        "thumb": "/media/thumbs/macro-photography-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Macro Photography cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "street-photography",
+      "classic-noir",
+      "product-photography"
+    ]
+  },
+  {
+    "id": 50,
+    "slug": "street-photography",
+    "name": "Street Photography",
+    "title": "Street Photography (Nhiếp ảnh đường phố)",
+    "subtitle": "Nhiếp ảnh đường phố",
+    "family": "Nhiếp ảnh",
+    "summary": "Khoảnh khắc đời thường không dàn dựng, nhiều lớp người và nhịp phố.",
+    "cues": [
+      "candid moment",
+      "urban layers",
+      "available light"
+    ],
+    "sourcePrompt": "Busy traffic in Hanoi during rush hour. Giao thông Hà Nội đông đúc giờ cao điểm.)",
+    "generationPrompt": "Use case: photorealistic-natural\nAsset type: image style catalog sample\nPrimary request: Busy traffic in Hanoi during rush hour. Giao thông Hà Nội đông đúc giờ cao điểm.)\nStyle/medium: Street Photography (Nhiếp ảnh đường phố). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/street-photography-chatgpt.webp",
+        "thumb": "/media/thumbs/street-photography-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/street-photography-gemini.webp",
+        "thumb": "/media/thumbs/street-photography-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Street Photography cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "macro-photography",
+      "classic-noir",
+      "product-photography"
+    ]
+  },
+  {
+    "id": 51,
+    "slug": "classic-noir",
+    "name": "Classic Noir",
+    "title": "Classic Noir (Phim đen cổ điển)",
+    "subtitle": "Phim đen cổ điển",
+    "family": "Nhiếp ảnh",
+    "summary": "Đen trắng tương phản, mưa, bóng đổ và nhân vật bí ẩn kiểu trinh thám.",
+    "cues": [
+      "monochrome",
+      "hard shadow",
+      "rainy mystery"
+    ],
+    "sourcePrompt": "A detective standing in a rainy alley in old Saigon.",
+    "generationPrompt": "Use case: photorealistic-natural\nAsset type: image style catalog sample\nPrimary request: A detective standing in a rainy alley in old Saigon.\nStyle/medium: Classic Noir (Phim đen cổ điển). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/classic-noir-chatgpt.webp",
+        "thumb": "/media/thumbs/classic-noir-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/classic-noir-gemini.webp",
+        "thumb": "/media/thumbs/classic-noir-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 6,
+        "average": 8.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "GFlow có chữ phụ và dấu sparkle; OpenAI giữ noir sạch và đúng ràng buộc hơn.",
+    "related": [
+      "street-photography",
+      "macro-photography",
+      "product-photography"
+    ]
+  },
+  {
+    "id": 52,
+    "slug": "abstract",
+    "name": "Abstract",
+    "title": "Abstract (Trừu tượng)",
+    "subtitle": "Trừu tượng",
+    "family": "Hội họa",
+    "summary": "Hình, màu và nhịp thay cho chủ thể hiện thực, ưu tiên cảm giác và cấu trúc.",
+    "cues": [
+      "nonfigurative shape",
+      "color rhythm",
+      "gesture"
+    ],
+    "sourcePrompt": "Shapes and colors representing the chaos of Vietnamese traffic.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Shapes and colors representing the chaos of Vietnamese traffic.\nStyle/medium: Abstract (Trừu tượng). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/abstract-chatgpt.webp",
+        "thumb": "/media/thumbs/abstract-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/abstract-gemini.webp",
+        "thumb": "/media/thumbs/abstract-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Abstract cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "neo-expressionist",
+      "bauhaus",
+      "psychedelic"
+    ]
+  },
+  {
+    "id": 53,
+    "slug": "3d-voxel-art",
+    "name": "3D Voxel Art",
+    "title": "3D Voxel Art (nghệ thuật kỹ thuật số 3D với các khối lập phương)",
+    "subtitle": "nghệ thuật kỹ thuật số 3D với các khối lập phương",
+    "family": "Kỹ thuật số",
+    "summary": "Thế giới 3D xây từ các khối voxel, có cảm giác mô hình game isometric.",
+    "cues": [
+      "cubic units",
+      "isometric view",
+      "blocky 3D"
+    ],
+    "sourcePrompt": "A blocky 3D version of the Temple of Literature.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A blocky 3D version of the Temple of Literature.\nStyle/medium: 3D Voxel Art (nghệ thuật kỹ thuật số 3D với các khối lập phương). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/3d-voxel-art-chatgpt.webp",
+        "thumb": "/media/thumbs/3d-voxel-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/3d-voxel-art-gemini.webp",
+        "thumb": "/media/thumbs/3d-voxel-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "3D Voxel Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "neon-line-drawing",
+      "low-poly",
+      "neo-futurism"
+    ]
+  },
+  {
+    "id": 54,
+    "slug": "wood-burned",
+    "name": "Wood Burned",
+    "title": "Wood Burned (Khắc gỗ cháy)",
+    "subtitle": "Khắc gỗ cháy",
+    "family": "Thủ công",
+    "summary": "Đường cháy nâu trên gỗ sáng tạo chân dung và texture pyrography.",
+    "cues": [
+      "burn marks",
+      "wood grain",
+      "sepia line"
+    ],
+    "sourcePrompt": "Portrait of a Vietnamese carpenter (Chân dung một người thợ mộc Việt Nam)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Portrait of a Vietnamese carpenter (Chân dung một người thợ mộc Việt Nam)\nStyle/medium: Wood Burned (Khắc gỗ cháy). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/wood-burned-chatgpt.webp",
+        "thumb": "/media/thumbs/wood-burned-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/wood-burned-gemini.webp",
+        "thumb": "/media/thumbs/wood-burned-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Wood Burned cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "paper-sculpture",
+      "acrylic-pour",
+      "cross-stitch"
+    ]
+  },
+  {
+    "id": 55,
+    "slug": "neo-expressionist",
+    "name": "Neo Expressionist",
+    "title": "Neo Expressionist (Tân biểu hiện)",
+    "subtitle": "Tân biểu hiện",
+    "family": "Hội họa",
+    "summary": "Nét cọ thô, màu gay gắt và hình tượng đô thị có năng lượng bản năng.",
+    "cues": [
+      "raw brushwork",
+      "intense color",
+      "urban emotion"
+    ],
+    "sourcePrompt": "A chaotic painting of a wet market with intense colors.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A chaotic painting of a wet market with intense colors.\nStyle/medium: Neo Expressionist (Tân biểu hiện). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/neo-expressionist-chatgpt.webp",
+        "thumb": "/media/thumbs/neo-expressionist-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/neo-expressionist-gemini.webp",
+        "thumb": "/media/thumbs/neo-expressionist-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Neo Expressionist cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "abstract",
+      "bauhaus",
+      "psychedelic"
+    ]
+  },
+  {
+    "id": 56,
+    "slug": "paper-sculpture",
+    "name": "Paper Sculpture",
+    "title": "Paper Sculpture (Điêu khắc giấy)",
+    "subtitle": "Điêu khắc giấy",
+    "family": "Thủ công",
+    "summary": "Giấy được cắt, gấp và dựng thành khối nổi như tác phẩm điêu khắc.",
+    "cues": [
+      "layered feathers",
+      "paper relief",
+      "crafted depth"
+    ],
+    "sourcePrompt": "A fiery phoenix flying in the sky (một con chim phượng hoàng lửa bay trên bầu trời)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A fiery phoenix flying in the sky (một con chim phượng hoàng lửa bay trên bầu trời)\nStyle/medium: Paper Sculpture (Điêu khắc giấy). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/paper-sculpture-chatgpt.webp",
+        "thumb": "/media/thumbs/paper-sculpture-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/paper-sculpture-gemini.webp",
+        "thumb": "/media/thumbs/paper-sculpture-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      }
+    },
+    "winner": "Hòa",
+    "observation": "GFlow thể hiện lớp giấy cắt nổi rõ; hai bên đều tạo phượng hoàng tốt.",
+    "related": [
+      "wood-burned",
+      "acrylic-pour",
+      "cross-stitch"
+    ]
+  },
+  {
+    "id": 57,
+    "slug": "neon-line-drawing",
+    "name": "Neon-Line Drawing",
+    "title": "Neon-Line Drawing (Vẽ nét Neon)",
+    "subtitle": "Vẽ nét Neon",
+    "family": "Kỹ thuật số",
+    "summary": "Một đường sáng neon liên tục mô tả hình trên nền đen.",
+    "cues": [
+      "glowing contour",
+      "dark ground",
+      "signage clarity"
+    ],
+    "sourcePrompt": "A glowing outline of a steaming bowl of Ramen.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A glowing outline of a steaming bowl of Ramen.\nStyle/medium: Neon-Line Drawing (Vẽ nét Neon). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/neon-line-drawing-chatgpt.webp",
+        "thumb": "/media/thumbs/neon-line-drawing-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/neon-line-drawing-gemini.webp",
+        "thumb": "/media/thumbs/neon-line-drawing-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      }
+    },
+    "winner": "Hòa",
+    "observation": "Neon-Line Drawing cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "3d-voxel-art",
+      "kawaii",
+      "icon-design"
+    ]
+  },
+  {
+    "id": 58,
+    "slug": "bauhaus",
+    "name": "Bauhaus",
+    "title": "Bauhaus (phong trào nghệ thuật và thiết kế tại Đức năm 1919)",
+    "subtitle": "phong trào nghệ thuật và thiết kế tại Đức năm 1919",
+    "family": "Hội họa",
+    "summary": "Hình học cơ bản, lưới công năng và chữ sans-serif theo tinh thần Bauhaus.",
+    "cues": [
+      "primary geometry",
+      "functional grid",
+      "sans type"
+    ],
+    "sourcePrompt": "A poster design for \"Saigon Architecture\" with geometric shapes.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A poster design for \"Saigon Architecture\" with geometric shapes.\nStyle/medium: Bauhaus (phong trào nghệ thuật và thiết kế tại Đức năm 1919). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: Render quoted text exactly once and verbatim: \"Saigon Architecture\"; no extra text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/bauhaus-chatgpt.webp",
+        "thumb": "/media/thumbs/bauhaus-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/bauhaus-gemini.webp",
+        "thumb": "/media/thumbs/bauhaus-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 10,
+        "average": 9.8
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 9,
+        "average": 9
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Bauhaus cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "psychedelic",
+      "neo-expressionist",
+      "abstract"
+    ]
+  },
+  {
+    "id": 59,
+    "slug": "psychedelic",
+    "name": "Psychedelic",
+    "title": "Psychedelic (Ảo giác)",
+    "subtitle": "Ảo giác",
+    "family": "Hội họa",
+    "summary": "Màu cực mạnh, biến dạng lỏng và nhịp thị giác như trải nghiệm ảo giác.",
+    "cues": [
+      "melting color",
+      "optical swirl",
+      "high saturation"
+    ],
+    "sourcePrompt": "A traditional Lion Dance head with swirling, melting colors.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A traditional Lion Dance head with swirling, melting colors.\nStyle/medium: Psychedelic (Ảo giác). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/psychedelic-chatgpt.webp",
+        "thumb": "/media/thumbs/psychedelic-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/psychedelic-gemini.webp",
+        "thumb": "/media/thumbs/psychedelic-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Psychedelic cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "bauhaus",
+      "neo-expressionist",
+      "naive-art"
+    ]
+  },
+  {
+    "id": 60,
+    "slug": "product-photography",
+    "name": "Product Photography",
+    "title": "Product Photography (Ảnh sản phẩm)",
+    "subtitle": "Ảnh sản phẩm",
+    "family": "Nhiếp ảnh",
+    "summary": "Sản phẩm được dàn ánh sáng, vật liệu và bao bì để tạo cảm giác thương mại cao cấp.",
+    "cues": [
+      "studio light",
+      "product staging",
+      "material detail"
+    ],
+    "sourcePrompt": "A luxury box of Mooncakes with elegant lighting.",
+    "generationPrompt": "Use case: product-mockup\nAsset type: image style catalog sample\nPrimary request: A luxury box of Mooncakes with elegant lighting.\nStyle/medium: Product Photography (Ảnh sản phẩm). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/product-photography-chatgpt.webp",
+        "thumb": "/media/thumbs/product-photography-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/product-photography-gemini.webp",
+        "thumb": "/media/thumbs/product-photography-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 8,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Product Photography cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "long-exposure",
+      "classic-noir",
+      "street-photography"
+    ]
+  },
+  {
+    "id": 61,
+    "slug": "studio-ghibli",
+    "name": "Studio Ghibli",
+    "title": "Studio Ghibli (Hoạt hình màu nước Nhật Bản)",
+    "subtitle": "Hoạt hình màu nước Nhật Bản",
+    "family": "Minh họa",
+    "summary": "Hoạt hình màu nước Nhật Bản với thiên nhiên dịu, nhân vật ấm và ánh sáng hoài niệm.",
+    "cues": [
+      "watercolor animation",
+      "gentle nature",
+      "warm character"
+    ],
+    "sourcePrompt": "An adult couple looking into each other's eyes.",
+    "generationPrompt": "Use case: illustration-story\nAsset type: image style catalog sample\nPrimary request: An adult couple looking into each other's eyes.\nStyle/medium: hand-painted Japanese watercolor animation aesthetic, soft natural backgrounds, warm expressive characters, gentle cinematic storytelling. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/studio-ghibli-chatgpt.webp",
+        "thumb": "/media/thumbs/studio-ghibli-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/studio-ghibli-gemini.webp",
+        "thumb": "/media/thumbs/studio-ghibli-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Studio Ghibli cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "comic-book",
+      "vector-art",
+      "doodle-art"
+    ]
+  },
+  {
+    "id": 62,
+    "slug": "long-exposure",
+    "name": "Long Exposure",
+    "title": "Long Exposure (Phơi sáng lâu)",
+    "subtitle": "Phơi sáng lâu",
+    "family": "Nhiếp ảnh",
+    "summary": "Màn trập lâu biến chuyển động thành dải sáng liên tục trên bối cảnh tĩnh.",
+    "cues": [
+      "light trails",
+      "night exposure",
+      "fixed scene"
+    ],
+    "sourcePrompt": "Traffic light trails at a busy roundabout at night.",
+    "generationPrompt": "Use case: photorealistic-natural\nAsset type: image style catalog sample\nPrimary request: Traffic light trails at a busy roundabout at night.\nStyle/medium: Long Exposure (Phơi sáng lâu). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/long-exposure-chatgpt.webp",
+        "thumb": "/media/thumbs/long-exposure-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/long-exposure-gemini.webp",
+        "thumb": "/media/thumbs/long-exposure-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.2
+      }
+    },
+    "winner": "Hòa",
+    "observation": "Long Exposure cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "product-photography",
+      "classic-noir",
+      "street-photography"
+    ]
+  },
+  {
+    "id": 63,
+    "slug": "kawaii",
+    "name": "Kawaii",
+    "title": "Kawaii (Dễ thương Nhật)",
+    "subtitle": "Dễ thương Nhật",
+    "family": "Kỹ thuật số",
+    "summary": "Tỷ lệ dễ thương, mắt sáng, má hồng và màu pastel thân thiện.",
+    "cues": [
+      "cute face",
+      "pastel",
+      "rounded form"
+    ],
+    "sourcePrompt": "A cute bubble tea cup with a smiling face and tapioca pearls.",
+    "generationPrompt": "Use case: illustration-story\nAsset type: image style catalog sample\nPrimary request: A cute bubble tea cup with a smiling face and tapioca pearls.\nStyle/medium: Kawaii (Dễ thương Nhật). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/kawaii-chatgpt.webp",
+        "thumb": "/media/thumbs/kawaii-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/kawaii-gemini.webp",
+        "thumb": "/media/thumbs/kawaii-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 9,
+        "average": 9
+      }
+    },
+    "winner": "Hòa",
+    "observation": "Kawaii cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "icon-design",
+      "chibi",
+      "neon-line-drawing"
+    ]
+  },
+  {
+    "id": 64,
+    "slug": "icon-design",
+    "name": "Icon Design",
+    "title": "Icon Design (Thiết kế biểu tượng)",
+    "subtitle": "Thiết kế biểu tượng",
+    "family": "Kỹ thuật số",
+    "summary": "Biểu tượng cô đọng bằng silhouette, ít chi tiết và nhận diện tức thì.",
+    "cues": [
+      "compact symbol",
+      "flat color",
+      "small-size clarity"
+    ],
+    "sourcePrompt": "A flat icon of a Durian fruit. (Biểu tượng phẳng hình trái sầu riêng.)",
+    "generationPrompt": "Use case: logo-brand\nAsset type: image style catalog sample\nPrimary request: A flat icon of a Durian fruit. (Biểu tượng phẳng hình trái sầu riêng.)\nStyle/medium: Icon Design (Thiết kế biểu tượng). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/icon-design-chatgpt.webp",
+        "thumb": "/media/thumbs/icon-design-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/icon-design-gemini.webp",
+        "thumb": "/media/thumbs/icon-design-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "Hòa",
+    "observation": "Icon Design cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "kawaii",
+      "chibi",
+      "dreamcore"
+    ]
+  },
+  {
+    "id": 65,
+    "slug": "naive-art",
+    "name": "Naive Art",
+    "title": "Naive Art (Nghệ thuật ngây thơ)",
+    "subtitle": "Nghệ thuật ngây thơ",
+    "family": "Hội họa",
+    "summary": "Phối cảnh hồn nhiên, tỷ lệ không học thuật và màu kể chuyện trực tiếp.",
+    "cues": [
+      "childlike perspective",
+      "flat narrative",
+      "honest color"
+    ],
+    "sourcePrompt": "Vietnamese children playing the traditional Dragon Snake game in the yard.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Vietnamese children playing the traditional Dragon Snake game in the yard.\nStyle/medium: Naive Art (Nghệ thuật ngây thơ). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/naive-art-chatgpt.webp",
+        "thumb": "/media/thumbs/naive-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/naive-art-gemini.webp",
+        "thumb": "/media/thumbs/naive-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 5,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 8
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "Gemini",
+    "observation": "GFlow gần trò Rồng Rắn Lên Mây; OpenAI hiểu nhầm thành múa rồng.",
+    "related": [
+      "cubism",
+      "ink-wash-painting",
+      "psychedelic"
+    ]
+  },
+  {
+    "id": 66,
+    "slug": "cubism",
+    "name": "Cubism",
+    "title": "Cubism (Lập thể)",
+    "subtitle": "Lập thể",
+    "family": "Hội họa",
+    "summary": "Nhiều góc nhìn được bẻ thành mặt phẳng hình học cùng lúc.",
+    "cues": [
+      "multiple viewpoints",
+      "geometric planes",
+      "fragmented figure"
+    ],
+    "sourcePrompt": "Portrait of a street vendor selling colorful balloons.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Portrait of a street vendor selling colorful balloons.\nStyle/medium: Cubism (Lập thể). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/cubism-chatgpt.webp",
+        "thumb": "/media/thumbs/cubism-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/cubism-gemini.webp",
+        "thumb": "/media/thumbs/cubism-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 9,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "Hòa",
+    "observation": "Cubism cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "naive-art",
+      "ink-wash-painting",
+      "psychedelic"
+    ]
+  },
+  {
+    "id": 67,
+    "slug": "ink-wash-painting",
+    "name": "Ink Wash Painting",
+    "title": "Ink Wash Painting (Tranh thủy mặc)",
+    "subtitle": "Tranh thủy mặc",
+    "family": "Hội họa",
+    "summary": "Mực đen loãng–đậm, sương và khoảng trống tạo chiều sâu thủy mặc.",
+    "cues": [
+      "ink wash",
+      "mist",
+      "negative space"
+    ],
+    "sourcePrompt": "A majestic dragon flying through misty clouds.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A majestic dragon flying through misty clouds.\nStyle/medium: Ink Wash Painting (Tranh thủy mặc). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/ink-wash-painting-chatgpt.webp",
+        "thumb": "/media/thumbs/ink-wash-painting-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/ink-wash-painting-gemini.webp",
+        "thumb": "/media/thumbs/ink-wash-painting-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Ink Wash Painting cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "cubism",
+      "naive-art",
+      "psychedelic"
+    ]
+  },
+  {
+    "id": 68,
+    "slug": "chibi",
+    "name": "Chibi",
+    "title": "Chibi",
+    "subtitle": "Chibi",
+    "family": "Kỹ thuật số",
+    "summary": "Đầu lớn, thân nhỏ, biểu cảm rõ và chi tiết nhân vật được cô đọng.",
+    "cues": [
+      "big head",
+      "small body",
+      "clear expression"
+    ],
+    "sourcePrompt": "A tiny ancient warrior with a big helmet holding a spear.",
+    "generationPrompt": "Use case: illustration-story\nAsset type: image style catalog sample\nPrimary request: A tiny ancient warrior with a big helmet holding a spear.\nStyle/medium: Chibi. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/chibi-chatgpt.webp",
+        "thumb": "/media/thumbs/chibi-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/chibi-gemini.webp",
+        "thumb": "/media/thumbs/chibi-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      }
+    },
+    "winner": "Gemini",
+    "observation": "GFlow thể hiện tỷ lệ chibi rõ và mạch lạc hơn.",
+    "related": [
+      "dreamcore",
+      "microscopic",
+      "icon-design"
+    ]
+  },
+  {
+    "id": 69,
+    "slug": "dreamcore",
+    "name": "Dreamcore",
+    "title": "Dreamcore (Giấc mơ kỳ lạ)",
+    "subtitle": "Giấc mơ kỳ lạ",
+    "family": "Kỹ thuật số",
+    "summary": "Không gian quen mà sai lệch, vắng người và có logic giấc mơ liminal.",
+    "cues": [
+      "liminal room",
+      "uncanny calm",
+      "dream logic"
+    ],
+    "sourcePrompt": "An empty tiled swimming pool with doors leading nowhere.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: An empty tiled swimming pool with doors leading nowhere.\nStyle/medium: Dreamcore (Giấc mơ kỳ lạ). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/dreamcore-chatgpt.webp",
+        "thumb": "/media/thumbs/dreamcore-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/dreamcore-gemini.webp",
+        "thumb": "/media/thumbs/dreamcore-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 7,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "GFlow bỏ mất hồ bơi, trong khi OpenAI giữ đủ hồ trống và các cánh cửa vô định.",
+    "related": [
+      "chibi",
+      "microscopic",
+      "ferrofluid"
+    ]
+  },
+  {
+    "id": 70,
+    "slug": "microscopic",
+    "name": "Microscopic",
+    "title": "Microscopic (Hiển vi)",
+    "subtitle": "Hiển vi",
+    "family": "Kỹ thuật số",
+    "summary": "Cấu trúc tế bào, lát cắt nhuộm màu và chi tiết chỉ thấy qua kính hiển vi.",
+    "cues": [
+      "cell structure",
+      "stained specimen",
+      "micrograph"
+    ],
+    "sourcePrompt": "A close-up view of the cellular structure of a lily flower",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A close-up view of the cellular structure of a lily flower\nStyle/medium: Microscopic (Hiển vi). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/microscopic-chatgpt.webp",
+        "thumb": "/media/thumbs/microscopic-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/microscopic-gemini.webp",
+        "thumb": "/media/thumbs/microscopic-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Microscopic cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "dreamcore",
+      "chibi",
+      "ferrofluid"
+    ]
+  },
+  {
+    "id": 71,
+    "slug": "comic-book",
+    "name": "Comic Book",
+    "title": "Comic Book (Truyện tranh Mỹ)",
+    "subtitle": "Truyện tranh Mỹ",
+    "family": "Minh họa",
+    "summary": "Action line, tương phản mực và khoảnh khắc kịch tính như một panel truyện tranh.",
+    "cues": [
+      "dynamic action",
+      "ink contour",
+      "panel drama"
+    ],
+    "sourcePrompt": "A dramatic martial arts fight scene in the rain. (Cảnh đấu võ kịch tính dưới mưa.)",
+    "generationPrompt": "Use case: illustration-story\nAsset type: image style catalog sample\nPrimary request: A dramatic martial arts fight scene in the rain. (Cảnh đấu võ kịch tính dưới mưa.)\nStyle/medium: Comic Book (Truyện tranh Mỹ). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/comic-book-chatgpt.webp",
+        "thumb": "/media/thumbs/comic-book-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/comic-book-gemini.webp",
+        "thumb": "/media/thumbs/comic-book-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Comic Book cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "doodle-art",
+      "dada-art",
+      "studio-ghibli"
+    ]
+  },
+  {
+    "id": 72,
+    "slug": "wabi-sabi",
+    "name": "Wabi-Sabi",
+    "title": "Wabi-Sabi (Vẻ đẹp không hoàn hảo)",
+    "subtitle": "Vẻ đẹp không hoàn hảo",
+    "family": "Thủ công",
+    "summary": "Vật liệu cũ, bất toàn có chủ ý và dấu sửa chữa tôn trọng thời gian.",
+    "cues": [
+      "patina",
+      "kintsugi",
+      "quiet imperfection"
+    ],
+    "sourcePrompt": "A broken tea cup mended with gold lacquer.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A broken tea cup mended with gold lacquer.\nStyle/medium: Wabi-Sabi (Vẻ đẹp không hoàn hảo). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/wabi-sabi-chatgpt.webp",
+        "thumb": "/media/thumbs/wabi-sabi-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/wabi-sabi-gemini.webp",
+        "thumb": "/media/thumbs/wabi-sabi-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      }
+    },
+    "winner": "Hòa",
+    "observation": "Wabi-Sabi cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "zentangle",
+      "sgraffito-art",
+      "etegami-painting"
+    ]
+  },
+  {
+    "id": 73,
+    "slug": "ferrofluid",
+    "name": "Ferrofluid",
+    "title": "Ferrofluid (Chất lỏng từ tính)",
+    "subtitle": "Chất lỏng từ tính",
+    "family": "Kỹ thuật số",
+    "summary": "Chất lỏng đen bóng dựng gai theo từ trường, vừa hữu cơ vừa cơ khí.",
+    "cues": [
+      "magnetic spikes",
+      "black gloss",
+      "fluid geometry"
+    ],
+    "sourcePrompt": "A spiky black liquid taking the shape of a pagoda.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A spiky black liquid taking the shape of a pagoda.\nStyle/medium: Ferrofluid (Chất lỏng từ tính). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/ferrofluid-chatgpt.webp",
+        "thumb": "/media/thumbs/ferrofluid-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/ferrofluid-gemini.webp",
+        "thumb": "/media/thumbs/ferrofluid-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 8,
+        "composition": 8,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Ferrofluid cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "microscopic",
+      "dreamcore",
+      "chibi"
+    ]
+  },
+  {
+    "id": 74,
+    "slug": "zentangle",
+    "name": "Zentangle",
+    "title": "Zentangle (Vẽ thiền)",
+    "subtitle": "Vẽ thiền",
+    "family": "Thủ công",
+    "summary": "Silhouette được lấp bằng hoa văn lặp thiền định và nét mực dày đặc.",
+    "cues": [
+      "pattern fill",
+      "meditative line",
+      "ornamental detail"
+    ],
+    "sourcePrompt": "An elephant silhouette filled with intricate floral patterns.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: An elephant silhouette filled with intricate floral patterns.\nStyle/medium: Zentangle (Vẽ thiền). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/zentangle-chatgpt.webp",
+        "thumb": "/media/thumbs/zentangle-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/zentangle-gemini.webp",
+        "thumb": "/media/thumbs/zentangle-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Zentangle cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "wabi-sabi",
+      "sgraffito-art",
+      "etegami-painting"
+    ]
+  },
+  {
+    "id": 75,
+    "slug": "doodle-art",
+    "name": "Doodle Art",
+    "title": "Doodle Art (Nghệ thuật nguệch ngoạc)",
+    "subtitle": "Nghệ thuật nguệch ngoạc",
+    "family": "Minh họa",
+    "summary": "Nét ghi chép tự do, icon nhỏ và nhiều ý tưởng cùng sống trên một trang.",
+    "cues": [
+      "loose sketch",
+      "notebook",
+      "playful icons"
+    ],
+    "sourcePrompt": "Notebook sketches of street snacks (skewers, toast, milk tea).",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: Notebook sketches of street snacks (skewers, toast, milk tea).\nStyle/medium: Doodle Art (Nghệ thuật nguệch ngoạc). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/doodle-art-chatgpt.webp",
+        "thumb": "/media/thumbs/doodle-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/doodle-art-gemini.webp",
+        "thumb": "/media/thumbs/doodle-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Doodle Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "dada-art",
+      "comic-book",
+      "calligraphy"
+    ]
+  },
+  {
+    "id": 76,
+    "slug": "sgraffito-art",
+    "name": "Sgraffito Art",
+    "title": "Sgraffito Art (Tranh cạo lớp)",
+    "subtitle": "Tranh cạo lớp",
+    "family": "Thủ công",
+    "summary": "Lớp bề mặt bị cạo để lộ màu dưới, tạo đường nét hai tông có texture.",
+    "cues": [
+      "scratched layer",
+      "revealed color",
+      "incised line"
+    ],
+    "sourcePrompt": "A Dong Son drum pattern scratched into black and gold layers.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A Dong Son drum pattern scratched into black and gold layers.\nStyle/medium: Sgraffito Art (Tranh cạo lớp). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/sgraffito-art-chatgpt.webp",
+        "thumb": "/media/thumbs/sgraffito-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/sgraffito-art-gemini.webp",
+        "thumb": "/media/thumbs/sgraffito-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Sgraffito Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "zentangle",
+      "etegami-painting",
+      "wabi-sabi"
+    ]
+  },
+  {
+    "id": 77,
+    "slug": "visionary-art",
+    "name": "Visionary Art",
+    "title": "Visionary Art (Nghệ thuật tâm linh/Thị kiến)",
+    "subtitle": "Nghệ thuật tâm linh/Thị kiến",
+    "family": "Hội họa",
+    "summary": "Biểu tượng tâm linh, hình học thiêng và ánh sáng năng lượng mang tính thị kiến.",
+    "cues": [
+      "sacred geometry",
+      "cosmic energy",
+      "meditation"
+    ],
+    "sourcePrompt": "A meditation scene under a Banyan tree with cosmic energy radiating.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A meditation scene under a Banyan tree with cosmic energy radiating.\nStyle/medium: Visionary Art (Nghệ thuật tâm linh/Thị kiến). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/visionary-art-chatgpt.webp",
+        "thumb": "/media/thumbs/visionary-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/visionary-art-gemini.webp",
+        "thumb": "/media/thumbs/visionary-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Visionary Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "anachronistic-art",
+      "sumi-e",
+      "splash-ink"
+    ]
+  },
+  {
+    "id": 78,
+    "slug": "dada-art",
+    "name": "Dada Art",
+    "title": "Dada Art (Dadaism - Nghệ thuật phi lý)",
+    "subtitle": "Dadaism - Nghệ thuật phi lý",
+    "family": "Minh họa",
+    "summary": "Collage phi lý, vật thể rời và chữ vụn chống lại logic thẩm mỹ thông thường.",
+    "cues": [
+      "absurd collage",
+      "found objects",
+      "anti-logic"
+    ],
+    "sourcePrompt": "A chaotic collage of a bicycle, a fish, and a coffee cup.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A chaotic collage of a bicycle, a fish, and a coffee cup.\nStyle/medium: Dada Art (Dadaism - Nghệ thuật phi lý). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/dada-art-chatgpt.webp",
+        "thumb": "/media/thumbs/dada-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/dada-art-gemini.webp",
+        "thumb": "/media/thumbs/dada-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 6,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Dada Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "doodle-art",
+      "calligraphy",
+      "comic-book"
+    ]
+  },
+  {
+    "id": 79,
+    "slug": "etegami-painting",
+    "name": "Etegami Painting",
+    "title": "Etegami Painting (Tranh thư tín Nhật)",
+    "subtitle": "Tranh thư tín Nhật",
+    "family": "Thủ công",
+    "summary": "Tranh thư Nhật tối giản: một vật đời thường, nét mộc và lời nhắn viết tay.",
+    "cues": [
+      "single motif",
+      "rustic brush",
+      "handwritten note"
+    ],
+    "sourcePrompt": "A hand-painted persimmon fruit with a handwritten message \"Hello\".",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A hand-painted persimmon fruit with a handwritten message \"Hello\".\nStyle/medium: Etegami Painting (Tranh thư tín Nhật). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: Render quoted text exactly once and verbatim: \"Hello\"; no extra text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/etegami-painting-chatgpt.webp",
+        "thumb": "/media/thumbs/etegami-painting-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/etegami-painting-gemini.webp",
+        "thumb": "/media/thumbs/etegami-painting-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 10,
+        "average": 9.8
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 9,
+        "detailIntegrity": 10,
+        "average": 9.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Etegami Painting cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "assemblage-art",
+      "sgraffito-art",
+      "zentangle"
+    ]
+  },
+  {
+    "id": 80,
+    "slug": "assemblage-art",
+    "name": "Assemblage Art",
+    "title": "Assemblage Art (Nghệ thuật lắp ghép)",
+    "subtitle": "Nghệ thuật lắp ghép",
+    "family": "Thủ công",
+    "summary": "Chân dung được lắp từ đồ vật tìm thấy như nút, xu và mảnh vải.",
+    "cues": [
+      "found objects",
+      "material collage",
+      "relief portrait"
+    ],
+    "sourcePrompt": "A portrait of a woman made from buttons, coins, and fabric scraps.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A portrait of a woman made from buttons, coins, and fabric scraps.\nStyle/medium: Assemblage Art (Nghệ thuật lắp ghép). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/assemblage-art-chatgpt.webp",
+        "thumb": "/media/thumbs/assemblage-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/assemblage-art-gemini.webp",
+        "thumb": "/media/thumbs/assemblage-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Assemblage Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "etegami-painting",
+      "sgraffito-art",
+      "tattoo-painting"
+    ]
+  },
+  {
+    "id": 81,
+    "slug": "anachronistic-art",
+    "name": "Anachronistic Art",
+    "title": "Anachronistic Art (Sai lệch thời gian)",
+    "subtitle": "Sai lệch thời gian",
+    "family": "Hội họa",
+    "summary": "Hai thời đại cố ý va vào nhau để tạo nghịch lý hình ảnh.",
+    "cues": [
+      "time collision",
+      "historic setting",
+      "modern device"
+    ],
+    "sourcePrompt": "A feudal Vietnamese scholar wearing VR goggles holding a brush.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A feudal Vietnamese scholar wearing VR goggles holding a brush.\nStyle/medium: Anachronistic Art (Sai lệch thời gian). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/anachronistic-art-chatgpt.webp",
+        "thumb": "/media/thumbs/anachronistic-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/anachronistic-art-gemini.webp",
+        "thumb": "/media/thumbs/anachronistic-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.6
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Anachronistic Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "sumi-e",
+      "splash-ink",
+      "visionary-art"
+    ]
+  },
+  {
+    "id": 82,
+    "slug": "sumi-e",
+    "name": "Sumi-e",
+    "title": "Sumi-e (Tranh mực tàu)",
+    "subtitle": "Tranh mực tàu",
+    "family": "Hội họa",
+    "summary": "Ít nét mực, nhiều khoảng trắng và chuyển động được cô đọng bằng bút pháp.",
+    "cues": [
+      "minimal ink",
+      "blank space",
+      "gesture"
+    ],
+    "sourcePrompt": "A single bamboo stalk swaying in the wind. (Một thân tre đung đưa trong gió.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A single bamboo stalk swaying in the wind. (Một thân tre đung đưa trong gió.)\nStyle/medium: Sumi-e (Tranh mực tàu). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/sumi-e-chatgpt.webp",
+        "thumb": "/media/thumbs/sumi-e-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/sumi-e-gemini.webp",
+        "thumb": "/media/thumbs/sumi-e-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 9,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      }
+    },
+    "winner": "Hòa",
+    "observation": "GFlow có nhịp bút sumi-e tối giản và khoảng trống thuyết phục hơn.",
+    "related": [
+      "anachronistic-art",
+      "splash-ink",
+      "visionary-art"
+    ]
+  },
+  {
+    "id": 83,
+    "slug": "splash-ink",
+    "name": "Splash Ink",
+    "title": "Splash Ink (Mực vẩy)",
+    "subtitle": "Mực vẩy",
+    "family": "Hội họa",
+    "summary": "Mực vẩy và dải cọ bùng ra để mô tả chuyển động của cơ thể hoặc vải.",
+    "cues": [
+      "ink splash",
+      "ribbon motion",
+      "energetic gesture"
+    ],
+    "sourcePrompt": "A traditional dancer with long ribbons formed by ink splashes.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A traditional dancer with long ribbons formed by ink splashes.\nStyle/medium: Splash Ink (Mực vẩy). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/splash-ink-chatgpt.webp",
+        "thumb": "/media/thumbs/splash-ink-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/splash-ink-gemini.webp",
+        "thumb": "/media/thumbs/splash-ink-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Splash Ink cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "sumi-e",
+      "anachronistic-art",
+      "gouache"
+    ]
+  },
+  {
+    "id": 84,
+    "slug": "calligraphy",
+    "name": "Calligraphy",
+    "title": "Calligraphy (Thư pháp)",
+    "subtitle": "Thư pháp",
+    "family": "Minh họa",
+    "summary": "Chữ viết tay là hình ảnh chính, chú trọng nhịp bút, độ đọc và khoảng trống.",
+    "cues": [
+      "brush lettering",
+      "stroke rhythm",
+      "readability"
+    ],
+    "sourcePrompt": "The word \"Vietnam\" in yellow on a red background.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: The word \"Vietnam\" in yellow on a red background.\nStyle/medium: Calligraphy (Thư pháp). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: Render quoted text exactly once and verbatim: \"Vietnam\"; no extra text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/calligraphy-chatgpt.webp",
+        "thumb": "/media/thumbs/calligraphy-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/calligraphy-gemini.webp",
+        "thumb": "/media/thumbs/calligraphy-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 10,
+        "average": 9.8
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 7,
+        "average": 8.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "OpenAI viết đúng 'Vietnam'; GFlow ghép dấu/chữ chưa hoàn toàn chuẩn.",
+    "related": [
+      "dada-art",
+      "doodle-art",
+      "comic-book"
+    ]
+  },
+  {
+    "id": 85,
+    "slug": "tattoo-painting",
+    "name": "Tattoo Painting",
+    "title": "Tattoo Painting (Hình xăm)",
+    "subtitle": "Hình xăm",
+    "family": "Thủ công",
+    "summary": "Hình được thiết kế theo đường cong cơ thể, linework bền và mảng mực rõ.",
+    "cues": [
+      "body placement",
+      "tattoo line",
+      "ink shading"
+    ],
+    "sourcePrompt": "A design of a Carp turning into a Dragon on skin texture.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A design of a Carp turning into a Dragon on skin texture.\nStyle/medium: Tattoo Painting (Hình xăm). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/tattoo-painting-chatgpt.webp",
+        "thumb": "/media/thumbs/tattoo-painting-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/tattoo-painting-gemini.webp",
+        "thumb": "/media/thumbs/tattoo-painting-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 7,
+        "styleFidelity": 9,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Tattoo Painting cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "hollow-art",
+      "assemblage-art",
+      "etegami-painting"
+    ]
+  },
+  {
+    "id": 86,
+    "slug": "hollow-art",
+    "name": "Hollow Art",
+    "title": "Hollow Art (Nghệ thuật rỗng)",
+    "subtitle": "Nghệ thuật rỗng",
+    "family": "Thủ công",
+    "summary": "Vỏ vật thể bị khoét để lộ một thế giới thu nhỏ có chiều sâu bên trong.",
+    "cues": [
+      "cutaway shell",
+      "miniature world",
+      "negative cavity"
+    ],
+    "sourcePrompt": "A hollow porcelain vase revealing a miniature world inside.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A hollow porcelain vase revealing a miniature world inside.\nStyle/medium: Hollow Art (Nghệ thuật rỗng). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/hollow-art-chatgpt.webp",
+        "thumb": "/media/thumbs/hollow-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/hollow-art-gemini.webp",
+        "thumb": "/media/thumbs/hollow-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Hollow Art cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "tattoo-painting",
+      "assemblage-art",
+      "etegami-painting"
+    ]
+  },
+  {
+    "id": 87,
+    "slug": "gouache",
+    "name": "Gouache",
+    "title": "Gouache (Màu bột)",
+    "subtitle": "Màu bột",
+    "family": "Hội họa",
+    "summary": "Màu bột đục, mảng phẳng giàu sắc và cạnh cọ rõ hơn màu nước.",
+    "cues": [
+      "opaque paint",
+      "matte color",
+      "crisp brush edge"
+    ],
+    "sourcePrompt": "A vibrant flower market scene during Spring. (Cảnh chợ hoa rực rỡ vào mùa xuân.)",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A vibrant flower market scene during Spring. (Cảnh chợ hoa rực rỡ vào mùa xuân.)\nStyle/medium: Gouache (Màu bột). The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/gouache-chatgpt.webp",
+        "thumb": "/media/thumbs/gouache-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/gouache-gemini.webp",
+        "thumb": "/media/thumbs/gouache-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 8,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.2
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 9,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.4
+      }
+    },
+    "winner": "Hòa",
+    "observation": "GFlow trung thành với chất gouache phẳng; OpenAI sinh động nhưng gần tranh hiện thực hơn.",
+    "related": [
+      "splash-ink",
+      "sumi-e",
+      "anachronistic-art"
+    ]
+  },
+  {
+    "id": 88,
+    "slug": "cyberpunk-plus-ukiyo-e-plus-glitch-art",
+    "name": "Cyberpunk + Ukiyo-e + Glitch Art",
+    "title": "Cyberpunk + Ukiyo-e + Glitch Art",
+    "subtitle": "Cyberpunk + Ukiyo-e + Glitch Art",
+    "family": "Lai phong cách",
+    "summary": "Ukiyo-e và glitch chen vào phố cyberpunk, tạo va chạm giữa mộc bản và nhiễu số.",
+    "cues": [
+      "neon samurai",
+      "woodblock waves",
+      "digital glitch"
+    ],
+    "sourcePrompt": "A Samurai riding a futuristic motorbike in Hanoi Old Quarter, neon lights, rain.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A Samurai riding a futuristic motorbike in Hanoi Old Quarter, neon lights, rain.\nStyle/medium: Cyberpunk + Ukiyo-e + Glitch Art. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/cyberpunk-plus-ukiyo-e-plus-glitch-art-chatgpt.webp",
+        "thumb": "/media/thumbs/cyberpunk-plus-ukiyo-e-plus-glitch-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/cyberpunk-plus-ukiyo-e-plus-glitch-art-gemini.webp",
+        "thumb": "/media/thumbs/cyberpunk-plus-ukiyo-e-plus-glitch-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 8,
+        "average": 9.4
+      },
+      "gemini": {
+        "promptAdherence": 10,
+        "styleFidelity": 8,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 5,
+        "average": 7.8
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "OpenAI hòa trộn đủ cyberpunk, ukiyo-e và glitch; GFlow thêm nhiều chữ giả, glitch yếu.",
+    "related": [
+      "paper-cut-craft-plus-watercolor-plus-fantasy-storybook",
+      "pop-art-plus-vaporwave-plus-assemblage-art"
+    ]
+  },
+  {
+    "id": 89,
+    "slug": "paper-cut-craft-plus-watercolor-plus-fantasy-storybook",
+    "name": "Paper Cut Craft + Watercolor + Fantasy Storybook",
+    "title": "Paper Cut Craft + Watercolor + Fantasy Storybook",
+    "subtitle": "Paper Cut Craft + Watercolor + Fantasy Storybook",
+    "family": "Lai phong cách",
+    "summary": "Lớp giấy cắt gặp loang màu nước và ánh sáng cổ tích trong một cảnh quan kể chuyện.",
+    "cues": [
+      "paper layers",
+      "watercolor wash",
+      "magic glow"
+    ],
+    "sourcePrompt": "A layered paper landscape of Trang An with soft watercolor textures and magical glowing fairies.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A layered paper landscape of Trang An with soft watercolor textures and magical glowing fairies.\nStyle/medium: Paper Cut Craft + Watercolor + Fantasy Storybook. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/paper-cut-craft-plus-watercolor-plus-fantasy-storybook-chatgpt.webp",
+        "thumb": "/media/thumbs/paper-cut-craft-plus-watercolor-plus-fantasy-storybook-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/paper-cut-craft-plus-watercolor-plus-fantasy-storybook-gemini.webp",
+        "thumb": "/media/thumbs/paper-cut-craft-plus-watercolor-plus-fantasy-storybook-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 9,
+        "styleFidelity": 8,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.2
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "Paper Cut Craft + Watercolor + Fantasy Storybook cho thấy hai cách diễn giải khác nhau về cùng chủ thể và medium.",
+    "related": [
+      "cyberpunk-plus-ukiyo-e-plus-glitch-art",
+      "pop-art-plus-vaporwave-plus-assemblage-art"
+    ]
+  },
+  {
+    "id": 90,
+    "slug": "pop-art-plus-vaporwave-plus-assemblage-art",
+    "name": "Pop Art + Vaporwave + Assemblage Art",
+    "title": "Pop Art + Vaporwave + Assemblage Art",
+    "subtitle": "Pop Art + Vaporwave + Assemblage Art",
+    "family": "Lai phong cách",
+    "summary": "Màu pop và vaporwave phủ lên cấu trúc lắp ghép từ nhựa, đồ vật và chi tiết tìm thấy.",
+    "cues": [
+      "pop color",
+      "sunset grid",
+      "plastic assemblage"
+    ],
+    "sourcePrompt": "A Banh Mi cart made of colorful plastic scraps and neon gradients.",
+    "generationPrompt": "Use case: stylized-concept\nAsset type: image style catalog sample\nPrimary request: A Banh Mi cart made of colorful plastic scraps and neon gradients.\nStyle/medium: Pop Art + Vaporwave + Assemblage Art. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.\nComposition/framing: landscape 3:2, clear focal subject, polished catalog-quality example.\nLighting/mood: appropriate to the named style and scene, with controlled contrast.\nConstraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
+    "images": {
+      "chatgpt": {
+        "full": "/media/styles/pop-art-plus-vaporwave-plus-assemblage-art-chatgpt.webp",
+        "thumb": "/media/thumbs/pop-art-plus-vaporwave-plus-assemblage-art-chatgpt.webp",
+        "width": 1200,
+        "height": 800
+      },
+      "gemini": {
+        "full": "/media/styles/pop-art-plus-vaporwave-plus-assemblage-art-gemini.webp",
+        "thumb": "/media/thumbs/pop-art-plus-vaporwave-plus-assemblage-art-gemini.webp",
+        "width": 1200,
+        "height": 896
+      }
+    },
+    "scores": {
+      "chatgpt": {
+        "promptAdherence": 10,
+        "styleFidelity": 10,
+        "composition": 10,
+        "technicalQuality": 9,
+        "detailIntegrity": 9,
+        "average": 9.6
+      },
+      "gemini": {
+        "promptAdherence": 8,
+        "styleFidelity": 10,
+        "composition": 8,
+        "technicalQuality": 8,
+        "detailIntegrity": 8,
+        "average": 8.4
+      }
+    },
+    "winner": "ChatGPT",
+    "observation": "OpenAI cho thấy bánh mì và vật liệu assemblage rõ; GFlow nghiêng về xe đẩy vaporwave chung.",
+    "related": [
+      "paper-cut-craft-plus-watercolor-plus-fantasy-storybook",
+      "cyberpunk-plus-ukiyo-e-plus-glitch-art"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+---
+type Props = {
+  sourcePrompt: string;
+  generationPrompt: string;
+  id?: string;
+};
+
+const { sourcePrompt, generationPrompt, id = "generation-prompt" } = Astro.props;
+---
+
+<section class="prompt-block" aria-labelledby={`${id}-title`}>
+  <div class="prompt-block__head">
+    <div>
+      <p class="eyebrow">PROMPT DÙNG CHUNG</p>
+      <h2 id={`${id}-title`}>Sao chép, rồi thay chủ thể.</h2>
+    </div>
+    <button class="button button--primary" type="button" data-copy-target={`#${id}`}>
+      <span data-copy-label>Sao chép prompt</span><span aria-hidden="true">⌘C</span>
+    </button>
+  </div>
+  <p class="prompt-block__source"><b>Ý tưởng gốc</b>{sourcePrompt}</p>
+  <pre class="prompt-block__code" id={id} tabindex="0"><code>{generationPrompt}</code></pre>
+</section>
