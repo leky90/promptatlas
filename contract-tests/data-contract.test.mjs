@@ -33,6 +33,9 @@ const recipeById = new Map(fixture.recipes.map((recipe) => [recipe.id, recipe]))
 const exampleById = new Map(fixture.exampleAssets.map((example) => [example.id, example]));
 const runById = new Map(fixture.generationRuns.map((run) => [run.id, run]));
 const mediaIds = new Set(fixture.exampleAssets.map((example) => example.media.id));
+const compatibilityRuleIds = new Set(
+  fixture.primitives.flatMap((primitive) => primitive.compatibility.rules.map((rule) => rule.id)),
+);
 const validateDataset = createPromptAtlasValidator({ schema, taxonomy });
 const mutateFixture = (mutate) => {
   const copy = structuredClone(fixture);
@@ -182,7 +185,7 @@ test("recipes resolve primitive and value references without modality leakage", 
     }
 
     for (const conflictId of recipe.unresolvedConflictIds) {
-      assert.ok(primitiveById.has(conflictId), `${recipe.id} has unknown unresolved conflict ${conflictId}`);
+      assert.ok(compatibilityRuleIds.has(conflictId), `${recipe.id} has unknown unresolved conflict ${conflictId}`);
     }
   }
 });
@@ -249,6 +252,60 @@ test("negative: model note without evidence runs is rejected", () => {
   assert.ok(result.errors.some((error) => error.path.includes("evidenceRunIds")));
 });
 
+test("negative: primitive values must be non-empty and locally unique", () => {
+  const emptyResult = mutateFixture((dataset) => {
+    dataset.primitives[0].values = [];
+    delete dataset.primitives[0].defaultValueId;
+  });
+  assert.equal(emptyResult.valid, false);
+  assert.ok(emptyResult.errors.some((error) => error.path.includes("/primitives/0/values")));
+
+  const duplicateResult = mutateFixture((dataset) => {
+    const duplicate = structuredClone(dataset.primitives[0].values[0]);
+    duplicate.label = { vi: "Nhãn trùng ID", en: "Duplicate-ID label" };
+    duplicate.fragment = { language: "en", text: "different fragment under the same ID" };
+    dataset.primitives[0].values.push(duplicate);
+  });
+  assert.equal(duplicateResult.valid, false);
+  assert.ok(duplicateResult.errors.some((error) => error.message.includes("duplicate value ID")));
+});
+
+test("negative: model note evidence must match provider and model family", () => {
+  const result = mutateFixture((dataset) => {
+    dataset.primitives[0].modelNotes[0].evidenceRunIds = ["run.video.gemini.rainy-walk"];
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.message.includes("provider")));
+  assert.ok(result.errors.some((error) => error.message.includes("model family")));
+});
+
+test("negative: model note evidence must match version disclosure", () => {
+  const statusResult = mutateFixture((dataset) => {
+    dataset.primitives[0].modelNotes[0].modelVersion = {
+      status: "provider-alias",
+      identifier: "chatgpt-image-generation",
+      source: "provider-ui",
+    };
+  });
+  assert.equal(statusResult.valid, false);
+  assert.ok(statusResult.errors.some((error) => error.message.includes("version status")));
+
+  const identifierResult = mutateFixture((dataset) => {
+    dataset.primitives[0].modelNotes[0].modelVersion = {
+      status: "provider-alias",
+      identifier: "chatgpt-image-generation-a",
+      source: "provider-ui",
+    };
+    dataset.generationRuns[0].modelVersion = {
+      status: "provider-alias",
+      identifier: "chatgpt-image-generation-b",
+      source: "provider-ui",
+    };
+  });
+  assert.equal(identifierResult.valid, false);
+  assert.ok(identifierResult.errors.some((error) => error.message.includes("model version")));
+});
+
 test("negative: video without bilingual accessibility metadata is rejected", () => {
   const result = mutateFixture((dataset) => {
     delete dataset.exampleAssets[1].media.alt;
@@ -287,4 +344,21 @@ test("negative: compatibility rules cannot reference an unknown target value", (
   });
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.message.includes("unknown target value")));
+});
+
+test("negative: approved recipes cannot retain unresolved conflicts", () => {
+  const result = mutateFixture((dataset) => {
+    dataset.recipes[0].status = "approved";
+    dataset.recipes[0].unresolvedConflictIds = ["rule.style.watercolor-natural-skin-detail"];
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.path.includes("unresolvedConflictIds")));
+});
+
+test("negative: unresolved conflicts must reference known rule IDs", () => {
+  const result = mutateFixture((dataset) => {
+    dataset.recipes[0].unresolvedConflictIds = ["rule.not-defined"];
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.message.includes("unknown compatibility rule")));
 });

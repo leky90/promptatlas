@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0-draft.2",
+  "schemaVersion": "1.0.0-draft.3",
   "taxonomyVersion": "1.0.0-draft.2",
   "defaultLocale": "vi",
   "supportedLocales": ["vi", "en"],
