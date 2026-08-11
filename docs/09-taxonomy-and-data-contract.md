@@ -9,7 +9,7 @@ Prompt Atlas v1 uses a versioned dataset snapshot with four core records:
 3. **Example asset** — visual or audiovisual evidence that identifies the dimensions being demonstrated and any confounders.
 4. **Generation run** — an immutable execution record containing provider, model, route, prompt, settings, outputs and review references.
 
-The corrected pre-release contract is identified as `schemaVersion: 1.0.0-draft.2`, `taxonomyVersion: 1.0.0-draft.2` and fixture `datasetVersion: 0.2.0`. These identifiers prevent the earlier reviewed draft shape from being mistaken for the corrected contract.
+The corrected pre-release contract is identified as `schemaVersion: 1.0.0-draft.3`, `taxonomyVersion: 1.0.0-draft.2` and fixture `datasetVersion: 0.3.0`. These identifiers prevent either earlier reviewed draft shape from being mistaken for the corrected contract. Draft.3 tightens cross-record identity and approval invariants without changing the taxonomy dimensions.
 
 The normative artifacts are:
 
@@ -62,7 +62,7 @@ A primitive contains:
 - stable `id`, semantic `version`, lifecycle `status`, `modality`, `category` and `dimensionId`;
 - bilingual `label`, `definition`, `searchAliases` and optional ambiguity guidance;
 - one ordered prompt fragment with an explicit language, semantic role and variables;
-- local values with localized labels, provider-neutral fragments and optional intensity;
+- one or more local values with unique IDs, localized labels, provider-neutral fragments and optional intensity;
 - explicit single/multiple selection cardinality with minimum and maximum selections;
 - primitive-wide prerequisites, compatible concepts and conflicts;
 - positive example and counterexample references;
@@ -77,6 +77,7 @@ Compatibility has exact snapshot semantics:
 - `rules` expresses primitive-wide or value/intensity-dependent requirements, compatibility or conflicts. Each rule has a stable ID, optional source selector, target selector, severity, bilingual reason and resolution mode.
 - Resolution is limited to informing, suggesting a change or blocking approval. No rule may silently remove or rewrite a user's selection.
 - `unresolvedConflictIds` on a recipe references rule IDs and is the explicit escape hatch for drafts. An approved recipe must have an empty list.
+- Both the JSON Schema and reusable validator reject an approved recipe that retains an unresolved rule.
 
 ## Recipe contract
 
@@ -148,7 +149,7 @@ Never recycle an ID for a different meaning. Deprecate a record, document the re
 
 Every durable record declares source type, author, license and timestamps. External or licensed work also includes source URLs. Generated media carries provenance both on the example record and the nested media asset. Checksums are optional during authoring and required by the future ingest pipeline for production assets.
 
-A model note is scoped to provider, model family, mandatory version disclosure and observation time. It must use cautious language, include a confidence level and reference at least one existing generation run. Unverified provider folklore is not valid model guidance.
+A model note is scoped to provider, model family, mandatory version disclosure and observation time. It must use cautious language, include a confidence level and reference at least one existing generation run. Every cited run must match the note's provider, model family and version-disclosure status; exposed identifiers must also match. Unverified provider folklore or evidence from another model is not valid model guidance.
 
 ## Migration from the current 90-style catalog
 
@@ -172,10 +173,12 @@ Migration must preserve the existing normalized catalog until the new pipeline h
 - 152 dimension IDs are globally unique, category-prefixed and exhaustively mapped to the PRD;
 - all four entity definitions exist;
 - every fixture reference resolves across primitives, recipes, examples, media and runs;
+- primitive value lists are non-empty and value IDs are unique within their primitive;
 - recipe modality, value selections and cardinality are valid;
 - compatibility rules resolve source/target primitive values;
+- approved recipes cannot retain unresolved compatibility rules;
 - runs pin recipe/dataset versions and carry explicit model-version disclosure;
-- model notes cannot omit evidence, and image/video media cannot omit bilingual accessibility metadata;
+- model notes cannot omit evidence or cite a different provider/model/version, and image/video media cannot omit bilingual accessibility metadata;
 - versions, localization and provenance are present.
 
 Production ingestion should run the same checks before publishing and additionally verify asset existence/checksums, license policy, deprecation migrations and reviewer approval.

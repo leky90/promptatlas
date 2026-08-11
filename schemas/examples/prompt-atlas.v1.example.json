@@ -1,8 +1,8 @@
 {
   "$schema": "https://promptatlas.ldktech.com/schemas/prompt-atlas.v1.schema.json",
-  "schemaVersion": "1.0.0-draft.2",
+  "schemaVersion": "1.0.0-draft.3",
   "taxonomyVersion": "1.0.0-draft.2",
-  "datasetVersion": "0.2.0",
+  "datasetVersion": "0.3.0",
   "defaultLocale": "vi",
   "primitives": [
     {
@@ -421,7 +421,7 @@
       "id": "run.image.chatgpt.editorial-portrait",
       "recipeId": "recipe.image.editorial-portrait",
       "recipeVersion": "1.0.0",
-      "datasetVersion": "0.2.0",
+      "datasetVersion": "0.3.0",
       "testCaseId": "test.image.editorial-portrait.v1",
       "attempt": 1,
       "provider": "OpenAI",
@@ -449,7 +449,7 @@
       "id": "run.video.gemini.rainy-walk",
       "recipeId": "recipe.video.rainy-walk",
       "recipeVersion": "1.0.0",
-      "datasetVersion": "0.2.0",
+      "datasetVersion": "0.3.0",
       "testCaseId": "test.video.rainy-walk.v1",
       "attempt": 1,
       "provider": "Google",
