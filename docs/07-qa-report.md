@@ -60,6 +60,15 @@ Visual fingerprint confirmed:
 - Favorites are browser-local and do not sync between devices.
 - The source generations use different native aspect ratios; detail and compare views therefore use `object-fit: contain` to preserve the complete frames.
 
+## Deployment verification
+
+- Public repository: `https://github.com/leky90/image-styles`.
+- GitHub Pages workflow run `31491054525`: completed successfully.
+- Custom domain CNAME: `image-styles.ldktech.com` → `leky90.github.io` (Cloudflare DNS-only).
+- GitHub Pages certificate: approved for `image-styles.ldktech.com`; HTTPS enforcement enabled.
+- Live HTTPS checks returned 200 for home, compare, methodology, a representative detail page, sitemap, robots, and media manifest.
+- A live-domain Chromium screenshot confirmed that the deployed comparison workbench matches the QA build.
+
 ## Skill and helper routing
 
 - Build workflow followed the `build-static-demo` artifact contract: brief → research → concept → sitemap → content → media plan → implementation → QA.
