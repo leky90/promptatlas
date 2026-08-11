@@ -10,6 +10,7 @@
     "check": "astro check",
     "build": "astro build",
     "preview": "astro preview",
+    "validate:contract": "node scripts/validate-prompt-atlas-data.mjs schemas/examples/prompt-atlas.v1.example.json",
     "test:contract": "node --test contract-tests/data-contract.test.mjs",
     "test:e2e": "playwright test"
   },

@@ -9,11 +9,14 @@ Prompt Atlas v1 uses a versioned dataset snapshot with four core records:
 3. **Example asset** — visual or audiovisual evidence that identifies the dimensions being demonstrated and any confounders.
 4. **Generation run** — an immutable execution record containing provider, model, route, prompt, settings, outputs and review references.
 
+The corrected pre-release contract is identified as `schemaVersion: 1.0.0-draft.2`, `taxonomyVersion: 1.0.0-draft.2` and fixture `datasetVersion: 0.2.0`. These identifiers prevent the earlier reviewed draft shape from being mistaken for the corrected contract.
+
 The normative artifacts are:
 
 - `src/data/taxonomy.v1.json` — category and dimension registry.
 - `schemas/prompt-atlas.v1.schema.json` — JSON Schema Draft 2020-12 contract.
 - `schemas/examples/prompt-atlas.v1.example.json` — valid image/video reference fixture.
+- `scripts/validate-prompt-atlas-data.mjs` — reusable JSON Schema and cross-record validator.
 - `contract-tests/data-contract.test.mjs` — schema and cross-reference invariants.
 
 This issue defines the contract. It does not migrate the current 90-style catalog or add the composer UI; those belong to the content-pipeline and product implementation issues that consume this contract.
@@ -34,15 +37,15 @@ IDs are lowercase ASCII and never translated. A dimension ID is globally unique 
 
 ## Taxonomy map
 
-The registry contains 130 dimensions across 11 ordered categories.
+The registry contains 152 dimensions across 11 ordered categories. `prdCoverage` maps every dimension back to one of 20 explicit PRD requirement groups; an unmapped or unknown dimension fails contract validation.
 
 | Category | Modality | Dimensions | Coverage examples |
 |---|---|---:|---|
-| `subject` | image, video | 25 | role, age presentation, face, skin, eyes, gaze, hair, build, pose, hands, expression, wardrobe |
-| `object` | image, video | 15 | identity, geometry, scale, count, orientation, position, material, surface, wear, state, spatial relation |
+| `subject` | image, video | 39 | face emphasis, skin sheen/freckles/pores/age detail/makeup, eye size/spacing/eyelid, hair density/color, silhouette, line of action, footwear |
+| `object` | image, video | 19 | identity, geometry, scale, repetition, viewpoint, material, roughness, finish, wear, state, spatial relation |
 | `scene` | image, video | 8 | environment, location, time of day, weather, atmosphere, narrative context, depth layers |
 | `composition` | image, video | 10 | placement, balance, symmetry, thirds, leading lines, negative space, hierarchy, overlap, aspect ratio |
-| `camera` | image, video | 17 | shot size, angle, perspective, distance, lens, focal length, aperture, focus, framing, movement |
+| `camera` | image, video | 21 | shot size, angle, perspective, lens distortion/compression, focus, framing, movement, subject relation and movement phases |
 | `lighting` | image, video | 13 | source, direction, motivation, hardness, falloff, contrast, exposure, shadows, specular, volumetric light |
 | `color` | image, video | 6 | palette, harmony, temperature, saturation, contrast, grade |
 | `style` | image, video | 8 | medium, technique, movement, production design, texture, mark-making, rendering, finish |
@@ -60,6 +63,7 @@ A primitive contains:
 - bilingual `label`, `definition`, `searchAliases` and optional ambiguity guidance;
 - one ordered prompt fragment with an explicit language, semantic role and variables;
 - local values with localized labels, provider-neutral fragments and optional intensity;
+- explicit single/multiple selection cardinality with minimum and maximum selections;
 - primitive-wide prerequisites, compatible concepts and conflicts;
 - positive example and counterexample references;
 - time-scoped model notes backed by generation-run IDs;
@@ -70,8 +74,9 @@ Compatibility has exact snapshot semantics:
 - `requires` means a referenced primitive must be enabled in the same recipe.
 - `compatibleWith` is an editorial recommendation, not an automatic insertion.
 - `conflictsWith` is a hard concept-level conflict. The composer must surface it and must not silently rewrite user intent.
-- `unresolvedConflictIds` on a recipe is the explicit escape hatch for drafts. An approved recipe must have an empty list.
-- Value-specific behavior belongs in the primitive definition/model notes until a future schema version introduces rule predicates; it must not be encoded as an ambiguous free-form ID.
+- `rules` expresses primitive-wide or value/intensity-dependent requirements, compatibility or conflicts. Each rule has a stable ID, optional source selector, target selector, severity, bilingual reason and resolution mode.
+- Resolution is limited to informing, suggesting a change or blocking approval. No rule may silently remove or rewrite a user's selection.
+- `unresolvedConflictIds` on a recipe references rule IDs and is the explicit escape hatch for drafts. An approved recipe must have an empty list.
 
 ## Recipe contract
 
@@ -79,11 +84,12 @@ A recipe is a reproducible composition, not merely a prompt string. It records:
 
 - modality, locale, status and semantic version;
 - ordered primitive selections, selected values, intensity, variables and explicit user overrides;
+- cardinality semantics: single-select primitives may appear once; multi-select primitives are bounded by their declared maximum;
 - output requirements such as aspect ratio, dimensions, duration, frame rate and audio intent;
 - renderer version and one or more rendered prompts with provider/model targets;
 - unresolved conflicts and provenance.
 
-The dataset is a snapshot: every recipe resolves primitive IDs and values against the primitive versions in the same `datasetVersion`. A changed primitive or rendering rule creates a new dataset snapshot and, when output can change, a new recipe or renderer version.
+The dataset is a snapshot: every recipe resolves primitive IDs and values against the primitive versions in the same `datasetVersion`. The cross-record validator rejects duplicate single-select primitives, modality leakage, invalid values, unknown rules and broken references. A changed primitive or rendering rule creates a new dataset snapshot and, when output can change, a new recipe or renderer version.
 
 ## Example asset contract
 
@@ -91,7 +97,7 @@ Examples are evidence, not decoration. Each record states:
 
 - whether it is positive, a counterexample, a composition or a benchmark reference;
 - the primitives, recipe and generation run that produced or explain it;
-- media metadata, localized alternative text/caption and video temporal description;
+- media metadata and bilingual alternative text/caption for image/video, plus video temporal description;
 - dimensions intentionally isolated, known confounders and machine-readable expected claims;
 - review status, license and provenance.
 
@@ -101,8 +107,8 @@ An expected claim identifies one dimension, a localized observable assertion, ev
 
 A generation run is immutable after ingestion. Corrections create a new run or dataset version. It captures:
 
-- recipe/test-case identity and attempt number;
-- provider, model family, exact model version when exposed, route and execution time;
+- recipe/test-case identity, pinned `recipeVersion`/`datasetVersion` and attempt number;
+- provider, model family, mandatory model-version disclosure, route and execution time;
 - the exact rendered prompt sent to that provider;
 - every requested setting, applied value and support status;
 - seed availability, selection policy and all output asset IDs;
@@ -110,6 +116,12 @@ A generation run is immutable after ingestion. Corrections create a new run or d
 - expected claims, review IDs and provenance.
 
 `all-attempts` is the default benchmark selection policy. If a product later allows `best-of-declared`, the selection count and rule must be declared outside the run and applied equally across compared providers.
+
+`modelVersion` is a structured disclosure rather than a nullable string:
+
+- `exact` requires the exact identifier and its evidence source;
+- `provider-alias` records the identifier exposed in the request/UI without pretending it is an immutable backend version;
+- `unavailable` requires a bilingual reason and `not-exposed` source. Placeholders such as “record later” are invalid.
 
 ## Versioning policy
 
@@ -136,7 +148,7 @@ Never recycle an ID for a different meaning. Deprecate a record, document the re
 
 Every durable record declares source type, author, license and timestamps. External or licensed work also includes source URLs. Generated media carries provenance both on the example record and the nested media asset. Checksums are optional during authoring and required by the future ingest pipeline for production assets.
 
-A model note is scoped to provider, model family, optional exact model version and observation time. It must use cautious language, include a confidence level and reference the runs that justify it. Unverified provider folklore is not valid model guidance.
+A model note is scoped to provider, model family, mandatory version disclosure and observation time. It must use cautious language, include a confidence level and reference at least one existing generation run. Unverified provider folklore is not valid model guidance.
 
 ## Migration from the current 90-style catalog
 
@@ -154,13 +166,16 @@ Migration must preserve the existing normalized catalog until the new pipeline h
 
 ## Validation and acceptance
 
-`npm run test:contract` performs both JSON Schema validation and invariants JSON Schema cannot express alone:
+`npm run validate:contract` validates any supplied dataset with the reusable validator. `npm run test:contract` verifies both happy paths and negative mutations:
 
 - the 11 categories are present once, ordered and bilingual;
-- 130 dimension IDs are globally unique and category-prefixed;
+- 152 dimension IDs are globally unique, category-prefixed and exhaustively mapped to the PRD;
 - all four entity definitions exist;
 - every fixture reference resolves across primitives, recipes, examples, media and runs;
-- recipe modality and value selections are valid;
+- recipe modality, value selections and cardinality are valid;
+- compatibility rules resolve source/target primitive values;
+- runs pin recipe/dataset versions and carry explicit model-version disclosure;
+- model notes cannot omit evidence, and image/video media cannot omit bilingual accessibility metadata;
 - versions, localization and provenance are present.
 
 Production ingestion should run the same checks before publishing and additionally verify asset existence/checksums, license policy, deprecation migrations and reviewer approval.
@@ -171,5 +186,4 @@ Production ingestion should run the same checks before publishing and additional
 - automated inference of sensitive human attributes;
 - ranking one model universally from a single output;
 - authoring UI, database tables or search indexing implementation;
-- value-level compatibility predicate language;
 - audio-generation guarantees independent of the model/route capability matrix.

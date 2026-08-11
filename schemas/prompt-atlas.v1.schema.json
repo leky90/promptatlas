@@ -17,7 +17,7 @@
   ],
   "properties": {
     "$schema": { "type": "string", "format": "uri" },
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "const": "1.0.0-draft.2" },
     "taxonomyVersion": { "$ref": "#/$defs/version" },
     "datasetVersion": { "$ref": "#/$defs/version" },
     "defaultLocale": { "$ref": "#/$defs/locale" },
@@ -186,10 +186,68 @@
         }
       }
     },
+    "intensityRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "minimum": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "maximum": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "compatibilityTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primitiveId"],
+      "properties": {
+        "primitiveId": { "$ref": "#/$defs/entityId" },
+        "valueIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/slug" }
+        },
+        "intensity": { "$ref": "#/$defs/intensityRange" }
+      }
+    },
+    "compatibilityRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "target", "severity", "reason", "resolution"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "kind": {
+          "enum": ["requires", "compatible-with", "conflicts-with"]
+        },
+        "sourceValueIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/slug" }
+        },
+        "sourceIntensity": { "$ref": "#/$defs/intensityRange" },
+        "target": { "$ref": "#/$defs/compatibilityTarget" },
+        "severity": {
+          "enum": ["info", "warning", "error"]
+        },
+        "reason": { "$ref": "#/$defs/localizedText" },
+        "resolution": {
+          "enum": ["inform", "suggest-change", "block-approval"]
+        }
+      }
+    },
     "compatibility": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["requires", "compatibleWith", "conflictsWith"],
+      "required": ["requires", "compatibleWith", "conflictsWith", "rules"],
       "properties": {
         "requires": {
           "type": "array",
@@ -206,17 +264,62 @@
           "uniqueItems": true,
           "items": { "$ref": "#/$defs/entityId" }
         },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/compatibilityRule" }
+        },
         "resolutionGuidance": { "$ref": "#/$defs/localizedText" }
       }
+    },
+    "modelVersionDisclosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "source"],
+      "properties": {
+        "status": {
+          "enum": ["exact", "provider-alias", "unavailable"]
+        },
+        "identifier": { "type": "string", "minLength": 1 },
+        "source": {
+          "enum": ["api-response", "response-metadata", "request-config", "provider-ui", "provider-docs", "not-exposed"]
+        },
+        "reason": { "$ref": "#/$defs/localizedText" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "enum": ["exact", "provider-alias"] } },
+            "required": ["status"]
+          },
+          "then": {
+            "required": ["identifier"],
+            "properties": {
+              "source": {
+                "enum": ["api-response", "response-metadata", "request-config", "provider-ui", "provider-docs"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "status": { "const": "unavailable" } },
+            "required": ["status"]
+          },
+          "then": {
+            "required": ["reason"],
+            "properties": { "source": { "const": "not-exposed" } }
+          }
+        }
+      ]
     },
     "modelNote": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["provider", "modelFamily", "observedAt", "note", "confidence", "evidenceRunIds"],
+      "required": ["provider", "modelFamily", "modelVersion", "observedAt", "note", "confidence", "evidenceRunIds"],
       "properties": {
         "provider": { "type": "string", "minLength": 1 },
         "modelFamily": { "type": "string", "minLength": 1 },
-        "modelVersion": { "type": "string", "minLength": 1 },
+        "modelVersion": { "$ref": "#/$defs/modelVersionDisclosure" },
         "observedAt": { "type": "string", "format": "date-time" },
         "note": { "$ref": "#/$defs/localizedText" },
         "confidence": {
@@ -224,10 +327,40 @@
         },
         "evidenceRunIds": {
           "type": "array",
+          "minItems": 1,
           "uniqueItems": true,
           "items": { "$ref": "#/$defs/entityId" }
         }
       }
+    },
+    "cardinality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "minimum", "maximum"],
+      "properties": {
+        "mode": {
+          "enum": ["single", "multiple"]
+        },
+        "minimum": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maximum": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "mode": { "const": "single" } },
+            "required": ["mode"]
+          },
+          "then": {
+            "properties": { "maximum": { "const": 1 } }
+          }
+        }
+      ]
     },
     "sensitivity": {
       "type": "object",
@@ -284,6 +417,7 @@
         "definition",
         "prompt",
         "values",
+        "cardinality",
         "compatibility",
         "exampleIds",
         "counterExampleIds",
@@ -313,6 +447,7 @@
           "items": { "$ref": "#/$defs/primitiveValue" }
         },
         "defaultValueId": { "$ref": "#/$defs/slug" },
+        "cardinality": { "$ref": "#/$defs/cardinality" },
         "compatibility": { "$ref": "#/$defs/compatibility" },
         "exampleIds": {
           "type": "array",
@@ -494,7 +629,7 @@
             "required": ["type"]
           },
           "then": {
-            "required": ["width", "height", "alt"]
+            "required": ["width", "height", "alt", "caption"]
           }
         },
         {
@@ -503,7 +638,7 @@
             "required": ["type"]
           },
           "then": {
-            "required": ["width", "height", "durationSeconds", "posterSrc", "temporalDescription"]
+            "required": ["width", "height", "durationSeconds", "posterSrc", "alt", "caption", "temporalDescription"]
           }
         }
       ]
@@ -645,9 +780,12 @@
       "required": [
         "id",
         "recipeId",
+        "recipeVersion",
+        "datasetVersion",
         "attempt",
         "provider",
         "modelFamily",
+        "modelVersion",
         "route",
         "runAt",
         "prompt",
@@ -663,6 +801,8 @@
       "properties": {
         "id": { "$ref": "#/$defs/entityId" },
         "recipeId": { "$ref": "#/$defs/entityId" },
+        "recipeVersion": { "$ref": "#/$defs/version" },
+        "datasetVersion": { "$ref": "#/$defs/version" },
         "testCaseId": { "$ref": "#/$defs/entityId" },
         "attempt": {
           "type": "integer",
@@ -670,7 +810,7 @@
         },
         "provider": { "type": "string", "minLength": 1 },
         "modelFamily": { "type": "string", "minLength": 1 },
-        "modelVersion": { "type": "string", "minLength": 1 },
+        "modelVersion": { "$ref": "#/$defs/modelVersionDisclosure" },
         "route": {
           "enum": ["api", "ui", "cli", "unknown"]
         },

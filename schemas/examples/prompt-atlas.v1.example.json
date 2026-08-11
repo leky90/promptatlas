@@ -1,8 +1,8 @@
 {
   "$schema": "https://promptatlas.ldktech.com/schemas/prompt-atlas.v1.schema.json",
-  "schemaVersion": "1.0.0",
-  "taxonomyVersion": "1.0.0-draft",
-  "datasetVersion": "0.1.0",
+  "schemaVersion": "1.0.0-draft.2",
+  "taxonomyVersion": "1.0.0-draft.2",
+  "datasetVersion": "0.2.0",
   "defaultLocale": "vi",
   "primitives": [
     {
@@ -21,7 +21,8 @@
         { "id": "smooth", "label": { "vi": "Mịn", "en": "Smooth" }, "fragment": { "language": "en", "text": "smooth, even skin texture" }, "intensity": 0.35, "sortOrder": 20 }
       ],
       "defaultValueId": "natural",
-      "compatibility": { "requires": [], "compatibleWith": ["primitive.lighting.direction"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.lighting.direction"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.image.editorial-portrait"],
       "counterExampleIds": [],
       "ambiguityNotes": { "vi": "Không dùng kết cấu da để suy đoán sức khỏe hoặc danh tính.", "en": "Do not use skin texture to infer health or identity." },
@@ -29,7 +30,7 @@
         {
           "provider": "OpenAI",
           "modelFamily": "ChatGPT image generation",
-          "modelVersion": "record-at-execution",
+          "modelVersion": { "status": "unavailable", "source": "not-exposed", "reason": { "vi": "Route UI không công bố phiên bản model chính xác.", "en": "The UI route did not expose an exact model version." } },
           "observedAt": "2026-08-11T08:00:00Z",
           "note": { "vi": "Fixture minh họa; cần thay bằng nhận xét từ run đã chấm.", "en": "Illustrative fixture; replace with notes from a scored run." },
           "confidence": "low",
@@ -55,7 +56,8 @@
         { "id": "clear-glass", "label": { "vi": "Kính trong", "en": "Clear glass" }, "fragment": { "language": "en", "text": "clear glass with realistic refraction" }, "intensity": 0.75, "sortOrder": 20 }
       ],
       "defaultValueId": "brushed-aluminum",
-      "compatibility": { "requires": [], "compatibleWith": ["primitive.lighting.direction"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.lighting.direction"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.image.editorial-portrait", "example.video.rainy-walk"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -78,7 +80,8 @@
         { "id": "rainy-alley", "label": { "vi": "Hẻm mưa", "en": "Rainy alley" }, "fragment": { "language": "en", "text": "in a rain-soaked city alley" }, "intensity": 0.8, "sortOrder": 20 }
       ],
       "defaultValueId": "minimal-studio",
-      "compatibility": { "requires": [], "compatibleWith": ["primitive.audio.ambience"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.audio.ambience"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.image.editorial-portrait", "example.video.rainy-walk"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -101,7 +104,8 @@
         { "id": "tight", "label": { "vi": "Hẹp", "en": "Tight" }, "fragment": { "language": "en", "text": "tight composition with minimal negative space" }, "intensity": 0.7, "sortOrder": 20 }
       ],
       "defaultValueId": "generous",
-      "compatibility": { "requires": [], "compatibleWith": [], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": [], "compatibleWith": [], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.image.editorial-portrait"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -124,7 +128,8 @@
         { "id": "deep", "label": { "vi": "Sâu", "en": "Deep" }, "fragment": { "language": "en", "text": "deep focus from foreground to background" }, "intensity": 0.75, "sortOrder": 20 }
       ],
       "defaultValueId": "shallow",
-      "compatibility": { "requires": [], "compatibleWith": ["primitive.subject.skin-texture"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.subject.skin-texture"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.image.editorial-portrait", "example.video.rainy-walk"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -147,7 +152,8 @@
         { "id": "backlight", "label": { "vi": "Ngược sáng", "en": "Backlight" }, "fragment": { "language": "en", "text": "controlled backlight outlining the subject" }, "intensity": 0.65, "sortOrder": 20 }
       ],
       "defaultValueId": "camera-left",
-      "compatibility": { "requires": [], "compatibleWith": ["primitive.object.material", "primitive.subject.skin-texture"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.object.material", "primitive.subject.skin-texture"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.image.editorial-portrait", "example.video.rainy-walk"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -170,7 +176,8 @@
         { "id": "neutral-earth", "label": { "vi": "Trung tính đất", "en": "Neutral earth" }, "fragment": { "language": "en", "text": "neutral earth-tone palette" }, "intensity": 0.5, "sortOrder": 20 }
       ],
       "defaultValueId": "neutral-earth",
-      "compatibility": { "requires": [], "compatibleWith": ["primitive.style.medium"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.style.medium"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.image.editorial-portrait"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -193,7 +200,24 @@
         { "id": "watercolor", "label": { "vi": "Màu nước", "en": "Watercolor" }, "fragment": { "language": "en", "text": "transparent watercolor on cold-pressed paper" }, "intensity": 0.8, "sortOrder": 20 }
       ],
       "defaultValueId": "editorial-photo",
-      "compatibility": { "requires": [], "compatibleWith": ["primitive.color.palette"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": {
+        "requires": [],
+        "compatibleWith": ["primitive.color.palette"],
+        "conflictsWith": [],
+        "rules": [
+          {
+            "id": "rule.style.watercolor-natural-skin-detail",
+            "kind": "conflicts-with",
+            "sourceValueIds": ["watercolor"],
+            "sourceIntensity": { "minimum": 0.5 },
+            "target": { "primitiveId": "primitive.subject.skin-texture", "valueIds": ["natural"], "intensity": { "minimum": 0.5 } },
+            "severity": "warning",
+            "reason": { "vi": "Màu nước mạnh làm chi tiết lỗ chân lông khó quan sát; cần xác nhận ưu tiên texture hay medium.", "en": "Strong watercolor treatment can obscure pore detail; confirm whether texture or medium takes priority." },
+            "resolution": "suggest-change"
+          }
+        ]
+      },
       "exampleIds": ["example.image.editorial-portrait"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -216,7 +240,8 @@
         { "id": "turns-head", "label": { "vi": "Quay đầu", "en": "Turns head" }, "fragment": { "language": "en", "text": "slowly turns their head toward camera" }, "intensity": 0.45, "sortOrder": 20 }
       ],
       "defaultValueId": "walks-forward",
-      "compatibility": { "requires": ["primitive.temporal.continuity"], "compatibleWith": ["primitive.audio.ambience"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": ["primitive.temporal.continuity"], "compatibleWith": ["primitive.audio.ambience"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.video.rainy-walk"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -239,7 +264,8 @@
         { "id": "expressive", "label": { "vi": "Biểu cảm", "en": "Expressive" }, "fragment": { "language": "en", "text": "expressive continuity with controlled shape variation" }, "intensity": 0.55, "sortOrder": 20 }
       ],
       "defaultValueId": "strict",
-      "compatibility": { "requires": [], "compatibleWith": ["primitive.motion.subject-action"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": [], "compatibleWith": ["primitive.motion.subject-action"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.video.rainy-walk"],
       "counterExampleIds": [],
       "modelNotes": [],
@@ -262,7 +288,8 @@
         { "id": "silent", "label": { "vi": "Không âm thanh", "en": "Silent" }, "fragment": { "language": "en", "text": "no generated audio" }, "intensity": 0, "sortOrder": 20 }
       ],
       "defaultValueId": "city-rain",
-      "compatibility": { "requires": ["primitive.scene.environment"], "compatibleWith": ["primitive.motion.subject-action"], "conflictsWith": [] },
+      "cardinality": { "mode": "single", "minimum": 0, "maximum": 1 },
+      "compatibility": { "requires": ["primitive.scene.environment"], "compatibleWith": ["primitive.motion.subject-action"], "conflictsWith": [], "rules": [] },
       "exampleIds": ["example.video.rainy-walk"],
       "counterExampleIds": [],
       "ambiguityNotes": { "vi": "Mục này mô tả ý định; khả năng tạo audio phụ thuộc model và route.", "en": "This describes intent; audio generation depends on the model and route." },
@@ -371,6 +398,7 @@
         "height": 1080,
         "durationSeconds": 6,
         "frameRate": 24,
+        "alt": { "vi": "Nhân vật cầm ô đi về phía trước trong hẻm thành phố có mưa và ánh sáng ngược.", "en": "A person holding an umbrella walks forward through a rainy, backlit city alley." },
         "caption": { "vi": "Fixture minh họa, không phải asset production.", "en": "Illustrative fixture, not a production asset." },
         "temporalDescription": { "vi": "Chủ thể đi thẳng trong sáu giây, không cắt cảnh; mưa và phản chiếu chuyển động liên tục.", "en": "The subject walks forward for six seconds without a cut; rain and reflections move continuously." },
         "license": "CC BY 4.0",
@@ -392,11 +420,13 @@
     {
       "id": "run.image.chatgpt.editorial-portrait",
       "recipeId": "recipe.image.editorial-portrait",
+      "recipeVersion": "1.0.0",
+      "datasetVersion": "0.2.0",
       "testCaseId": "test.image.editorial-portrait.v1",
       "attempt": 1,
       "provider": "OpenAI",
       "modelFamily": "ChatGPT image generation",
-      "modelVersion": "record-at-execution",
+      "modelVersion": { "status": "unavailable", "source": "not-exposed", "reason": { "vi": "Route UI không công bố phiên bản model chính xác.", "en": "The UI route did not expose an exact model version." } },
       "route": "ui",
       "runAt": "2026-08-11T08:00:00Z",
       "prompt": { "language": "en", "providerTarget": "OpenAI", "modelFamilyTarget": "ChatGPT image generation", "text": "Portrait of an adult creative professional in a minimal photo studio, natural skin texture with visible pores, generous negative space, shallow depth of field, soft key light from camera left, neutral earth-tone palette, contemporary editorial photography. Output 4:5." },
@@ -418,11 +448,13 @@
     {
       "id": "run.video.gemini.rainy-walk",
       "recipeId": "recipe.video.rainy-walk",
+      "recipeVersion": "1.0.0",
+      "datasetVersion": "0.2.0",
       "testCaseId": "test.video.rainy-walk.v1",
       "attempt": 1,
       "provider": "Google",
       "modelFamily": "Gemini video generation",
-      "modelVersion": "record-at-execution",
+      "modelVersion": { "status": "provider-alias", "identifier": "gemini-video-generation", "source": "request-config" },
       "route": "cli",
       "runAt": "2026-08-11T08:00:00Z",
       "prompt": { "language": "en", "providerTarget": "Google", "modelFamilyTarget": "Gemini video generation", "text": "One continuous six-second shot of a person holding an umbrella in a rain-soaked city alley. The subject walks forward at a steady natural pace. Controlled backlight, deep focus, strict visual and spatial continuity. Audio ambience: soft city rain and distant traffic, no music. 16:9, 24 fps." },
