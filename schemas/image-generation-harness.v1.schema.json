@@ -532,6 +532,19 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "required": ["failure"],
+            "properties": {
+              "failure": {
+                "type": "object",
+                "required": ["classification"],
+                "properties": { "classification": { "const": "moderation" } }
+              }
+            }
+          },
+          "then": { "properties": { "outcome": { "const": "moderated" } } }
         }
       ]
     }

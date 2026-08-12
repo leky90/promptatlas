@@ -253,6 +253,9 @@ export function assertAttemptSafety(attempt) {
   ) {
     throw new Error("moderated outcomes require blocked or flagged moderation evidence");
   }
+  if (attempt.failure?.classification === "moderation" && attempt.outcome !== "moderated") {
+    throw new Error("moderation classification requires a moderated outcome");
+  }
   if (attempt.failure?.retryable && !APPROVED_POLICY.retryableFailureClasses.includes(attempt.failure.classification)) {
     throw new Error(`failure class ${attempt.failure.classification} cannot be retried`);
   }

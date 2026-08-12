@@ -475,6 +475,43 @@ test("refusal classification cannot be recorded as a generic failure outcome", a
   });
 });
 
+test("moderation classification cannot be recorded as a generic failure outcome", async () => {
+  const codexCell = plan.cells.find((cell) => cell.route.interface === "codex");
+  await withTemporaryRepository(async (repositoryRoot) => {
+    const responsePath = path.join(
+      repositoryRoot,
+      codexCell.outputPath.replace("attempt-1.png", "attempt-1.codex-response.json"),
+    );
+    await mkdir(path.dirname(responsePath), { recursive: true });
+    await writeFile(responsePath, JSON.stringify({ blocked: true, category: "safety" }));
+    const moderated = await recordCodexCell({
+      plan,
+      cellId: codexCell.id,
+      repositoryRoot,
+      responsePath,
+      startedAt: "2026-08-12T03:50:00Z",
+      completedAt: "2026-08-12T03:50:01Z",
+      outcome: "moderated",
+      moderation: {
+        status: "blocked",
+        categories: ["provider-safety"],
+        note: "Codex blocked the request.",
+      },
+      failure: {
+        classification: "moderation",
+        retryable: false,
+        message: "Codex blocked the request.",
+      },
+    });
+    const mislabeled = { ...moderated, outcome: "failure" };
+    assert.equal(validate(mislabeled).valid, false);
+    assert.throws(
+      () => assertAttemptSafety(mislabeled),
+      /moderation classification requires a moderated outcome/,
+    );
+  });
+});
+
 test("schema rejects non-zero API spend in an attempt manifest", async () => {
   const codexCell = plan.cells.find((cell) => cell.route.interface === "codex");
   await withTemporaryRepository(async (repositoryRoot) => {
