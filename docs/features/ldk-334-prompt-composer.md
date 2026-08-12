@@ -1,6 +1,6 @@
 # LDK-334 — Prompt Composer and discovery integration
 
-**Status:** QA correction in progress
+**Status:** Implemented; awaiting QA re-review
 **Owner:** software engineer
 **Reviewer:** QA
 **Depends on:** LDK-333, LDK-335, LDK-346 (accepted/done)
@@ -90,10 +90,10 @@ Approved by the user on 2026-08-12. Requirement changes after approval update th
 ## Implementation evidence
 
 - Static route: `/composer/`; integration entry points: all 90 catalog cards and every `/styles/[slug]/` detail route.
-- Unit: 6/6 Composer domain, storage, snapshot and import/export tests passed, including checksummed malformed primitives and strict version/item/identity/blend bounds.
+- Unit: 7/7 Composer domain, storage, snapshot and import/export tests passed, including checksummed malformed primitives, strict version/item/identity/blend bounds and canonical production membership.
 - Contract: 47/47 schema, content-pipeline and generation-harness tests passed.
-- Browser: 16/16 Playwright desktop/mobile scenarios passed, including populated Composer axe analysis, snapshot collision safety, malformed snapshot recovery without stale output, storage failure, visible import focus, keyboard ordering and 44 px control coverage.
+- Browser: 17/17 Playwright desktop/mobile scenarios passed, including populated Composer axe analysis, snapshot collision safety, malformed/unknown-primitive snapshot recovery without stale output or draft mutation, storage failure, visible import focus, keyboard ordering and 44 px control coverage.
 - Build gates: `npm run check` completed with 0 errors/warnings/hints; `npm run build` generated 95 static pages.
 - Visual review: populated Composer and catalog integration inspected at 1440×1000 and 390×844; the recipe spine, conflict hierarchy and primary Add/secondary Copy action order remained intact.
-- QA corrections: import now exposes a real keyboard focus target with a 2 px visible outline; snapshot decoding rejects malformed primitive fields, unsupported versions, oversized recipes, duplicate identities and invalid blend references before rendering.
+- QA corrections: import exposes a real keyboard focus target with a 2 px visible outline; snapshot decoding rejects malformed primitive fields, unsupported versions, oversized recipes, duplicate identities, invalid blend references and any `primitiveId`/`slug` pair outside the canonical 90-style registry before rendering or forking.
 - API generation/spend remained outside runtime and unchanged at USD 0.
