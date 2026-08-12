@@ -61,6 +61,16 @@ export function persistDraft(storage: StorageLike, draft: ComposerDraft) {
   return draft;
 }
 
+export function removeActiveDraft(storage: StorageLike) {
+  const draftId = storage.getItem(ACTIVE_DRAFT_KEY);
+  if (!draftId) return;
+  const index = readIndex(storage).filter((item) => item.draftId !== draftId);
+  storage.removeItem(`${DRAFT_KEY_PREFIX}${draftId}`);
+  storage.setItem(DRAFT_INDEX_KEY, JSON.stringify(index));
+  if (index[0]) storage.setItem(ACTIVE_DRAFT_KEY, index[0].draftId);
+  else storage.removeItem(ACTIVE_DRAFT_KEY);
+}
+
 export function addPrimitiveToActiveDraft(
   storage: StorageLike,
   primitive: ComposerPrimitive,

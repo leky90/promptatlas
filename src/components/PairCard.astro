@@ -2,6 +2,7 @@
 import type { StyleRecord } from "../lib/styles";
 import { paddedId, winnerLabel } from "../lib/styles";
 import FavoriteButton from "./FavoriteButton.astro";
+import ComposerEntry from "./ComposerEntry.astro";
 import Icon from "./Icon.astro";
 
 type Props = { style: StyleRecord; eager?: boolean };
@@ -60,6 +61,7 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
     </div>
   </a>
   <div class="style-card__actions" aria-label={`Thao tác với ${style.name}`}>
+    <ComposerEntry style={style} />
     <button
       class="card-action card-action--copy"
       type="button"

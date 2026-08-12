@@ -26,3 +26,26 @@ test("mobile methodology anchors clear the sticky header", async ({ page }) => {
   const headerHeight = await page.locator(".site-header").evaluate((element) => element.getBoundingClientRect().height);
   expect(sectionTop).toBeGreaterThanOrEqual(headerHeight);
 });
+
+test("mobile composer tray exposes the active recipe without covering controls", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await page.locator("[data-style-card]").nth(1).getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  const tray = page.locator("[data-composer-tray]");
+  await expect(tray).toBeVisible();
+  await expect(tray).toContainText("2 thành phần");
+  await tray.getByRole("link", { name: "Mở Composer" }).click();
+  await expect(page).toHaveURL(/\/composer\/$/u);
+  await expect(page.locator("[data-composer-workspace]")).toBeVisible();
+  const copy = page.getByRole("button", { name: "Sao chép prompt" });
+  await expect(copy).toBeVisible();
+  const copyBox = await copy.boundingBox();
+  expect(copyBox?.height).toBeGreaterThanOrEqual(44);
+  const firstItem = page.locator("[data-recipe-item]").first();
+  const down = firstItem.getByRole("button", { name: "Đưa xuống" });
+  await down.focus();
+  await expect(down).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("[data-composer-live]")).toContainText("Đã đưa");
+  await expect(page.getByText(/^Video$/u)).toHaveCount(0);
+});

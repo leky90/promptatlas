@@ -1,0 +1,89 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<section class="composer-shell shell" data-composer-workspace aria-labelledby="composer-title">
+  <header class="composer-head">
+    <div>
+      <p class="eyebrow">IMAGE RECIPE / LOCAL-FIRST</p>
+      <h1 id="composer-title">Soạn một khung hình,<br /><em>theo đúng thứ tự.</em></h1>
+    </div>
+    <p>Mỗi thành phần đi vào prompt theo thứ tự bạn thấy. Dữ liệu chỉ được lưu trong trình duyệt này.</p>
+  </header>
+
+  <div class="snapshot-banner" data-snapshot-banner hidden>
+    <div>
+      <p class="eyebrow">SNAPSHOT CHỈ ĐỌC</p>
+      <strong>Bản chia sẻ không thay đổi draft đang có.</strong>
+      <span>Kiểm tra recipe trước khi tạo một bản chỉnh sửa mới.</span>
+    </div>
+    <button class="button button--primary" type="button" data-continue-editing>
+      <Icon name="plus" size={18} /> Tiếp tục chỉnh sửa
+    </button>
+  </div>
+  <p class="composer-error" data-composer-error role="alert" hidden></p>
+
+  <div class="composer-grid">
+    <section class="composer-ledger" aria-labelledby="recipe-title">
+      <div class="composer-section-head">
+        <div><p class="eyebrow">RECIPE LEDGER</p><h2 id="recipe-title">Thành phần đã chọn</h2></div>
+        <span data-composer-item-count>0 thành phần</span>
+      </div>
+
+      <div class="composer-empty" data-composer-empty>
+        <span aria-hidden="true">00</span>
+        <div><h3>Recipe đang trống.</h3><p>Chọn một phong cách có bằng chứng trực quan để bắt đầu.</p></div>
+        <a class="button button--primary" href="/#atlas">Thêm thành phần đầu tiên <Icon name="arrow-right" /></a>
+      </div>
+
+      <ol class="recipe-list" data-recipe-list aria-label="Thứ tự thành phần prompt"></ol>
+
+      <section class="composer-conflicts" data-conflict-section hidden aria-labelledby="conflict-title">
+        <div class="composer-conflicts__title">
+          <Icon name="warning" size={20} />
+          <div><h3 id="conflict-title">Cần xác nhận cách pha trộn</h3><p>Hai phong cách cùng điều khiển style/medium. Không thành phần nào bị tự động xóa.</p></div>
+        </div>
+        <ul data-conflict-list></ul>
+      </section>
+    </section>
+
+    <section class="composer-output" aria-labelledby="output-title">
+      <div class="composer-section-head">
+        <div><p class="eyebrow">DETERMINISTIC OUTPUT</p><h2 id="output-title">Prompt hoàn chỉnh</h2></div>
+        <span>Schema 1.0.0</span>
+      </div>
+      <pre class="composer-preview" data-composer-preview tabindex="0"><code>Thêm thành phần để tạo prompt.</code></pre>
+      <div class="composer-actions">
+        <button class="button button--primary" type="button" data-copy-composer disabled>
+          <Icon name="copy" size={18} /> Sao chép prompt
+        </button>
+        <button class="button button--ghost" type="button" data-share-composer disabled>
+          <Icon name="share" size={18} /> Chia sẻ recipe
+        </button>
+      </div>
+      <div class="composer-file-actions">
+        <label class="button button--ghost" for="composer-import"><Icon name="upload" size={18} /> Nhập recipe</label>
+        <input id="composer-import" class="visually-hidden" type="file" accept=".json,.promptatlas.json,application/json" data-import-composer />
+        <button class="button button--quiet" type="button" data-reset-composer disabled>Xóa draft hiện tại</button>
+      </div>
+      <p class="composer-privacy"><Icon name="lock" size={17} /> Draft dùng localStorage; share dùng hash URL và không gửi recipe tới server.</p>
+    </section>
+  </div>
+
+  <p class="visually-hidden" data-composer-live role="status" aria-live="polite"></p>
+
+  <dialog class="share-dialog" data-share-dialog aria-labelledby="share-dialog-title">
+    <form method="dialog"><button class="icon-button" aria-label="Đóng hộp thoại"><Icon name="close" size={20} /></button></form>
+    <p class="eyebrow">IMMUTABLE SNAPSHOT</p>
+    <h2 id="share-dialog-title">Chia sẻ đúng recipe này.</h2>
+    <p data-share-summary></p>
+    <label for="share-url">Liên kết chỉ đọc</label>
+    <textarea id="share-url" rows="4" readonly data-share-url></textarea>
+    <p class="share-dialog__measure" data-share-measure></p>
+    <div class="share-dialog__actions">
+      <button class="button button--primary" type="button" data-copy-share><Icon name="copy" size={18} /> Sao chép liên kết</button>
+      <button class="button button--ghost" type="button" data-export-composer><Icon name="download" size={18} /> Tải tệp recipe</button>
+    </div>
+    <p data-share-limitation hidden>Liên kết vượt 6.000 ký tự. Prompt đầy đủ và tệp recipe vẫn không bị cắt.</p>
+  </dialog>
+</section>

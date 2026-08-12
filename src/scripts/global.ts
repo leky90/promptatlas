@@ -1,3 +1,5 @@
+import { addPrimitiveToActiveDraft, readActiveDraft } from "./composer-store.ts";
+
 const storageKey = "prompt-atlas:favorites:v1";
 
 function readFavorites(): string[] {
@@ -110,16 +112,58 @@ function initializeNavigation() {
   }));
 }
 
+function initializeComposerEntries() {
+  const update = () => {
+    let selected = new Set<string>();
+    try {
+      selected = new Set((readActiveDraft(localStorage)?.items ?? []).map((item) => item.primitiveId));
+    } catch {
+      selected = new Set();
+    }
+    document.querySelectorAll<HTMLElement>("[data-composer-count]").forEach((element) => {
+      element.textContent = String(selected.size);
+    });
+    const tray = document.querySelector<HTMLElement>("[data-composer-tray]");
+    if (tray) tray.hidden = selected.size === 0 || document.body.classList.contains("composer-page");
+    document.querySelectorAll<HTMLButtonElement>("[data-composer-add]").forEach((button) => {
+      const active = selected.has(button.dataset.primitiveId ?? "");
+      button.setAttribute("aria-pressed", String(active));
+      button.classList.toggle("is-active", active);
+      const label = button.querySelector<HTMLElement>("[data-composer-add-label]");
+      if (label) label.textContent = active ? "Đã thêm" : "Thêm vào prompt";
+    });
+  };
+
+  document.querySelectorAll<HTMLButtonElement>("[data-composer-add]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const primitiveId = button.dataset.primitiveId;
+      if (!primitiveId) return;
+      try {
+        const result = addPrimitiveToActiveDraft(localStorage, {
+          primitiveId,
+          slug: button.dataset.primitiveSlug ?? "",
+          label: button.dataset.primitiveLabel ?? primitiveId,
+          fragment: button.dataset.primitiveFragment ?? "",
+          sourcePrompt: button.dataset.sourcePrompt ?? "",
+        });
+        update();
+        window.dispatchEvent(new CustomEvent("prompt-atlas:composer-change", { detail: result.draft }));
+        showToast(result.added ? "Đã thêm vào Composer." : "Thành phần này đã có trong recipe.");
+      } catch {
+        showToast("Không thể lưu recipe trong trình duyệt này.", "error");
+      }
+    });
+  });
+  window.addEventListener("prompt-atlas:composer-change", update);
+  window.addEventListener("storage", update);
+  update();
+}
+
 initializeNavigation();
 initializeFavorites();
 initializeCopy();
+initializeComposerEntries();
 
-declare global {
-  interface Window {
-    promptAtlas?: { readFavorites: () => string[]; showToast: typeof showToast };
-  }
-}
-
-window.promptAtlas = { readFavorites, showToast };
+window.promptAtlas = { readFavorites, showToast, readActiveComposerDraft: () => readActiveDraft(localStorage) };
 
 export {};
