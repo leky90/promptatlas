@@ -1,0 +1,39 @@
+{
+  "$schema": "../image-generation-harness.v1.schema.json",
+  "kind": "image-generation-config",
+  "schemaVersion": "1.0.0",
+  "frozenAt": "2026-08-12T00:00:00Z",
+  "testCase": {
+    "id": "test.image.harness-smoke.v1",
+    "version": "1.0.0",
+    "recipeId": "recipe.image.harness-smoke",
+    "recipeVersion": "1.0.0",
+    "datasetVersion": "1.0.0-pilot",
+    "exactPrompt": {
+      "language": "en",
+      "text": "A matte red ceramic sphere centered on a pale gray studio surface, photographed straight on with soft camera-left light and a clearly visible shadow falling to the right. Square 1:1 image. No text, logo, watermark, extra object, or reflection of the camera."
+    }
+  },
+  "routeIds": [
+    "codex-image-generation",
+    "gflow-nano-pro"
+  ],
+  "repeats": 3,
+  "settings": {
+    "mediaType": "image",
+    "aspectRatio": "1:1",
+    "count": 1,
+    "controls": [
+      {
+        "name": "seed",
+        "value": 42
+      }
+    ]
+  },
+  "environment": {
+    "gflowCliVersion": "0.53.1",
+    "gflowCatalogName": "GEM_PIX_2",
+    "gflowAlias": "nano-pro",
+    "codexTool": "image_gen.imagegen"
+  }
+}
