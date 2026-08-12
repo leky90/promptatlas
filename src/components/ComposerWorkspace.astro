@@ -62,8 +62,10 @@ import Icon from "./Icon.astro";
         </button>
       </div>
       <div class="composer-file-actions">
-        <label class="button button--ghost" for="composer-import"><Icon name="upload" size={18} /> Nhập recipe</label>
-        <input id="composer-import" class="visually-hidden" type="file" accept=".json,.promptatlas.json,application/json" data-import-composer />
+        <label class="button button--ghost composer-import-control" for="composer-import">
+          <Icon name="upload" size={18} /> Nhập recipe
+          <input id="composer-import" type="file" accept=".json,.promptatlas.json,application/json" data-import-composer />
+        </label>
         <button class="button button--quiet" type="button" data-reset-composer disabled>Xóa draft hiện tại</button>
       </div>
       <p class="composer-privacy"><Icon name="lock" size={17} /> Draft dùng localStorage; share dùng hash URL và không gửi recipe tới server.</p>

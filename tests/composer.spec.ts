@@ -88,3 +88,20 @@ test("storage failure keeps a shared snapshot readable and editing locked", asyn
   await expect(page.locator("[data-composer-preview]")).toContainText("Glitch Art");
   expect(await page.evaluate(() => localStorage.getItem("pa:drafts:active:v1"))).toBe(activeBefore);
 });
+
+test("the visible import action exposes keyboard focus", async ({ page }) => {
+  await page.goto("/composer/");
+  const preview = page.locator("[data-composer-preview]");
+  const input = page.locator("[data-import-composer]");
+  const visibleTrigger = page.locator('label[for="composer-import"]');
+
+  await preview.focus();
+  await page.keyboard.press("Tab");
+  await expect(input).toBeFocused();
+  const focusStyle = await visibleTrigger.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { outlineStyle: style.outlineStyle, outlineWidth: Number.parseFloat(style.outlineWidth) };
+  });
+  expect(focusStyle.outlineStyle).not.toBe("none");
+  expect(focusStyle.outlineWidth).toBeGreaterThanOrEqual(2);
+});

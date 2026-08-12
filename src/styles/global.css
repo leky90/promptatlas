@@ -2905,6 +2905,25 @@ button {
   border-top: 1px solid var(--line);
 }
 
+.composer-import-control {
+  position: relative;
+  overflow: hidden;
+}
+
+.composer-import-control input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.composer-import-control:focus-within {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
 .button--quiet {
   min-height: 44px;
   padding: 10px 12px;
