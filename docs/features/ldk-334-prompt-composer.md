@@ -45,13 +45,14 @@ Prompt Atlas currently lets people search 90 image styles and copy one complete 
 10. Import validates the versioned envelope and SHA-256 before opening it read-only. Every primitive field must be a non-empty bounded string; schema/dataset versions must be supported; every `primitiveId`/`slug` pair must match one canonical record in the 90-style production set; item IDs and blend keys must be unique and known. Malformed, unsupported-version, unknown-primitive or checksum-mismatched files show a readable recovery error and do not render stale snapshot data or alter drafts.
 11. At ≥960 px Composer is a persistent structured workspace; below 960 px the catalog exposes a compact tray and Composer controls remain usable without obscuring focus. Core controls—including the visible **Nhập recipe** action—are keyboard-operable, expose visible focus and are at least 44×44 px.
 12. No active/empty video mode appears. All behavior works on the static build without account, server, generation call or added API spend.
+13. From a stopped preview-server state in an AI-agent environment, one plain `npm run test:e2e` invocation keeps Astro preview in the foreground, executes the complete Playwright suite and cleans up its owned server when the run ends; it must not require a warm/orphaned server or a second invocation.
 
 ## Test plan
 
 | Layer | Coverage |
 | --- | --- |
 | Unit (`node:test`) | Recipe ordering, duplicate prevention, deterministic rendering, conflict derivation/resolution, snapshot codec, 6,000-character decision, deep envelope/primitive/version/blend/bounds validation, canonical primitive identity membership and draft-store invariants with a fake storage adapter. |
-| Integration/E2E (Playwright) | Add from catalog/detail, reload persistence, ordering/removal, copy, share/read-only/fork, storage failure, malformed and unknown-primitive checksummed snapshot recovery, import/export error path, visible import focus, mobile tray and deferred-video absence. |
+| Integration/E2E (Playwright) | Add from catalog/detail, reload persistence, ordering/removal, copy, share/read-only/fork, storage failure, malformed and unknown-primitive checksummed snapshot recovery, import/export error path, visible import focus, mobile tray and deferred-video absence; the standard command must bootstrap a foreground preview server from a stopped clean state. |
 | Accessibility (axe + assertions) | Serious/critical violations, live regions, accessible names, focus return/order and target-size contract on `/composer/` and the mobile catalog integration. |
 | BDD | No Gherkin runner is configured. The observable acceptance contract is covered by named Playwright scenarios and unit tests instead. |
 | Regression | Existing search/filter/favorite/copy/compare/detail/media tests plus `npm run check`, `npm run build`, `npm run test:contract` and `npm run test:e2e`. |
@@ -67,6 +68,7 @@ Prompt Atlas currently lets people search 90 image styles and copy one complete 
 - `src/components/SiteHeader.astro`, `src/layouts/BaseLayout.astro`, `src/scripts/global.ts` — Composer destination, count synchronization and shared feedback.
 - `src/components/Icon.astro`, `src/styles/global.css` — accepted icon/state/responsive design-system vocabulary.
 - `tests/composer-domain.test.mjs`, `tests/composer.spec.ts`, `tests/responsive.spec.ts`, `tests/site.spec.ts` — unit, interaction, responsive, accessibility and regression coverage.
+- `playwright.config.ts` — deterministic foreground preview bootstrap for a single clean E2E invocation, including AI-agent environments.
 
 ## Decisions
 
@@ -93,7 +95,8 @@ Approved by the user on 2026-08-12. Requirement changes after approval update th
 - Unit: 7/7 Composer domain, storage, snapshot and import/export tests passed, including checksummed malformed primitives, strict version/item/identity/blend bounds and canonical production membership.
 - Contract: 47/47 schema, content-pipeline and generation-harness tests passed.
 - Browser: 17/17 Playwright desktop/mobile scenarios passed, including populated Composer axe analysis, snapshot collision safety, malformed/unknown-primitive snapshot recovery without stale output or draft mutation, storage failure, visible import focus, keyboard ordering and 44 px control coverage.
+- E2E bootstrap: from a confirmed stopped preview state, one plain `npm run test:e2e` invocation kept Astro preview in the foreground, passed 17/17 and left no preview server running afterward.
 - Build gates: `npm run check` completed with 0 errors/warnings/hints; `npm run build` generated 95 static pages.
 - Visual review: populated Composer and catalog integration inspected at 1440×1000 and 390×844; the recipe spine, conflict hierarchy and primary Add/secondary Copy action order remained intact.
-- QA corrections: import exposes a real keyboard focus target with a 2 px visible outline; snapshot decoding rejects malformed primitive fields, unsupported versions, oversized recipes, duplicate identities, invalid blend references and any `primitiveId`/`slug` pair outside the canonical 90-style registry before rendering or forking.
+- QA corrections: import exposes a real keyboard focus target with a 2 px visible outline; snapshot decoding rejects malformed primitive fields, unsupported versions, oversized recipes, duplicate identities, invalid blend references and any `primitiveId`/`slug` pair outside the canonical 90-style registry before rendering or forking; Playwright explicitly disables Astro's agent auto-background mode for reproducible clean E2E startup.
 - API generation/spend remained outside runtime and unchanged at USD 0.
