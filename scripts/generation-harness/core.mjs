@@ -183,6 +183,28 @@ export function assertPlanSafety(plan) {
   }
 }
 
+export function expectedAttemptPaths(plan, cellId, attempt = 1) {
+  if (attempt !== 1 && attempt !== 2) throw new Error("attempt paths support only attempts 1 and 2");
+  const cell = plan.cells.find((item) => item.id === cellId);
+  if (!cell) throw new Error(`unknown plan cell ${cellId}`);
+  const directory = `.artifacts/generation-runs/${plan.planId}/${cell.id}`;
+  const responseKind = cell.route.interface === "codex" ? "codex" : "gflow";
+  return {
+    image: `${directory}/attempt-${attempt}.png`,
+    response: `${directory}/attempt-${attempt}.${responseKind}-response.json`,
+  };
+}
+
+const expectedAttemptPathsFromRecord = (attempt) => {
+  const directory = `.artifacts/generation-runs/${attempt.planId}/${attempt.cellId}`;
+  const responseKind = attempt.productRoute.id === ROUTE_IDS.codex ? "codex" : "gflow";
+  return {
+    image: `${directory}/attempt-${attempt.attempt}.png`,
+    response: `${directory}/attempt-${attempt.attempt}.${responseKind}-response.json`,
+    responseSource: attempt.productRoute.id === ROUTE_IDS.codex ? "codex-tool" : "gflow-cli",
+  };
+};
+
 export function assertAttemptSafety(attempt) {
   if (attempt.exactPrompt.text !== attempt.testCase.exactPrompt.text) throw new Error("attempt prompt differs from its frozen test case");
   if (attempt.exactPrompt.sha256 !== sha256Text(attempt.exactPrompt.text)) throw new Error("attempt prompt checksum is invalid");
@@ -201,24 +223,46 @@ export function assertAttemptSafety(attempt) {
   } else {
     throw new Error(`unsupported attempt route ${attempt.productRoute.id}`);
   }
+  const expectedCellFragment = `.${attempt.productRoute.id}.`;
+  if (!attempt.cellId.includes(expectedCellFragment)) throw new Error("attempt cell does not match its product route");
+  const expectedPaths = expectedAttemptPathsFromRecord(attempt);
+  if (attempt.originalOutputs.length > 1) throw new Error("an attempt can retain at most one original output");
+  for (const output of attempt.originalOutputs) {
+    if (output.path !== expectedPaths.image) throw new Error("attempt output does not match its deterministic cell path");
+  }
+  if (attempt.rawResponse.path !== expectedPaths.response) throw new Error("raw response does not match its deterministic cell path");
+  if (attempt.rawResponse.source !== expectedPaths.responseSource) throw new Error("raw response source does not match its product route");
   if (attempt.attempt === 1 && attempt.retry.isRetry) throw new Error("first attempt cannot be marked as a retry");
   if (attempt.attempt === 2 && (!attempt.retry.isRetry || !attempt.retry.previousAttemptId)) {
     throw new Error("second attempt must retain first-attempt retry evidence");
   }
   if (attempt.outcome === "success" && attempt.failure) throw new Error("successful attempts cannot carry failure evidence");
+  if (attempt.outcome !== "success" && !attempt.failure) throw new Error("non-success attempts require failure evidence");
+  if (attempt.outcome === "refusal" && attempt.failure?.classification !== "refusal") {
+    throw new Error("refusal outcomes require refusal failure evidence");
+  }
+  if (
+    attempt.outcome === "moderated"
+    && (
+      attempt.failure?.classification !== "moderation"
+      || !["flagged", "blocked"].includes(attempt.moderation.status)
+    )
+  ) {
+    throw new Error("moderated outcomes require blocked or flagged moderation evidence");
+  }
   if (attempt.failure?.retryable && !APPROVED_POLICY.retryableFailureClasses.includes(attempt.failure.classification)) {
     throw new Error(`failure class ${attempt.failure.classification} cannot be retried`);
   }
 }
 
 export function assertAttemptSetSafety(attempts) {
-  const ids = new Set();
+  const attemptsById = new Map();
   let retryCount = 0;
   const retriesByCell = new Map();
   for (const attempt of attempts) {
     assertAttemptSafety(attempt);
-    if (ids.has(attempt.attemptId)) throw new Error(`duplicate attempt ${attempt.attemptId}`);
-    ids.add(attempt.attemptId);
+    if (attemptsById.has(attempt.attemptId)) throw new Error(`duplicate attempt ${attempt.attemptId}`);
+    attemptsById.set(attempt.attemptId, attempt);
     if (attempt.retry.isRetry) {
       retryCount += 1;
       retriesByCell.set(attempt.cellId, (retriesByCell.get(attempt.cellId) ?? 0) + 1);
@@ -229,6 +273,17 @@ export function assertAttemptSetSafety(attempts) {
   }
   for (const [cellId, count] of retriesByCell) {
     if (count > APPROVED_POLICY.technicalRetryLimitPerCell) throw new Error(`cell ${cellId} exceeds its retry budget`);
+  }
+  for (const attempt of attempts.filter((item) => item.retry.isRetry)) {
+    const previousAttempt = attemptsById.get(attempt.retry.previousAttemptId);
+    if (!previousAttempt) throw new Error(`retry ${attempt.attemptId} references a missing first attempt`);
+    assertRetryAllowed({
+      attempt: attempt.attempt,
+      previousAttempt,
+      retryClass: attempt.retry.reason,
+      planId: attempt.planId,
+      cellId: attempt.cellId,
+    });
   }
 }
 
@@ -275,7 +330,7 @@ export async function captureRawResponse(filePath, repositoryRoot, source) {
   return { source, path: relativePath, sha256: sha256(buffer) };
 }
 
-export function assertRetryAllowed({ attempt, previousAttempt, retryClass }) {
+export function assertRetryAllowed({ attempt, previousAttempt, retryClass, planId, cellId }) {
   if (attempt === 1) {
     if (previousAttempt || retryClass) throw new Error("first attempts cannot declare retry evidence");
     return { isRetry: false };
@@ -285,8 +340,21 @@ export function assertRetryAllowed({ attempt, previousAttempt, retryClass }) {
   if (previousAttempt.outcome !== "failure" || !previousAttempt.failure?.retryable) {
     throw new Error("valid, refused, moderated or low-adherence outputs cannot be retried");
   }
+  assertAttemptSafety(previousAttempt);
+  if (
+    !planId
+    || !cellId
+    || previousAttempt.planId !== planId
+    || previousAttempt.cellId !== cellId
+    || previousAttempt.attemptId !== `${cellId}.a1`
+  ) {
+    throw new Error("retry evidence must come from attempt 1 of the same plan and cell");
+  }
   if (!APPROVED_POLICY.retryableFailureClasses.includes(retryClass)) {
     throw new Error(`failure class ${retryClass} is not retryable`);
+  }
+  if (previousAttempt.failure.classification !== retryClass) {
+    throw new Error("retry class must match the recorded failure classification");
   }
   return {
     isRetry: true,
@@ -316,8 +384,14 @@ export function createAttemptRecord({
   if (new Date(completedAt) < new Date(startedAt)) throw new Error("completedAt cannot precede startedAt");
   if (quotaUsage.apiCostUsd !== 0) throw new Error("API spend must remain USD 0");
   if (outcome === "success" && originalOutputs.length === 0) throw new Error("successful attempts require an original output");
-  if (outcome === "failure" && !failure) throw new Error("failed attempts require failure evidence");
-  const retry = assertRetryAllowed({ attempt, previousAttempt, retryClass });
+  if (outcome !== "success" && !failure) throw new Error("non-success attempts require failure evidence");
+  const retry = assertRetryAllowed({
+    attempt,
+    previousAttempt,
+    retryClass,
+    planId: plan.planId,
+    cellId: cell.id,
+  });
   const record = {
     $schema: HARNESS_SCHEMA_URL,
     kind: "image-generation-attempt",

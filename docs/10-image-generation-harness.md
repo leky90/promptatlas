@@ -20,7 +20,7 @@ The JSON Schema at `schemas/image-generation-harness.v1.schema.json` validates t
 - moderation state, outcome, quota mode and zero API cost;
 - all attempts, with no best-of selection.
 
-The approved benchmark-wide policy targets 72 planned outputs per route and allows at most 14 technical retries overall. Each individual cell has at most one retry, and only `transport`, `corrupt-output`, or `provider-transient` failures qualify. Refusal, moderation, valid low-adherence output, or aesthetic preference never qualifies for regeneration. Batch orchestration must enforce the 14-retry aggregate cap; the adapter enforces the one-retry cell cap.
+The approved benchmark-wide policy targets 72 planned outputs per route and allows at most 14 technical retries overall. Each individual cell has at most one retry, and only `transport`, `corrupt-output`, or `provider-transient` failures qualify. Retry evidence must be attempt 1 from the same plan and cell, and the requested retry class must equal its recorded failure class. Refusal, moderation, authentication, quota, invalid usage, unknown failures, valid low-adherence output, or aesthetic preference never qualifies for regeneration. Batch orchestration must enforce the 14-retry aggregate cap; the adapter enforces the one-retry cell cap.
 
 ## Safe dry run
 
@@ -53,7 +53,7 @@ Inspecting the installed CLI is read-only and checks version, catalog model, ali
 npm run generation:inspect-gflow
 ```
 
-Real generation is intentionally gated. The command below is the only execution path and requires a deliberate product-quota acknowledgement. It rejects environment drift, API tools, video commands, unsupported required settings and output paths outside `.artifacts`.
+Real generation is intentionally gated. The command below is the only execution path and requires a deliberate product-quota acknowledgement. Immediately before invoking generation, it rejects CLI/model/alias drift and verifies that the live catalog still exposes every applied aspect ratio. It also rejects API tools, video commands, unsupported required settings and output paths outside `.artifacts`.
 
 ```sh
 npm run generation:execute-gflow -- \
@@ -63,7 +63,7 @@ npm run generation:execute-gflow -- \
   --acknowledge-product-quota
 ```
 
-The adapter never retries automatically. For a second attempt, provide the immutable failed manifest and its qualifying class:
+The adapter classifies only explicit network, corrupt-output, or transient-provider evidence as retryable. Safety-policy blocks and refusals are retained as their own outcomes; authentication, quota, invalid invocation, and unrecognized errors fail closed as `unknown` and non-retryable. The adapter never retries automatically. For a second attempt, provide the immutable same-cell failed manifest and its matching qualifying class:
 
 ```sh
 npm run generation:execute-gflow -- \
@@ -87,7 +87,7 @@ npm run generation:record-codex -- \
   --request
 ```
 
-Run that request through Codex, stage the untouched image and raw response under the cell's `.artifacts` directory, then record them:
+The printed envelope includes both deterministic destinations: `stageOutputAs` and `stageResponseAs`. Run that request through Codex, stage the untouched image and raw response at those exact paths, then record them:
 
 ```sh
 npm run generation:record-codex -- \
@@ -100,9 +100,36 @@ npm run generation:record-codex -- \
   --output .artifacts/generation-runs/PLAN_ID/CELL_ID/attempt-1.json
 ```
 
-The recorder verifies the image is readable, records dimensions and hashes the original bytes plus response evidence. It does not infer an unexposed Codex model identifier.
+The recorder rejects evidence copied from another cell or attempt, verifies a successful image is readable, records dimensions, and hashes the original bytes plus response evidence. It does not infer an unexposed Codex model identifier.
 
-Attempt paths are immutable: adapters fail when an output or raw-response record already exists. Re-running a cell therefore requires an explicitly authorized second-attempt path and qualifying first-attempt evidence, never an overwrite.
+If Codex returns no image, retain the raw response and record the actual non-success outcome. A refusal does not need `--image`, but does require explicit failure evidence:
+
+```sh
+npm run generation:record-codex -- \
+  --plan .artifacts/generation-runs/smoke/plan.json \
+  --cell cell.test.image.harness-smoke.v1.codex-image-generation.r1 \
+  --response .artifacts/generation-runs/PLAN_ID/CELL_ID/attempt-1.codex-response.json \
+  --outcome refusal \
+  --failure-class refusal \
+  --failure-message "Codex refused the request" \
+  --started-at 2026-08-12T03:00:00Z \
+  --completed-at 2026-08-12T03:00:30Z \
+  --output .artifacts/generation-runs/PLAN_ID/CELL_ID/attempt-1.json
+```
+
+For a moderated attempt, use `--outcome moderated`, `--failure-class moderation`, and `--moderation-status blocked` or `flagged`; optional comma-separated `--moderation-categories` preserve provider categories. For a retryable technical failure, use its exact approved class and then supply the resulting attempt-1 manifest to both `--request` and the final record command for attempt 2:
+
+```sh
+npm run generation:record-codex -- \
+  --plan .artifacts/generation-runs/smoke/plan.json \
+  --cell cell.test.image.harness-smoke.v1.codex-image-generation.r1 \
+  --attempt 2 \
+  --previous .artifacts/generation-runs/PLAN_ID/CELL_ID/attempt-1.json \
+  --retry-class transport \
+  --request
+```
+
+Attempt paths are immutable and deterministic: `.artifacts/generation-runs/PLAN_ID/CELL_ID/attempt-N.png` plus `attempt-N.codex-response.json` or `attempt-N.gflow-response.json`. The gflow adapter refuses existing artifacts, and the Codex recorder accepts only these destinations. Re-running a cell therefore requires an explicitly authorized second-attempt path and qualifying first-attempt evidence, never an overwrite or evidence from a neighboring cell.
 
 ## Scope boundary
 

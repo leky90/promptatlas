@@ -398,7 +398,13 @@
         "isRetry": { "type": "boolean" },
         "reason": { "type": "string", "minLength": 1 },
         "previousAttemptId": { "$ref": "#/$defs/entityId" }
-      }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "isRetry": { "const": true } } },
+          "then": { "required": ["reason", "previousAttemptId"] }
+        }
+      ]
     },
     "attempt": {
       "type": "object",
@@ -446,6 +452,7 @@
         "selectionPolicy": { "const": "all-attempts" },
         "originalOutputs": {
           "type": "array",
+          "maxItems": 1,
           "items": { "$ref": "#/$defs/outputAsset" }
         },
         "moderation": { "$ref": "#/$defs/moderation" },
@@ -463,8 +470,55 @@
           }
         },
         {
-          "if": { "properties": { "outcome": { "const": "failure" } } },
+          "if": { "properties": { "outcome": { "enum": ["partial", "failure", "refusal", "moderated"] } } },
           "then": { "required": ["failure"] }
+        },
+        {
+          "if": { "properties": { "outcome": { "const": "refusal" } } },
+          "then": {
+            "properties": {
+              "failure": {
+                "allOf": [
+                  { "$ref": "#/$defs/failure" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "classification": { "const": "refusal" },
+                      "retryable": { "const": false }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "outcome": { "const": "moderated" } } },
+          "then": {
+            "properties": {
+              "moderation": {
+                "allOf": [
+                  { "$ref": "#/$defs/moderation" },
+                  {
+                    "type": "object",
+                    "properties": { "status": { "enum": ["flagged", "blocked"] } }
+                  }
+                ]
+              },
+              "failure": {
+                "allOf": [
+                  { "$ref": "#/$defs/failure" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "classification": { "const": "moderation" },
+                      "retryable": { "const": false }
+                    }
+                  }
+                ]
+              }
+            }
+          }
         }
       ]
     }

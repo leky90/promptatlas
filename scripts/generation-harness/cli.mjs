@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  APPROVED_POLICY,
   assertApprovedConfig,
   assertAttemptSafety,
   assertPlanSafety,
@@ -56,6 +57,9 @@ const loadValidated = async (filePath, validate, expectedKind) => {
   const result = validate(document);
   if (!result.valid) throw new Error(`invalid ${expectedKind}:\n${validationError(result)}`);
   if (document.kind !== expectedKind) throw new Error(`expected ${expectedKind}, received ${document.kind}`);
+  if (document.kind === "image-generation-config") assertApprovedConfig(document);
+  if (document.kind === "image-generation-plan") assertPlanSafety(document);
+  if (document.kind === "image-generation-attempt") assertAttemptSafety(document);
   return document;
 };
 
@@ -140,25 +144,53 @@ async function executeGflowCommand(flags, validate) {
 
 async function recordCodexCommand(flags, validate) {
   const plan = await loadValidated(requireFlag(flags, "plan"), validate, "image-generation-plan");
-  assertPlanSafety(plan);
   const cellId = requireFlag(flags, "cell");
-  if (flags.request) {
-    print(createCodexRequestEnvelope(plan, cellId));
-    return;
-  }
   const attemptNumber = Number(flags.attempt ?? 1);
   const previousAttempt = flags.previous
     ? await loadValidated(requireFlag(flags, "previous"), validate, "image-generation-attempt")
     : undefined;
+  if (flags.request) {
+    print(createCodexRequestEnvelope(plan, cellId, {
+      attempt: attemptNumber,
+      previousAttempt,
+      retryClass: flags["retry-class"],
+    }));
+    return;
+  }
+  const outcome = flags.outcome ?? "success";
+  const allowedOutcomes = new Set(["success", "partial", "failure", "refusal", "moderated"]);
+  if (!allowedOutcomes.has(outcome)) throw new Error(`unsupported Codex outcome ${outcome}`);
+  const failureClass = flags["failure-class"];
+  const failure = outcome === "success"
+    ? undefined
+    : {
+      classification: requireFlag(flags, "failure-class"),
+      retryable: APPROVED_POLICY.retryableFailureClasses.includes(failureClass),
+      message: requireFlag(flags, "failure-message"),
+    };
+  const moderationStatus = flags["moderation-status"] ?? (outcome === "moderated" ? "blocked" : "not-reported");
+  if (!["not-reported", "passed", "flagged", "blocked"].includes(moderationStatus)) {
+    throw new Error(`unsupported moderation status ${moderationStatus}`);
+  }
+  const moderation = {
+    status: moderationStatus,
+    categories: typeof flags["moderation-categories"] === "string"
+      ? flags["moderation-categories"].split(",").map((item) => item.trim()).filter(Boolean)
+      : [],
+    note: flags["moderation-note"] ?? "Codex returned no machine-readable moderation categories.",
+  };
   const attempt = await recordCodexCell({
     plan,
     cellId,
     repositoryRoot,
-    imagePath: requireFlag(flags, "image"),
+    imagePath: typeof flags.image === "string" ? flags.image : undefined,
     responsePath: requireFlag(flags, "response"),
     startedAt: requireFlag(flags, "started-at"),
     completedAt: requireFlag(flags, "completed-at"),
     attempt: attemptNumber,
+    outcome,
+    moderation,
+    failure,
     previousAttempt,
     retryClass: flags["retry-class"],
   });

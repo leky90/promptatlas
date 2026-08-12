@@ -185,7 +185,13 @@ test("gflow failures are retained and only one technical retry is allowed", asyn
     assert.equal(failed.failure.classification, "provider-transient");
     assert.equal(failed.failure.retryable, true);
     assert.deepEqual(
-      assertRetryAllowed({ attempt: 2, previousAttempt: failed, retryClass: "provider-transient" }),
+      assertRetryAllowed({
+        attempt: 2,
+        previousAttempt: failed,
+        retryClass: "provider-transient",
+        planId: plan.planId,
+        cellId: gflowCell.id,
+      }),
       { isRetry: true, reason: "provider-transient", previousAttemptId: failed.attemptId },
     );
     assert.throws(
@@ -196,6 +202,113 @@ test("gflow failures are retained and only one technical retry is allowed", asyn
       () => assertRetryAllowed({ attempt: 2, previousAttempt: { ...failed, outcome: "success" }, retryClass: "provider-transient" }),
       /cannot be retried/,
     );
+    const anotherCell = plan.cells.find(
+      (cell) => cell.route.interface === "gflow-cli" && cell.id !== gflowCell.id,
+    );
+    assert.throws(
+      () => assertRetryAllowed({
+        attempt: 2,
+        previousAttempt: failed,
+        retryClass: "provider-transient",
+        planId: plan.planId,
+        cellId: anotherCell.id,
+      }),
+      /same plan and cell/,
+    );
+    assert.throws(
+      () => assertRetryAllowed({
+        attempt: 2,
+        previousAttempt: failed,
+        retryClass: "transport",
+        planId: plan.planId,
+        cellId: gflowCell.id,
+      }),
+      /recorded failure classification/,
+    );
+  });
+});
+
+test("gflow moderation and unknown non-transport failures are retained without retry permission", async () => {
+  const gflowCells = plan.cells.filter((cell) => cell.route.interface === "gflow-cli");
+  await withTemporaryRepository(async (repositoryRoot) => {
+    const moderation = await executeGflowCell({
+      plan,
+      cellId: gflowCells[0].id,
+      repositoryRoot,
+      authorization: { productQuota: true, apiSpendUsd: 0 },
+      runner: async () => {
+        const error = new Error("request blocked by safety moderation");
+        error.code = 1;
+        error.stderr = "content policy violation";
+        throw error;
+      },
+      inspector: async () => expectedInspection,
+      clock: () => new Date("2026-08-12T02:10:00Z"),
+    });
+    assert.equal(moderation.outcome, "moderated");
+    assert.equal(moderation.moderation.status, "blocked");
+    assert.equal(moderation.failure.classification, "moderation");
+    assert.equal(moderation.failure.retryable, false);
+  });
+
+  await withTemporaryRepository(async (repositoryRoot) => {
+    const unknown = await executeGflowCell({
+      plan,
+      cellId: gflowCells[1].id,
+      repositoryRoot,
+      authorization: { productQuota: true, apiSpendUsd: 0 },
+      runner: async () => {
+        const error = new Error("authentication expired");
+        error.code = 2;
+        error.stderr = "login required";
+        throw error;
+      },
+      inspector: async () => expectedInspection,
+      clock: () => new Date("2026-08-12T02:20:00Z"),
+    });
+    assert.equal(unknown.outcome, "failure");
+    assert.equal(unknown.failure.classification, "unknown");
+    assert.equal(unknown.failure.retryable, false);
+  });
+
+  await withTemporaryRepository(async (repositoryRoot) => {
+    const exitZeroAuthFailure = await executeGflowCell({
+      plan,
+      cellId: gflowCells[2].id,
+      repositoryRoot,
+      authorization: { productQuota: true, apiSpendUsd: 0 },
+      runner: async () => ({ stdout: "login required", stderr: "authentication expired" }),
+      inspector: async () => expectedInspection,
+      clock: () => new Date("2026-08-12T02:30:00Z"),
+    });
+    assert.equal(exitZeroAuthFailure.outcome, "failure");
+    assert.equal(exitZeroAuthFailure.failure.classification, "unknown");
+    assert.equal(exitZeroAuthFailure.failure.retryable, false);
+  });
+});
+
+test("gflow rejects live aspect capability drift before invoking generation", async () => {
+  const gflowCell = plan.cells.find((cell) => cell.route.interface === "gflow-cli");
+  await withTemporaryRepository(async (repositoryRoot) => {
+    let invoked = false;
+    await assert.rejects(
+      () => executeGflowCell({
+        plan,
+        cellId: gflowCell.id,
+        repositoryRoot,
+        authorization: { productQuota: true, apiSpendUsd: 0 },
+        runner: async () => {
+          invoked = true;
+          throw new Error("generation must not run after capability drift");
+        },
+        inspector: async () => ({
+          ...expectedInspection,
+          supportedAspects: ["16:9"],
+        }),
+      }),
+      /aspect-ratio capability drift/,
+    );
+    assert.equal(invoked, false);
   });
 });
 
@@ -204,6 +317,11 @@ test("Codex request/record boundary preserves prompt, original image, raw respon
   const request = createCodexRequestEnvelope(plan, codexCell.id);
   assert.equal(request.request.tool, "image_gen.imagegen");
   assert.equal(request.request.arguments.prompt, config.testCase.exactPrompt.text);
+  assert.equal(request.stageOutputAs, codexCell.outputPath);
+  assert.equal(
+    request.stageResponseAs,
+    codexCell.outputPath.replace("attempt-1.png", "attempt-1.codex-response.json"),
+  );
 
   await withTemporaryRepository(async (repositoryRoot) => {
     const imagePath = path.join(repositoryRoot, codexCell.outputPath);
@@ -227,6 +345,101 @@ test("Codex request/record boundary preserves prompt, original image, raw respon
     assert.equal(attempt.exactPrompt.text, config.testCase.exactPrompt.text);
     assert.equal(attempt.quotaUsage.apiCostUsd, 0);
     assert.equal(attempt.rawResponse.source, "codex-tool");
+  });
+});
+
+test("Codex recorder rejects foreign evidence paths and retains non-success attempts without an image", async () => {
+  const codexCell = plan.cells.find((cell) => cell.route.interface === "codex");
+  await withTemporaryRepository(async (repositoryRoot) => {
+    const foreignImage = path.join(repositoryRoot, ".artifacts/foreign/other-cell.png");
+    const foreignResponse = path.join(repositoryRoot, ".artifacts/foreign/other-response.json");
+    await mkdir(path.dirname(foreignImage), { recursive: true });
+    await Promise.all([
+      writeFile(foreignImage, onePixelPng),
+      writeFile(foreignResponse, "{}"),
+    ]);
+    await assert.rejects(
+      () => recordCodexCell({
+        plan,
+        cellId: codexCell.id,
+        repositoryRoot,
+        imagePath: foreignImage,
+        responsePath: foreignResponse,
+        startedAt: "2026-08-12T03:10:00Z",
+        completedAt: "2026-08-12T03:10:01Z",
+      }),
+      /deterministic Codex image path/,
+    );
+
+    const responsePath = path.join(
+      repositoryRoot,
+      codexCell.outputPath.replace("attempt-1.png", "attempt-1.codex-response.json"),
+    );
+    await mkdir(path.dirname(responsePath), { recursive: true });
+    await writeFile(responsePath, JSON.stringify({ blocked: true, reason: "policy" }));
+    const refused = await recordCodexCell({
+      plan,
+      cellId: codexCell.id,
+      repositoryRoot,
+      responsePath,
+      startedAt: "2026-08-12T03:20:00Z",
+      completedAt: "2026-08-12T03:20:01Z",
+      outcome: "refusal",
+      moderation: {
+        status: "not-reported",
+        categories: [],
+        note: "Codex returned a refusal without moderation categories.",
+      },
+      failure: {
+        classification: "refusal",
+        retryable: false,
+        message: "Codex refused the request.",
+      },
+    });
+    assert.equal(validate(refused).valid, true, JSON.stringify(validate(refused).errors, null, 2));
+    assert.equal(refused.outcome, "refusal");
+    assert.deepEqual(refused.originalOutputs, []);
+    assert.equal(refused.failure.retryable, false);
+  });
+
+  const retryableCell = plan.cells.find(
+    (cell) => cell.route.interface === "codex" && cell.id !== codexCell.id,
+  );
+  await withTemporaryRepository(async (repositoryRoot) => {
+    const responsePath = path.join(
+      repositoryRoot,
+      retryableCell.outputPath.replace("attempt-1.png", "attempt-1.codex-response.json"),
+    );
+    await mkdir(path.dirname(responsePath), { recursive: true });
+    await writeFile(responsePath, JSON.stringify({ error: "connection reset" }));
+    const failed = await recordCodexCell({
+      plan,
+      cellId: retryableCell.id,
+      repositoryRoot,
+      responsePath,
+      startedAt: "2026-08-12T03:30:00Z",
+      completedAt: "2026-08-12T03:30:01Z",
+      outcome: "failure",
+      failure: {
+        classification: "transport",
+        retryable: true,
+        message: "Connection reset before an image was returned.",
+      },
+    });
+    const retryRequest = createCodexRequestEnvelope(plan, retryableCell.id, {
+      attempt: 2,
+      previousAttempt: failed,
+      retryClass: "transport",
+    });
+    assert.equal(
+      retryRequest.stageOutputAs,
+      retryableCell.outputPath.replace("attempt-1.png", "attempt-2.png"),
+    );
+    assert.equal(
+      retryRequest.stageResponseAs,
+      retryableCell.outputPath.replace("attempt-1.png", "attempt-2.codex-response.json"),
+    );
+    assert.equal(retryRequest.retry.previousAttemptId, failed.attemptId);
   });
 });
 
@@ -258,11 +471,12 @@ test("semantic validation rejects prompt drift and aggregate retry-budget overfl
   driftedPlan.exactPrompt.text = "drifted prompt";
   assert.throws(() => assertPlanSafety(driftedPlan), /frozen test case/);
 
-  const unsafeAttempt = {
+  const syntheticAttempt = ({ cellId, attempt = 1, retry = { isRetry: false } }) => ({
     kind: "image-generation-attempt",
-    attemptId: "cell.test.gflow-nano-pro.r1.a1",
-    cellId: "cell.test.gflow-nano-pro.r1",
-    attempt: 1,
+    planId: "plan.synthetic",
+    attemptId: `${cellId}.a${attempt}`,
+    cellId,
+    attempt,
     testCase: { exactPrompt: { text: "same prompt" } },
     exactPrompt: { text: "same prompt", sha256: sha256Text("same prompt") },
     selectionPolicy: "all-attempts",
@@ -271,23 +485,36 @@ test("semantic validation rejects prompt drift and aggregate retry-budget overfl
       modelVersion: { status: "provider-alias", identifier: "GEM_PIX_2/nano-pro" },
     },
     quotaUsage: { apiCostUsd: 0 },
+    originalOutputs: [],
+    rawResponse: {
+      source: "gflow-cli",
+      path: `.artifacts/generation-runs/plan.synthetic/${cellId}/attempt-${attempt}.gflow-response.json`,
+    },
+    moderation: { status: "not-reported", categories: [] },
     outcome: "failure",
+    failure: { classification: "provider-transient", retryable: true },
+    retry,
+  });
+  const unsafeAttempt = {
+    ...syntheticAttempt({ cellId: "cell.test.gflow-nano-pro.r1" }),
     failure: { classification: "refusal", retryable: true },
-    retry: { isRetry: false },
   };
   assert.throws(() => assertAttemptSafety(unsafeAttempt), /cannot be retried/);
 
-  const retries = Array.from({ length: 15 }, (_, index) => ({
-    ...structuredClone(unsafeAttempt),
-    cellId: `cell.test.gflow-nano-pro.r${index + 1}`,
-    attemptId: `cell.test.gflow-nano-pro.r${index + 1}.a2`,
-    attempt: 2,
-    failure: { classification: "provider-transient", retryable: true },
-    retry: {
-      isRetry: true,
-      reason: "provider-transient",
-      previousAttemptId: `cell.test.gflow-nano-pro.r${index + 1}.a1`,
-    },
-  }));
-  assert.throws(() => assertAttemptSetSafety(retries), /retry budget exceeded/);
+  const attempts = Array.from({ length: 15 }, (_, index) => {
+    const cellId = `cell.test.gflow-nano-pro.r${index + 1}`;
+    return [
+      syntheticAttempt({ cellId }),
+      syntheticAttempt({
+        cellId,
+        attempt: 2,
+        retry: {
+          isRetry: true,
+          reason: "provider-transient",
+          previousAttemptId: `${cellId}.a1`,
+        },
+      }),
+    ];
+  }).flat();
+  assert.throws(() => assertAttemptSetSafety(attempts), /retry budget exceeded/);
 });
