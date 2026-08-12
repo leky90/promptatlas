@@ -273,6 +273,7 @@ if (workspace) {
     readOnly = false;
     const payload = new URLSearchParams(location.hash.slice(1)).get("r");
     if (payload) {
+      draft = undefined;
       try {
         openedSnapshot = await decodeSnapshot(payload);
         draft = snapshotAsDraft(openedSnapshot);

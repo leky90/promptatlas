@@ -89,6 +89,43 @@ test("storage failure keeps a shared snapshot readable and editing locked", asyn
   expect(await page.evaluate(() => localStorage.getItem("pa:drafts:active:v1"))).toBe(activeBefore);
 });
 
+test("a checksummed malformed snapshot fails safely without stale output", async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (reason) => pageErrors.push(reason));
+  await page.goto("/");
+  await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await page.goto("/composer/");
+  await expect(page.locator("[data-composer-preview]")).toContainText("Glitch Art");
+
+  await page.evaluate(async () => {
+    const draftId = localStorage.getItem("pa:drafts:active:v1");
+    const draft = JSON.parse(localStorage.getItem(`pa:drafts:v1:${draftId}`) ?? "null");
+    const body = {
+      format: "prompt-atlas-recipe",
+      formatVersion: 1,
+      schemaVersion: "1.0.0",
+      datasetVersion: "1.0.0",
+      snapshotId: "malformed-browser-test",
+      createdAt: "2026-08-13T00:00:00.000Z",
+      recipe: {
+        items: [{ ...draft.items[0], sourcePrompt: null }],
+        acceptedBlendKeys: [],
+      },
+    };
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify(body)));
+    const sha256 = [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+    const bytes = new TextEncoder().encode(JSON.stringify({ ...body, sha256 }));
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    const payload = btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/u, "");
+    location.hash = `r=${payload}`;
+  });
+
+  await expect(page.locator("[data-composer-error]")).toContainText("Snapshot không hợp lệ");
+  await expect(page.locator("[data-composer-preview]")).toHaveText("Thêm thành phần để tạo prompt.");
+  expect(pageErrors).toEqual([]);
+});
+
 test("the visible import action exposes keyboard focus", async ({ page }) => {
   await page.goto("/composer/");
   const preview = page.locator("[data-composer-preview]");
