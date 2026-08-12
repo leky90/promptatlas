@@ -7,11 +7,15 @@
     "dev": "astro dev",
     "start": "astro dev",
     "prepare:data": "node scripts/prepare-site-data.mjs",
-    "check": "astro check",
-    "build": "astro build",
+    "import:legacy-assets": "node scripts/import-legacy-source-assets.mjs",
+    "build:image-data": "node scripts/build-image-content.mjs",
+    "check:image-data": "node scripts/build-image-content.mjs --check",
+    "validate:image-data": "node scripts/validate-image-content.mjs",
+    "check": "npm run check:image-data && npm run validate:image-data && astro check",
+    "build": "npm run check:image-data && npm run validate:image-data && astro build",
     "preview": "astro preview",
     "validate:contract": "node scripts/validate-prompt-atlas-data.mjs schemas/examples/prompt-atlas.v1.example.json",
-    "test:contract": "node --test contract-tests/data-contract.test.mjs",
+    "test:contract": "node --test contract-tests/*.test.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {

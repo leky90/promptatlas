@@ -26,6 +26,8 @@ Production checks:
 ```bash
 npm run check
 npm run build
+npm run check:image-data
+npm run validate:image-data
 npm run validate:contract
 npm run test:contract
 npm run test:e2e
@@ -35,9 +37,15 @@ npm run test:e2e
 
 The normalized catalog lives in `src/data/styles.json`. Optimized WebP assets and their public manifest live in `public/media/`.
 
-The multimodal expansion contract lives in `src/data/taxonomy.v1.json` and `schemas/prompt-atlas.v1.schema.json`. A conforming image/video fixture is in `schemas/examples/`; `scripts/validate-prompt-atlas-data.mjs` enforces schema and cross-record invariants. The design and migration decisions are documented in `docs/09-taxonomy-and-data-contract.md`. These artifacts are additive and do not yet replace the production `StyleRecord` catalog.
+The long-term ontology contract lives in `src/data/taxonomy.v1.json` and `schemas/prompt-atlas.v1.schema.json`. A conforming fixture is in `schemas/examples/`; `scripts/validate-prompt-atlas-data.mjs` enforces its schema and cross-record invariants.
+
+The image-first production projection is `src/data/prompt-atlas.image.v1.json`, governed by `schemas/prompt-atlas.image.v1.schema.json`. It is generated deterministically from the 90-style catalog plus the immutable source-asset inventory in `src/data/legacy-source-assets.v1.json`. Every production build checks that this projection is current, validates all references and rights fields, and verifies the SHA-256 checksum of every published full image and thumbnail.
 
 `scripts/prepare-site-data.mjs` is the local ingest pipeline used to transform the original generation manifests and comparison evaluation from the parent workspace. Those large source outputs are intentionally not duplicated in this deploy repository.
+
+For a controlled re-import of the legacy originals, run `npm run import:legacy-assets -- --source-root /absolute/path/to/output`, review the resulting source manifest, then run `npm run build:image-data`. This imports metadata and checksums only; it never invokes an image API or generation provider.
+
+Current legacy runs are labelled as historical product routes instead of being relabelled as the approved Codex and Nano Banana Pro routes. The next generation harness can add those new route snapshots without corrupting the provenance of the existing 180 outputs. All run records explicitly keep `apiCostUsd: 0`.
 
 ## Deployment
 
