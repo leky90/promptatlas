@@ -1,6 +1,6 @@
 # LDK-334 — Prompt Composer and discovery integration
 
-**Status:** approved on 2026-08-12  
+**Status:** implemented — awaiting QA
 **Owner:** software engineer  
 **Reviewer:** QA  
 **Depends on:** LDK-333, LDK-335, LDK-346 (accepted/done)
@@ -86,3 +86,13 @@ Prompt Atlas currently lets people search 90 image styles and copy one complete 
 ## Approval gate
 
 Approved by the user on 2026-08-12. Requirement changes after approval update this document and its tests before production code.
+
+## Implementation evidence
+
+- Static route: `/composer/`; integration entry points: all 90 catalog cards and every `/styles/[slug]/` detail route.
+- Unit: 4/4 Composer domain, storage, snapshot and import/export tests passed.
+- Contract: 47/47 schema, content-pipeline and generation-harness tests passed.
+- Browser: 14/14 Playwright desktop/mobile scenarios passed, including populated Composer axe analysis, snapshot collision safety, storage failure, keyboard ordering and 44 px control coverage.
+- Build gates: `npm run check` completed with 0 errors/warnings/hints; `npm run build` generated 95 static pages.
+- Visual review: populated Composer and catalog integration inspected at 1440×1000 and 390×844; the recipe spine, conflict hierarchy and primary Add/secondary Copy action order remained intact.
+- API generation/spend remained outside runtime and unchanged at USD 0.
