@@ -129,15 +129,25 @@ export function createImageContentValidator(schema) {
       for (const sourceAssetId of run.originalAssetIds) {
         const sourceAsset = sourceById.get(sourceAssetId);
         if (!sourceAsset) addError(`/generationRuns/${index}/originalAssetIds`, `unknown source asset ${sourceAssetId}`);
-        else if (sourceAsset.productRouteId !== run.productRoute.id) {
-          addError(`/generationRuns/${index}/originalAssetIds`, "source asset product route does not match run snapshot");
+        else {
+          if (sourceAsset.productRouteId !== run.productRoute.id) {
+            addError(`/generationRuns/${index}/originalAssetIds`, "source asset product route does not match run snapshot");
+          }
+          if (sourceAsset.recipeId !== run.recipeId) {
+            addError(`/generationRuns/${index}/originalAssetIds`, "source asset recipe does not match run recipe");
+          }
         }
       }
       for (const outputAssetId of run.outputAssetIds) {
         const asset = assetById.get(outputAssetId);
         if (!asset) addError(`/generationRuns/${index}/outputAssetIds`, `unknown output asset ${outputAssetId}`);
-        else if (asset.productRouteId !== run.productRoute.id) {
-          addError(`/generationRuns/${index}/outputAssetIds`, "output asset product route does not match run snapshot");
+        else {
+          if (asset.productRouteId !== run.productRoute.id) {
+            addError(`/generationRuns/${index}/outputAssetIds`, "output asset product route does not match run snapshot");
+          }
+          if (asset.recipeId !== run.recipeId) {
+            addError(`/generationRuns/${index}/outputAssetIds`, "output asset recipe does not match run recipe");
+          }
         }
       }
     }

@@ -99,6 +99,52 @@ test("negative: broken source and output references are rejected", () => {
   assert.ok(result.errors.some((error) => error.message.includes("unknown output asset")));
 });
 
+test("negative: runs cannot reference same-route assets from another recipe", () => {
+  const result = mutate((copy) => {
+    const run = copy.generationRuns[0];
+    const sourceAsset = copy.sourceAssets.find(
+      (item) => item.productRouteId === run.productRoute.id && item.recipeId !== run.recipeId,
+    );
+    const outputAsset = copy.assets.find(
+      (item) => item.productRouteId === run.productRoute.id && item.recipeId !== run.recipeId,
+    );
+    assert.ok(sourceAsset);
+    assert.ok(outputAsset);
+    run.originalAssetIds = [sourceAsset.id];
+    run.outputAssetIds = [outputAsset.id];
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.message.includes("source asset recipe does not match run recipe")));
+  assert.ok(result.errors.some((error) => error.message.includes("output asset recipe does not match run recipe")));
+});
+
+test("negative: exact model versions require an identifier", () => {
+  const result = mutate((copy) => {
+    copy.generationRuns[0].productRoute.modelVersion.status = "exact";
+    delete copy.generationRuns[0].productRoute.modelVersion.identifier;
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.path.includes("modelVersion") && error.message.includes("identifier")));
+});
+
+test("negative: provider-alias model versions require an identifier", () => {
+  const result = mutate((copy) => {
+    copy.generationRuns[0].productRoute.modelVersion.status = "provider-alias";
+    delete copy.generationRuns[0].productRoute.modelVersion.identifier;
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.path.includes("modelVersion") && error.message.includes("identifier")));
+});
+
+test("negative: unavailable model versions require a reason", () => {
+  const result = mutate((copy) => {
+    copy.generationRuns[0].productRoute.modelVersion.status = "unavailable";
+    delete copy.generationRuns[0].productRoute.modelVersion.reason;
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.path.includes("modelVersion") && error.message.includes("reason")));
+});
+
 test("negative: prompt drift is rejected", () => {
   const result = mutate((copy) => {
     copy.generationRuns[0].exactPrompt.text = "drifted prompt";

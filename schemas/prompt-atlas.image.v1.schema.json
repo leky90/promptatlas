@@ -364,7 +364,31 @@
             "identifier": { "type": "string", "minLength": 1 },
             "source": { "type": "string", "minLength": 1 },
             "reason": { "type": "string", "minLength": 1 }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": { "enum": ["exact", "provider-alias"] }
+                }
+              },
+              "then": {
+                "properties": { "identifier": true },
+                "required": ["identifier"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "status": { "const": "unavailable" }
+                }
+              },
+              "then": {
+                "properties": { "reason": true },
+                "required": ["reason"]
+              }
+            }
+          ]
         }
       }
     },
