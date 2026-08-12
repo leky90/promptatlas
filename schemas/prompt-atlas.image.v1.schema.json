@@ -1,0 +1,515 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://promptatlas.ldktech.com/schemas/prompt-atlas.image.v1.schema.json",
+  "title": "Prompt Atlas image content pipeline v1",
+  "description": "Versioned production contract for image styles, recipes, source captures, published assets, generation runs and preserved routes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "taxonomyVersion",
+    "datasetVersion",
+    "releasedAt",
+    "apiAdaptersEnabled",
+    "sourceDataset",
+    "stylePrimitives",
+    "recipes",
+    "sourceAssets",
+    "assets",
+    "generationRuns",
+    "legacyRoutes"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schemaVersion": { "const": "1.0.0" },
+    "taxonomyVersion": { "$ref": "#/$defs/version" },
+    "datasetVersion": { "$ref": "#/$defs/version" },
+    "releasedAt": { "type": "string", "format": "date-time" },
+    "apiAdaptersEnabled": { "const": false },
+    "sourceDataset": { "$ref": "#/$defs/sourceDataset" },
+    "stylePrimitives": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/stylePrimitive" }
+    },
+    "recipes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/recipe" }
+    },
+    "sourceAssets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/sourceAsset" }
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/publishedAsset" }
+    },
+    "generationRuns": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/generationRun" }
+    },
+    "legacyRoutes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/legacyRoute" }
+    }
+  },
+  "$defs": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-z0-9.-]+)?$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "entityId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "localizedText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vi", "en"],
+      "properties": {
+        "vi": { "type": "string", "minLength": 1 },
+        "en": { "type": "string", "minLength": 1 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceType", "author", "createdAt", "updatedAt"],
+      "properties": {
+        "sourceType": {
+          "enum": ["original", "generated", "migrated", "derived"]
+        },
+        "author": { "type": "string", "minLength": 1 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "sourceReference": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sourceDataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "recordCount"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "recordCount": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "stylePrimitive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "legacyId",
+        "slug",
+        "label",
+        "family",
+        "definition",
+        "cues",
+        "promptFragment",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "version": { "$ref": "#/$defs/version" },
+        "legacyId": { "type": "integer", "minimum": 1 },
+        "slug": { "$ref": "#/$defs/slug" },
+        "label": { "$ref": "#/$defs/localizedText" },
+        "family": { "type": "string", "minLength": 1 },
+        "definition": { "$ref": "#/$defs/localizedText" },
+        "cues": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "promptFragment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["language", "text"],
+          "properties": {
+            "language": { "const": "en" },
+            "text": { "type": "string", "minLength": 1 }
+          }
+        },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "recipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "slug",
+        "status",
+        "primitiveIds",
+        "sourcePrompt",
+        "generationPrompt",
+        "outputSpec",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "version": { "$ref": "#/$defs/version" },
+        "slug": { "$ref": "#/$defs/slug" },
+        "status": { "enum": ["active", "deprecated"] },
+        "primitiveIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "sourcePrompt": { "type": "string", "minLength": 1 },
+        "generationPrompt": { "type": "string", "minLength": 1 },
+        "outputSpec": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mediaType", "requestedAspectRatio"],
+          "properties": {
+            "mediaType": { "const": "image" },
+            "requestedAspectRatio": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*:[1-9][0-9]*$"
+            }
+          }
+        },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "sourceAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "recipeId",
+        "productRouteId",
+        "originalPath",
+        "mimeType",
+        "bytes",
+        "sha256",
+        "capturedAt",
+        "availability"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "recipeId": { "$ref": "#/$defs/entityId" },
+        "productRouteId": { "$ref": "#/$defs/slug" },
+        "originalPath": { "type": "string", "minLength": 1 },
+        "mimeType": { "enum": ["image/png", "image/jpeg", "image/webp"] },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "capturedAt": { "type": "string", "format": "date-time" },
+        "availability": { "enum": ["repository", "project-archive"] }
+      }
+    },
+    "licenseProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "reference", "verifiedAt"],
+      "properties": {
+        "type": {
+          "enum": ["project-manifest", "generation-record", "license-file"]
+        },
+        "reference": { "type": "string", "minLength": 1 },
+        "verifiedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["license", "consent", "restrictions", "retention", "takedown"],
+      "properties": {
+        "license": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "version", "scope", "proof"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "version": { "$ref": "#/$defs/version" },
+            "scope": { "type": "string", "minLength": 1 },
+            "proof": { "$ref": "#/$defs/licenseProof" }
+          }
+        },
+        "consent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["required", "status", "basis"],
+          "properties": {
+            "required": { "type": "boolean" },
+            "status": {
+              "enum": ["not-required", "obtained", "restricted", "missing"]
+            },
+            "basis": { "type": "string", "minLength": 1 }
+          }
+        },
+        "restrictions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "retention": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["policy", "reviewAt"],
+          "properties": {
+            "policy": { "enum": ["permanent", "until-replaced", "time-bound"] },
+            "reviewAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "takedown": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status"],
+          "properties": {
+            "status": { "enum": ["active", "pending", "removed"] },
+            "requestedAt": { "type": "string", "format": "date-time" },
+            "resolvedAt": { "type": "string", "format": "date-time" }
+          }
+        }
+      }
+    },
+    "thumbnail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "width", "height", "sha256"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^/media/thumbs/.+\\.webp$" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "publishedAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "recipeId",
+        "productRouteId",
+        "sourceAssetId",
+        "kind",
+        "path",
+        "mimeType",
+        "width",
+        "height",
+        "bytes",
+        "sha256",
+        "thumbnail",
+        "alt",
+        "rights",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "recipeId": { "$ref": "#/$defs/entityId" },
+        "productRouteId": { "$ref": "#/$defs/slug" },
+        "sourceAssetId": { "$ref": "#/$defs/entityId" },
+        "kind": { "const": "image" },
+        "path": { "type": "string", "pattern": "^/media/styles/.+\\.webp$" },
+        "mimeType": { "const": "image/webp" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "thumbnail": { "$ref": "#/$defs/thumbnail" },
+        "alt": { "$ref": "#/$defs/localizedText" },
+        "rights": { "$ref": "#/$defs/rights" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "productRouteSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayName",
+        "provider",
+        "interface",
+        "identityStatus",
+        "modelFamily",
+        "modelVersion"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "displayName": { "type": "string", "minLength": 1 },
+        "provider": { "type": "string", "minLength": 1 },
+        "interface": {
+          "enum": ["codex", "gflow-cli", "chatgpt-ui", "legacy-cli"]
+        },
+        "identityStatus": {
+          "enum": ["verified", "provider-alias", "legacy-label", "unavailable"]
+        },
+        "modelFamily": { "type": "string", "minLength": 1 },
+        "modelVersion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "source"],
+          "properties": {
+            "status": { "enum": ["exact", "provider-alias", "unavailable"] },
+            "identifier": { "type": "string", "minLength": 1 },
+            "source": { "type": "string", "minLength": 1 },
+            "reason": { "type": "string", "minLength": 1 }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": { "enum": ["exact", "provider-alias"] }
+                }
+              },
+              "then": {
+                "properties": { "identifier": true },
+                "required": ["identifier"]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "status": { "const": "unavailable" }
+                }
+              },
+              "then": {
+                "properties": { "reason": true },
+                "required": ["reason"]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "setting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "requestedValue", "supportStatus"],
+      "properties": {
+        "name": { "$ref": "#/$defs/slug" },
+        "requestedValue": {},
+        "appliedValue": {},
+        "supportStatus": {
+          "enum": ["supported", "unsupported", "provider-default", "unknown"]
+        },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "moderation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "categories"],
+      "properties": {
+        "status": { "enum": ["not-reported", "passed", "flagged", "blocked"] },
+        "categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "quotaUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "apiCostUsd"],
+      "properties": {
+        "mode": { "enum": ["provider-quota", "subscription-included", "not-recorded"] },
+        "units": { "type": "number", "minimum": 0 },
+        "unitName": { "type": "string", "minLength": 1 },
+        "apiCostUsd": { "const": 0 },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "generationRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "recipeId",
+        "recipeVersion",
+        "datasetVersion",
+        "productRoute",
+        "exactPrompt",
+        "settings",
+        "startedAt",
+        "completedAt",
+        "attempt",
+        "selectionPolicy",
+        "originalAssetIds",
+        "outputAssetIds",
+        "moderation",
+        "outcome",
+        "quotaUsage",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "recipeId": { "$ref": "#/$defs/entityId" },
+        "recipeVersion": { "$ref": "#/$defs/version" },
+        "datasetVersion": { "$ref": "#/$defs/version" },
+        "productRoute": { "$ref": "#/$defs/productRouteSnapshot" },
+        "exactPrompt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["language", "text", "sha256"],
+          "properties": {
+            "language": { "const": "en" },
+            "text": { "type": "string", "minLength": 1 },
+            "sha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "settings": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/setting" }
+        },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "selectionPolicy": {
+          "enum": ["all-attempts", "provider-default", "legacy-selected-output"]
+        },
+        "originalAssetIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "outputAssetIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entityId" }
+        },
+        "moderation": { "$ref": "#/$defs/moderation" },
+        "outcome": { "enum": ["success", "partial", "failure", "refusal", "moderated"] },
+        "quotaUsage": { "$ref": "#/$defs/quotaUsage" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "legacyRoute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["legacyId", "slug", "route", "recipeId", "status"],
+      "properties": {
+        "legacyId": { "type": "integer", "minimum": 1 },
+        "slug": { "$ref": "#/$defs/slug" },
+        "route": { "type": "string", "pattern": "^/styles/[a-z0-9]+(?:-[a-z0-9]+)*/$" },
+        "recipeId": { "$ref": "#/$defs/entityId" },
+        "status": { "const": "preserved" }
+      }
+    }
+  }
+}

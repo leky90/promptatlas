@@ -147,7 +147,7 @@ Never recycle an ID for a different meaning. Deprecate a record, document the re
 
 ## Provenance and model-note evidence
 
-Every durable record declares source type, author, license and timestamps. External or licensed work also includes source URLs. Generated media carries provenance both on the example record and the nested media asset. Checksums are optional during authoring and required by the future ingest pipeline for production assets.
+Every durable record declares source type, author, license and timestamps. External or licensed work also includes source URLs. Generated media carries provenance both on the example record and the nested media asset. Checksums remain optional in the authoring fixture but are mandatory in the image-first production projection and verified against repository bytes on every build.
 
 A model note is scoped to provider, model family, mandatory version disclosure and observation time. It must use cautious language, include a confidence level and reference at least one existing generation run. Every cited run must match the note's provider, model family and version-disclosure status; exposed identifiers must also match. Unverified provider folklore or evidence from another model is not valid model guidance.
 
@@ -182,6 +182,20 @@ Migration must preserve the existing normalized catalog until the new pipeline h
 - versions, localization and provenance are present.
 
 Production ingestion should run the same checks before publishing and additionally verify asset existence/checksums, license policy, deprecation migrations and reviewer approval.
+
+## Image-first production projection — LDK-335
+
+The approved image-first pipeline adds a production projection without weakening the broader ontology contract:
+
+- `schemas/prompt-atlas.image.v1.schema.json` defines the release contract for style primitives, image recipes, immutable source captures, published assets, generation runs and legacy URL mappings.
+- `src/data/legacy-source-assets.v1.json` inventories the 180 original ChatGPT/GFlow captures with bytes and SHA-256 hashes. The large originals remain in the project archive rather than being duplicated in the deploy repository.
+- `src/data/prompt-atlas.image.v1.json` is the deterministic canonical snapshot: 90 style primitives, 90 recipes, 180 published assets, 180 generation runs and 90 preserved detail routes.
+- `scripts/build-image-content.mjs --check` rejects stale generated content. `scripts/validate-image-content.mjs` rejects invalid references, prompt drift, incomplete rights/consent/retention/takedown metadata, non-zero API spend, missing media and checksum mismatches.
+- `npm run check` and `npm run build` run both the freshness and integrity gates before Astro.
+
+Each run snapshots the product route and identity-disclosure status, exact prompt and its checksum, requested/applied setting status, timestamps, attempt, original and published assets, moderation/outcome and quota usage. Existing outputs remain labelled as legacy ChatGPT UI and legacy GFlow CLI runs. They are not falsely attributed to the new Codex Image Generation or Nano Banana Pro product routes.
+
+The migration manifest preserves every existing `/styles/{slug}/` route and requires contiguous legacy IDs 1–90. Removing a route, breaking a reference or changing a published asset without rebuilding its checksums fails CI. The schema hard-codes `apiAdaptersEnabled: false` and `quotaUsage.apiCostUsd: 0`; generation remains a separate product-route workflow rather than an API billing dependency.
 
 ## Deliberate non-goals for v1
 
