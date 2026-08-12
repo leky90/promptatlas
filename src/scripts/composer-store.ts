@@ -117,15 +117,7 @@ export function encodeSnapshot(snapshot: ShareSnapshot) {
     .replace(/=+$/u, "");
 }
 
-export async function decodeSnapshot(payload: string): Promise<ShareSnapshot> {
-  const normalized = payload.replaceAll("-", "+").replaceAll("_", "/");
-  const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
-  let value: unknown;
-  try {
-    value = JSON.parse(new TextDecoder().decode(base64ToBytes(padded)));
-  } catch {
-    throw new Error("Snapshot không hợp lệ hoặc đã bị hỏng.");
-  }
+async function validateSnapshot(value: unknown): Promise<ShareSnapshot> {
   if (!value || typeof value !== "object") throw new Error("Snapshot không hợp lệ.");
   const snapshot = value as ShareSnapshot;
   if (
@@ -141,6 +133,17 @@ export async function decodeSnapshot(payload: string): Promise<ShareSnapshot> {
   const { sha256, ...body } = snapshot;
   if (await sha256Text(snapshotBody(body)) !== sha256) throw new Error("Checksum snapshot không khớp.");
   return snapshot;
+}
+
+export async function decodeSnapshot(payload: string): Promise<ShareSnapshot> {
+  const normalized = payload.replaceAll("-", "+").replaceAll("_", "/");
+  const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+  try {
+    return await validateSnapshot(JSON.parse(new TextDecoder().decode(base64ToBytes(padded))));
+  } catch (error) {
+    if (error instanceof Error && /Snapshot|Checksum|Phiên bản/u.test(error.message)) throw error;
+    throw new Error("Snapshot không hợp lệ hoặc đã bị hỏng.");
+  }
 }
 
 export function buildShareUrl(baseUrl: string, payload: string) {
@@ -161,4 +164,23 @@ export function forkSnapshot(
     items: structuredClone(snapshot.recipe.items),
     acceptedBlendKeys: [...snapshot.recipe.acceptedBlendKeys],
   });
+}
+
+export function createExportFile(snapshot: ShareSnapshot) {
+  const safeId = snapshot.snapshotId.replace(/[^a-z0-9._-]/giu, "-");
+  return {
+    filename: `prompt-atlas-recipe-${safeId}.promptatlas.json`,
+    mimeType: "application/json",
+    content: `${JSON.stringify(snapshot, null, 2)}\n`,
+  };
+}
+
+export async function parseExportFile(content: string) {
+  let value: unknown;
+  try {
+    value = JSON.parse(content);
+  } catch {
+    throw new Error("Tệp Prompt Atlas không phải JSON hợp lệ.");
+  }
+  return validateSnapshot(value);
 }

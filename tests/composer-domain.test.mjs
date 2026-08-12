@@ -13,10 +13,12 @@ import {
   ACTIVE_DRAFT_KEY,
   addPrimitiveToActiveDraft,
   buildShareUrl,
+  createExportFile,
   createSnapshot,
   decodeSnapshot,
   encodeSnapshot,
   forkSnapshot,
+  parseExportFile,
   readActiveDraft,
 } from "../src/scripts/composer-store.ts";
 
@@ -117,4 +119,22 @@ test("failed snapshot fork preserves readable snapshot and the existing active p
   assert.throws(() => forkSnapshot(storage, snapshot, { uuid: () => "forked-draft" }), /Quota exceeded/u);
   assert.equal(storage.getItem(ACTIVE_DRAFT_KEY), "existing-draft");
   assert.equal(snapshot.recipe.items[0].label, "Glitch Art");
+});
+
+test("oversized shares fall back to a lossless checksummed export", async () => {
+  const draft = addPrimitive(createDraft("recipe-42", "2026-08-12T00:00:00.000Z"), glitch).draft;
+  const snapshot = await createSnapshot(draft, "2026-08-12T00:01:00.000Z");
+  const oversized = buildShareUrl("https://example.test/composer/", "x".repeat(6000));
+  assert.equal(oversized.shareable, false);
+  assert.ok(oversized.length > 6000);
+
+  const exported = createExportFile(snapshot);
+  assert.equal(exported.filename, "prompt-atlas-recipe-recipe-42.promptatlas.json");
+  assert.equal(exported.mimeType, "application/json");
+  const imported = await parseExportFile(exported.content);
+  assert.deepEqual(imported, snapshot);
+
+  const tampered = JSON.parse(exported.content);
+  tampered.recipe.items[0].label = "Changed";
+  await assert.rejects(parseExportFile(JSON.stringify(tampered)), /Checksum/u);
 });
