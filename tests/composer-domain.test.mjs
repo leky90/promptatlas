@@ -39,6 +39,11 @@ const watercolor = {
   sourcePrompt: "A portrait looking into the camera.",
 };
 
+const productionPrimitiveIdentities = new Map([
+  [glitch.primitiveId, glitch.slug],
+  [watercolor.primitiveId, watercolor.slug],
+]);
+
 const resignSnapshot = async (snapshot) => {
   const { sha256: _previousChecksum, ...body } = snapshot;
   return { ...snapshot, sha256: await sha256Text(JSON.stringify(body)) };
@@ -95,7 +100,7 @@ test("share snapshots are immutable and fork without overwriting the active draf
   const snapshot = await createSnapshot(first, "2026-08-12T00:01:00.000Z");
   const payload = encodeSnapshot(snapshot);
   const beforeOpenWrites = storage.writes;
-  const opened = await decodeSnapshot(payload);
+  const opened = await decodeSnapshot(payload, productionPrimitiveIdentities);
 
   assert.equal(storage.writes, beforeOpenWrites);
   assert.equal(storage.getItem(ACTIVE_DRAFT_KEY), existingPointer);
@@ -137,12 +142,12 @@ test("oversized shares fall back to a lossless checksummed export", async () => 
   const exported = createExportFile(snapshot);
   assert.equal(exported.filename, "prompt-atlas-recipe-recipe-42.promptatlas.json");
   assert.equal(exported.mimeType, "application/json");
-  const imported = await parseExportFile(exported.content);
+  const imported = await parseExportFile(exported.content, productionPrimitiveIdentities);
   assert.deepEqual(imported, snapshot);
 
   const tampered = JSON.parse(exported.content);
   tampered.recipe.items[0].label = "Changed";
-  await assert.rejects(parseExportFile(JSON.stringify(tampered)), /Checksum/u);
+  await assert.rejects(parseExportFile(JSON.stringify(tampered), productionPrimitiveIdentities), /Checksum/u);
 });
 
 test("checksummed snapshots with malformed primitive fields are rejected before rendering", async () => {
@@ -151,8 +156,8 @@ test("checksummed snapshots with malformed primitive fields are rejected before 
   snapshot.recipe.items[0].sourcePrompt = null;
   snapshot = await resignSnapshot(snapshot);
 
-  await assert.rejects(parseExportFile(JSON.stringify(snapshot)), /sourcePrompt/u);
-  await assert.rejects(decodeSnapshot(encodeSnapshot(snapshot)), /sourcePrompt/u);
+  await assert.rejects(parseExportFile(JSON.stringify(snapshot), productionPrimitiveIdentities), /sourcePrompt/u);
+  await assert.rejects(decodeSnapshot(encodeSnapshot(snapshot), productionPrimitiveIdentities), /sourcePrompt/u);
 });
 
 test("snapshot versions, item bounds, identities and accepted blend keys are enforced", async () => {
@@ -191,6 +196,31 @@ test("snapshot versions, item bounds, identities and accepted blend keys are enf
   for (const scenario of cases) {
     const snapshot = structuredClone(valid);
     scenario.mutate(snapshot);
-    await assert.rejects(parseExportFile(JSON.stringify(await resignSnapshot(snapshot))), scenario.expected);
+    await assert.rejects(parseExportFile(JSON.stringify(await resignSnapshot(snapshot)), productionPrimitiveIdentities), scenario.expected);
+  }
+});
+
+test("snapshot primitive identities must match the canonical production registry", async () => {
+  const draft = addPrimitive(createDraft("recipe-canonical", "2026-08-12T00:00:00.000Z"), glitch).draft;
+  const valid = await createSnapshot(draft, "2026-08-12T00:01:00.000Z");
+  const cases = [
+    {
+      mutate: (snapshot) => {
+        snapshot.recipe.items[0].primitiveId = "primitive.style.not-in-production";
+        snapshot.recipe.items[0].slug = "not-in-production";
+      },
+    },
+    {
+      mutate: (snapshot) => { snapshot.recipe.items[0].slug = watercolor.slug; },
+    },
+  ];
+
+  for (const scenario of cases) {
+    const snapshot = structuredClone(valid);
+    scenario.mutate(snapshot);
+    await assert.rejects(
+      parseExportFile(JSON.stringify(await resignSnapshot(snapshot)), productionPrimitiveIdentities),
+      /90 phong cách production/u,
+    );
   }
 });

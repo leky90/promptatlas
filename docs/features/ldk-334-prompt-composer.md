@@ -1,6 +1,6 @@
 # LDK-334 — Prompt Composer and discovery integration
 
-**Status:** Implemented; awaiting QA re-review
+**Status:** QA correction in progress
 **Owner:** software engineer
 **Reviewer:** QA
 **Depends on:** LDK-333, LDK-335, LDK-346 (accepted/done)
@@ -42,7 +42,7 @@ Prompt Atlas currently lets people search 90 image styles and copy one complete 
 7. Opening a share snapshot does not mutate draft keys or the active-draft pointer. **Tiếp tục chỉnh sửa** creates a different UUID, preserves the previous draft and records the snapshot hash.
 8. When local storage is unavailable/full during a fork, the snapshot remains readable and copyable while editing is disabled with an actionable error; no unsaved state is presented as saved.
 9. Above the share ceiling, URL copy is disabled with the measured length shown; full prompt copy and a lossless UTF-8 `application/json` export named `prompt-atlas-recipe-{recipeId}.promptatlas.json` remain available.
-10. Import validates the versioned envelope and SHA-256 before opening it read-only. Every primitive field must be a non-empty bounded string; schema/dataset versions must be supported; item IDs and blend keys must be unique, known and bounded to the 90-style production set. Malformed, unsupported-version or checksum-mismatched files show a readable recovery error and do not render stale snapshot data or alter drafts.
+10. Import validates the versioned envelope and SHA-256 before opening it read-only. Every primitive field must be a non-empty bounded string; schema/dataset versions must be supported; every `primitiveId`/`slug` pair must match one canonical record in the 90-style production set; item IDs and blend keys must be unique and known. Malformed, unsupported-version, unknown-primitive or checksum-mismatched files show a readable recovery error and do not render stale snapshot data or alter drafts.
 11. At ≥960 px Composer is a persistent structured workspace; below 960 px the catalog exposes a compact tray and Composer controls remain usable without obscuring focus. Core controls—including the visible **Nhập recipe** action—are keyboard-operable, expose visible focus and are at least 44×44 px.
 12. No active/empty video mode appears. All behavior works on the static build without account, server, generation call or added API spend.
 
@@ -50,8 +50,8 @@ Prompt Atlas currently lets people search 90 image styles and copy one complete 
 
 | Layer | Coverage |
 | --- | --- |
-| Unit (`node:test`) | Recipe ordering, duplicate prevention, deterministic rendering, conflict derivation/resolution, snapshot codec, 6,000-character decision, deep envelope/primitive/version/blend/bounds validation and draft-store invariants with a fake storage adapter. |
-| Integration/E2E (Playwright) | Add from catalog/detail, reload persistence, ordering/removal, copy, share/read-only/fork, storage failure, malformed checksummed snapshot recovery, import/export error path, visible import focus, mobile tray and deferred-video absence. |
+| Unit (`node:test`) | Recipe ordering, duplicate prevention, deterministic rendering, conflict derivation/resolution, snapshot codec, 6,000-character decision, deep envelope/primitive/version/blend/bounds validation, canonical primitive identity membership and draft-store invariants with a fake storage adapter. |
+| Integration/E2E (Playwright) | Add from catalog/detail, reload persistence, ordering/removal, copy, share/read-only/fork, storage failure, malformed and unknown-primitive checksummed snapshot recovery, import/export error path, visible import focus, mobile tray and deferred-video absence. |
 | Accessibility (axe + assertions) | Serious/critical violations, live regions, accessible names, focus return/order and target-size contract on `/composer/` and the mobile catalog integration. |
 | BDD | No Gherkin runner is configured. The observable acceptance contract is covered by named Playwright scenarios and unit tests instead. |
 | Regression | Existing search/filter/favorite/copy/compare/detail/media tests plus `npm run check`, `npm run build`, `npm run test:contract` and `npm run test:e2e`. |

@@ -14,6 +14,7 @@ export const ACTIVE_DRAFT_KEY = "pa:drafts:active:v1";
 export const MAX_COMPOSER_ITEMS = 90;
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
+export type PrimitiveIdentityRegistry = ReadonlyMap<string, string>;
 
 type DraftIndexItem = { draftId: string; updatedAt: string; itemCount: number };
 
@@ -100,7 +101,10 @@ const isNonEmptyBoundedString = (value: unknown, limit: number) => (
   typeof value === "string" && value.trim().length > 0 && value.length <= limit
 );
 
-const validatePrimitive = (value: unknown, index: number): value is ComposerPrimitive => {
+const validatePrimitive = (
+  value: unknown,
+  index: number,
+): value is ComposerPrimitive => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} phải là một object.`);
   }
@@ -120,7 +124,10 @@ const validatePrimitive = (value: unknown, index: number): value is ComposerPrim
   return true;
 };
 
-const validateRecipeRelationships = (snapshot: ShareSnapshot) => {
+const validateRecipeRelationships = (
+  snapshot: ShareSnapshot,
+  primitiveIdentities?: PrimitiveIdentityRegistry,
+) => {
   if (snapshot.recipe.items.length > MAX_COMPOSER_ITEMS) {
     throw new Error(`Snapshot không hợp lệ: recipe có tối đa ${MAX_COMPOSER_ITEMS} thành phần.`);
   }
@@ -133,6 +140,13 @@ const validateRecipeRelationships = (snapshot: ShareSnapshot) => {
   }
   if (new Set(slugs).size !== slugs.length) {
     throw new Error("Snapshot không hợp lệ: slug phải duy nhất trong recipe.");
+  }
+  if (primitiveIdentities) {
+    snapshot.recipe.items.forEach((item, index) => {
+      if (primitiveIdentities.get(item.primitiveId) !== item.slug) {
+        throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} không thuộc 90 phong cách production.`);
+      }
+    });
   }
 
   const validBlendKeys = new Set<string>();
@@ -192,7 +206,10 @@ export function encodeSnapshot(snapshot: ShareSnapshot) {
     .replace(/=+$/u, "");
 }
 
-async function validateSnapshot(value: unknown): Promise<ShareSnapshot> {
+async function validateSnapshot(
+  value: unknown,
+  primitiveIdentities?: PrimitiveIdentityRegistry,
+): Promise<ShareSnapshot> {
   if (!value || typeof value !== "object") throw new Error("Snapshot không hợp lệ.");
   const snapshot = value as ShareSnapshot;
   if (
@@ -215,15 +232,21 @@ async function validateSnapshot(value: unknown): Promise<ShareSnapshot> {
   }
   const { sha256, ...body } = snapshot;
   if (await sha256Text(snapshotBody(body)) !== sha256) throw new Error("Checksum snapshot không khớp.");
-  validateRecipeRelationships(snapshot);
+  validateRecipeRelationships(snapshot, primitiveIdentities);
   return snapshot;
 }
 
-export async function decodeSnapshot(payload: string): Promise<ShareSnapshot> {
+export async function decodeSnapshot(
+  payload: string,
+  primitiveIdentities?: PrimitiveIdentityRegistry,
+): Promise<ShareSnapshot> {
   const normalized = payload.replaceAll("-", "+").replaceAll("_", "/");
   const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
   try {
-    return await validateSnapshot(JSON.parse(new TextDecoder().decode(base64ToBytes(padded))));
+    return await validateSnapshot(
+      JSON.parse(new TextDecoder().decode(base64ToBytes(padded))),
+      primitiveIdentities,
+    );
   } catch (error) {
     if (error instanceof Error && /Snapshot|Checksum|Phiên bản/u.test(error.message)) throw error;
     throw new Error("Snapshot không hợp lệ hoặc đã bị hỏng.");
@@ -259,12 +282,15 @@ export function createExportFile(snapshot: ShareSnapshot) {
   };
 }
 
-export async function parseExportFile(content: string) {
+export async function parseExportFile(
+  content: string,
+  primitiveIdentities?: PrimitiveIdentityRegistry,
+) {
   let value: unknown;
   try {
     value = JSON.parse(content);
   } catch {
     throw new Error("Tệp Prompt Atlas không phải JSON hợp lệ.");
   }
-  return validateSnapshot(value);
+  return validateSnapshot(value, primitiveIdentities);
 }
