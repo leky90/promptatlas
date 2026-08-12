@@ -126,7 +126,7 @@ const validatePrimitive = (
 
 const validateRecipeRelationships = (
   snapshot: ShareSnapshot,
-  primitiveIdentities?: PrimitiveIdentityRegistry,
+  primitiveIdentities: PrimitiveIdentityRegistry,
 ) => {
   if (snapshot.recipe.items.length > MAX_COMPOSER_ITEMS) {
     throw new Error(`Snapshot không hợp lệ: recipe có tối đa ${MAX_COMPOSER_ITEMS} thành phần.`);
@@ -141,13 +141,11 @@ const validateRecipeRelationships = (
   if (new Set(slugs).size !== slugs.length) {
     throw new Error("Snapshot không hợp lệ: slug phải duy nhất trong recipe.");
   }
-  if (primitiveIdentities) {
-    snapshot.recipe.items.forEach((item, index) => {
-      if (primitiveIdentities.get(item.primitiveId) !== item.slug) {
-        throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} không thuộc 90 phong cách production.`);
-      }
-    });
-  }
+  snapshot.recipe.items.forEach((item, index) => {
+    if (primitiveIdentities.get(item.primitiveId) !== item.slug) {
+      throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} không thuộc 90 phong cách production.`);
+    }
+  });
 
   const validBlendKeys = new Set<string>();
   for (let first = 0; first < primitiveIds.length; first += 1) {
@@ -208,7 +206,7 @@ export function encodeSnapshot(snapshot: ShareSnapshot) {
 
 async function validateSnapshot(
   value: unknown,
-  primitiveIdentities?: PrimitiveIdentityRegistry,
+  primitiveIdentities: PrimitiveIdentityRegistry,
 ): Promise<ShareSnapshot> {
   if (!value || typeof value !== "object") throw new Error("Snapshot không hợp lệ.");
   const snapshot = value as ShareSnapshot;
@@ -238,7 +236,7 @@ async function validateSnapshot(
 
 export async function decodeSnapshot(
   payload: string,
-  primitiveIdentities?: PrimitiveIdentityRegistry,
+  primitiveIdentities: PrimitiveIdentityRegistry,
 ): Promise<ShareSnapshot> {
   const normalized = payload.replaceAll("-", "+").replaceAll("_", "/");
   const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
@@ -284,7 +282,7 @@ export function createExportFile(snapshot: ShareSnapshot) {
 
 export async function parseExportFile(
   content: string,
-  primitiveIdentities?: PrimitiveIdentityRegistry,
+  primitiveIdentities: PrimitiveIdentityRegistry,
 ) {
   let value: unknown;
   try {

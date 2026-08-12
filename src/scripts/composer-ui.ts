@@ -23,6 +23,10 @@ import {
 const workspace = document.querySelector<HTMLElement>("[data-composer-workspace]");
 
 if (workspace) {
+  const primitiveIdentityPairs = JSON.parse(
+    workspace.dataset.composerPrimitiveIdentities ?? "[]",
+  ) as Array<[string, string]>;
+  const primitiveIdentities = new Map(primitiveIdentityPairs);
   const list = workspace.querySelector<HTMLOListElement>("[data-recipe-list]")!;
   const empty = workspace.querySelector<HTMLElement>("[data-composer-empty]")!;
   const count = workspace.querySelector<HTMLElement>("[data-composer-item-count]")!;
@@ -223,7 +227,7 @@ if (workspace) {
     const file = importInput.files?.[0];
     if (!file) return;
     try {
-      openedSnapshot = await parseExportFile(await file.text());
+      openedSnapshot = await parseExportFile(await file.text(), primitiveIdentities);
       draft = snapshotAsDraft(openedSnapshot);
       readOnly = true;
       clearError();
@@ -275,7 +279,7 @@ if (workspace) {
     if (payload) {
       draft = undefined;
       try {
-        openedSnapshot = await decodeSnapshot(payload);
+        openedSnapshot = await decodeSnapshot(payload, primitiveIdentities);
         draft = snapshotAsDraft(openedSnapshot);
         readOnly = true;
       } catch (reason) {

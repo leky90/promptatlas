@@ -1,8 +1,16 @@
 ---
 import Icon from "./Icon.astro";
+import { styles } from "../lib/styles";
+
+const primitiveIdentityPairs = styles.map((style) => [`primitive.style.${style.slug}`, style.slug]);
 ---
 
-<section class="composer-shell shell" data-composer-workspace aria-labelledby="composer-title">
+<section
+  class="composer-shell shell"
+  data-composer-workspace
+  data-composer-primitive-identities={JSON.stringify(primitiveIdentityPairs)}
+  aria-labelledby="composer-title"
+>
   <header class="composer-head">
     <div>
       <p class="eyebrow">IMAGE RECIPE / LOCAL-FIRST</p>
