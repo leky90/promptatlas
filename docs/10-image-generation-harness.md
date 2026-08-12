@@ -20,7 +20,7 @@ The JSON Schema at `schemas/image-generation-harness.v1.schema.json` validates t
 - moderation state, outcome, quota mode and zero API cost;
 - all attempts, with no best-of selection.
 
-The approved benchmark-wide policy targets 72 planned outputs per route and allows at most 14 technical retries overall. Each individual cell has at most one retry, and only `transport`, `corrupt-output`, or `provider-transient` failures qualify. Retry evidence must be attempt 1 from the same plan and cell, and the requested retry class must equal its recorded failure class. Refusal, moderation, authentication, quota, invalid usage, unknown failures, valid low-adherence output, or aesthetic preference never qualifies for regeneration. Batch orchestration must enforce the 14-retry aggregate cap; the adapter enforces the one-retry cell cap.
+The approved benchmark-wide policy targets 72 planned outputs per route and allows at most 14 technical retries overall. Each individual cell has at most one retry, and only `transport`, `corrupt-output`, or `provider-transient` failures qualify. Retry evidence must be attempt 1 from the same plan and cell, and the requested retry class must equal its recorded failure class. Outcome and classification are bidirectional evidence: `refusal` classification requires a `refusal` outcome, and `moderation` classification requires a `moderated` outcome with blocked or flagged moderation evidence. Refusal, moderation, authentication, quota, invalid usage, unknown failures, valid low-adherence output, or aesthetic preference never qualifies for regeneration. Batch orchestration must enforce the 14-retry aggregate cap; the adapter enforces the one-retry cell cap.
 
 ## Safe dry run
 

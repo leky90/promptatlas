@@ -443,6 +443,38 @@ test("Codex recorder rejects foreign evidence paths and retains non-success atte
   });
 });
 
+test("refusal classification cannot be recorded as a generic failure outcome", async () => {
+  const codexCell = plan.cells.find((cell) => cell.route.interface === "codex");
+  await withTemporaryRepository(async (repositoryRoot) => {
+    const responsePath = path.join(
+      repositoryRoot,
+      codexCell.outputPath.replace("attempt-1.png", "attempt-1.codex-response.json"),
+    );
+    await mkdir(path.dirname(responsePath), { recursive: true });
+    await writeFile(responsePath, JSON.stringify({ refused: true }));
+    const refused = await recordCodexCell({
+      plan,
+      cellId: codexCell.id,
+      repositoryRoot,
+      responsePath,
+      startedAt: "2026-08-12T03:40:00Z",
+      completedAt: "2026-08-12T03:40:01Z",
+      outcome: "refusal",
+      failure: {
+        classification: "refusal",
+        retryable: false,
+        message: "Codex refused the request.",
+      },
+    });
+    const mislabeled = { ...refused, outcome: "failure" };
+    assert.equal(validate(mislabeled).valid, false);
+    assert.throws(
+      () => assertAttemptSafety(mislabeled),
+      /refusal classification requires a refusal outcome/,
+    );
+  });
+});
+
 test("schema rejects non-zero API spend in an attempt manifest", async () => {
   const codexCell = plan.cells.find((cell) => cell.route.interface === "codex");
   await withTemporaryRepository(async (repositoryRoot) => {
@@ -497,7 +529,7 @@ test("semantic validation rejects prompt drift and aggregate retry-budget overfl
   });
   const unsafeAttempt = {
     ...syntheticAttempt({ cellId: "cell.test.gflow-nano-pro.r1" }),
-    failure: { classification: "refusal", retryable: true },
+    failure: { classification: "valid-low-adherence", retryable: true },
   };
   assert.throws(() => assertAttemptSafety(unsafeAttempt), /cannot be retried/);
 

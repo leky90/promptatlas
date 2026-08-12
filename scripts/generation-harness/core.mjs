@@ -241,6 +241,9 @@ export function assertAttemptSafety(attempt) {
   if (attempt.outcome === "refusal" && attempt.failure?.classification !== "refusal") {
     throw new Error("refusal outcomes require refusal failure evidence");
   }
+  if (attempt.failure?.classification === "refusal" && attempt.outcome !== "refusal") {
+    throw new Error("refusal classification requires a refusal outcome");
+  }
   if (
     attempt.outcome === "moderated"
     && (
