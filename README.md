@@ -12,6 +12,7 @@ Live site: [image-styles.ldktech.com](https://image-styles.ldktech.com)
 - 90 static, indexable detail pages with copyable prompts.
 - Per-style scores for prompt adherence, style fidelity, composition, technical quality, and detail integrity.
 - Browser-local favorites, responsive layouts, metadata, sitemap, and structured data.
+- A browser-local Prompt Composer with ordered recipes, explicit blend warnings, immutable share snapshots, and checksummed JSON import/export.
 - A versioned Prompt Atlas taxonomy and JSON data contract for expanding the library from image styles into composable image/video prompt primitives.
 
 ## Local development
@@ -46,6 +47,8 @@ The image-first production projection is `src/data/prompt-atlas.image.v1.json`, 
 For a controlled re-import of the legacy originals, run `npm run import:legacy-assets -- --source-root /absolute/path/to/output`, review the resulting source manifest, then run `npm run build:image-data`. This imports metadata and checksums only; it never invokes an image API or generation provider.
 
 Current legacy runs are labelled as historical product routes instead of being relabelled as the approved Codex and Nano Banana Pro routes. The next generation harness can add those new route snapshots without corrupting the provenance of the existing 180 outputs. All run records explicitly keep `apiCostUsd: 0`.
+
+Composer drafts use versioned UUID records in `localStorage`; shared recipes use an immutable URL hash and never write to draft storage until the user explicitly forks them. Recipes whose absolute share URL exceeds 6,000 characters remain copyable and exportable as lossless `.promptatlas.json` files.
 
 ## Deployment
 

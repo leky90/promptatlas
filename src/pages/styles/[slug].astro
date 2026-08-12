@@ -5,6 +5,7 @@ import PairCard from "../../components/PairCard.astro";
 import PromptBlock from "../../components/PromptBlock.astro";
 import ScoreRail from "../../components/ScoreRail.astro";
 import Icon from "../../components/Icon.astro";
+import ComposerEntry from "../../components/ComposerEntry.astro";
 import { paddedId, styleBySlug, styles, winnerLabel, type StyleRecord } from "../../lib/styles";
 
 export function getStaticPaths() {
@@ -54,6 +55,7 @@ const jsonLd = {
             {style.cues.map((cue) => <li>{cue}</li>)}
           </ul>
           <div class="detail-hero__actions">
+            <ComposerEntry style={style} variant="button" />
             <FavoriteButton slug={style.slug} name={style.name} />
             <a class="button button--ghost" href={`/compare/?style=${style.slug}`}>Mở bàn so sánh <Icon name="arrow-up-right" /></a>
           </div>

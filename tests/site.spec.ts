@@ -61,6 +61,8 @@ test("detail exposes full prompt and copy action", async ({ context, page }) => 
   await page.goto("/styles/sumi-e/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sumi-e");
   await expect(page.locator(".specimen img")).toHaveCount(2);
+  await page.getByRole("button", { name: "Thêm Sumi-e vào prompt" }).click();
+  await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
   const copy = page.locator("[data-copy-target]");
   await copy.click();
   await expect(copy.locator("[data-copy-label]")).toHaveText("Đã sao chép");

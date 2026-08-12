@@ -1,0 +1,11 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<aside class="composer-tray" data-composer-tray hidden aria-label="Prompt đang soạn">
+  <div>
+    <span class="composer-tray__mark" aria-hidden="true"></span>
+    <p><strong data-composer-count>0</strong> thành phần</p>
+  </div>
+  <a href="/composer/" aria-label="Mở Composer">Mở Composer <Icon name="arrow-right" size={18} /></a>
+</aside>

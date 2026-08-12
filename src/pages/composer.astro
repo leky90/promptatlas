@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ComposerWorkspace from "../components/ComposerWorkspace.astro";
+---
+
+<BaseLayout
+  title="Prompt Composer | Prompt Atlas"
+  description="Sắp xếp các phong cách thành một image recipe, kiểm tra xung đột và chia sẻ snapshot không cần tài khoản."
+  canonicalPath="/composer/"
+  bodyClass="composer-page"
+>
+  <ComposerWorkspace />
+  <script src="../scripts/composer-ui.ts"></script>
+</BaseLayout>

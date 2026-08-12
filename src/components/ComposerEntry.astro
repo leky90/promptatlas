@@ -1,0 +1,23 @@
+---
+import type { StyleRecord } from "../lib/styles";
+import Icon from "./Icon.astro";
+
+type Props = { style: StyleRecord; variant?: "card" | "button" };
+const { style, variant = "card" } = Astro.props;
+---
+
+<button
+  class:list={[variant === "card" ? "card-action card-action--composer" : "button button--primary", "composer-entry"]}
+  type="button"
+  data-composer-add
+  data-primitive-id={`primitive.style.${style.slug}`}
+  data-primitive-slug={style.slug}
+  data-primitive-label={style.name}
+  data-primitive-fragment={`Style/medium: ${style.name}. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.`}
+  data-source-prompt={style.sourcePrompt}
+  aria-pressed="false"
+  aria-label={`Thêm ${style.name} vào prompt`}
+>
+  <Icon name="plus" size={18} />
+  <span data-composer-add-label>Thêm vào prompt</span>
+</button>
