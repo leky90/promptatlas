@@ -1,8 +1,8 @@
 # LDK-334 — Prompt Composer and discovery integration
 
-**Status:** implemented — awaiting QA
-**Owner:** software engineer  
-**Reviewer:** QA  
+**Status:** Implemented; awaiting QA re-review
+**Owner:** software engineer
+**Reviewer:** QA
 **Depends on:** LDK-333, LDK-335, LDK-346 (accepted/done)
 
 ## Problem
@@ -42,16 +42,16 @@ Prompt Atlas currently lets people search 90 image styles and copy one complete 
 7. Opening a share snapshot does not mutate draft keys or the active-draft pointer. **Tiếp tục chỉnh sửa** creates a different UUID, preserves the previous draft and records the snapshot hash.
 8. When local storage is unavailable/full during a fork, the snapshot remains readable and copyable while editing is disabled with an actionable error; no unsaved state is presented as saved.
 9. Above the share ceiling, URL copy is disabled with the measured length shown; full prompt copy and a lossless UTF-8 `application/json` export named `prompt-atlas-recipe-{recipeId}.promptatlas.json` remain available.
-10. Import validates the versioned envelope and SHA-256 before opening it read-only; malformed, unsupported-version or checksum-mismatched files do not alter drafts.
-11. At ≥960 px Composer is a persistent structured workspace; below 960 px the catalog exposes a compact tray and Composer controls remain usable without obscuring focus. Core controls are keyboard-operable and at least 44×44 px.
+10. Import validates the versioned envelope and SHA-256 before opening it read-only. Every primitive field must be a non-empty bounded string; schema/dataset versions must be supported; item IDs and blend keys must be unique, known and bounded to the 90-style production set. Malformed, unsupported-version or checksum-mismatched files show a readable recovery error and do not render stale snapshot data or alter drafts.
+11. At ≥960 px Composer is a persistent structured workspace; below 960 px the catalog exposes a compact tray and Composer controls remain usable without obscuring focus. Core controls—including the visible **Nhập recipe** action—are keyboard-operable, expose visible focus and are at least 44×44 px.
 12. No active/empty video mode appears. All behavior works on the static build without account, server, generation call or added API spend.
 
 ## Test plan
 
 | Layer | Coverage |
 | --- | --- |
-| Unit (`node:test`) | Recipe ordering, duplicate prevention, deterministic rendering, conflict derivation/resolution, snapshot codec, 6,000-character decision, envelope validation and draft-store invariants with a fake storage adapter. |
-| Integration/E2E (Playwright) | Add from catalog/detail, reload persistence, ordering/removal, copy, share/read-only/fork, storage failure, import/export error path, mobile tray, keyboard focus and deferred-video absence. |
+| Unit (`node:test`) | Recipe ordering, duplicate prevention, deterministic rendering, conflict derivation/resolution, snapshot codec, 6,000-character decision, deep envelope/primitive/version/blend/bounds validation and draft-store invariants with a fake storage adapter. |
+| Integration/E2E (Playwright) | Add from catalog/detail, reload persistence, ordering/removal, copy, share/read-only/fork, storage failure, malformed checksummed snapshot recovery, import/export error path, visible import focus, mobile tray and deferred-video absence. |
 | Accessibility (axe + assertions) | Serious/critical violations, live regions, accessible names, focus return/order and target-size contract on `/composer/` and the mobile catalog integration. |
 | BDD | No Gherkin runner is configured. The observable acceptance contract is covered by named Playwright scenarios and unit tests instead. |
 | Regression | Existing search/filter/favorite/copy/compare/detail/media tests plus `npm run check`, `npm run build`, `npm run test:contract` and `npm run test:e2e`. |
@@ -90,9 +90,10 @@ Approved by the user on 2026-08-12. Requirement changes after approval update th
 ## Implementation evidence
 
 - Static route: `/composer/`; integration entry points: all 90 catalog cards and every `/styles/[slug]/` detail route.
-- Unit: 4/4 Composer domain, storage, snapshot and import/export tests passed.
+- Unit: 6/6 Composer domain, storage, snapshot and import/export tests passed, including checksummed malformed primitives and strict version/item/identity/blend bounds.
 - Contract: 47/47 schema, content-pipeline and generation-harness tests passed.
-- Browser: 14/14 Playwright desktop/mobile scenarios passed, including populated Composer axe analysis, snapshot collision safety, storage failure, keyboard ordering and 44 px control coverage.
+- Browser: 16/16 Playwright desktop/mobile scenarios passed, including populated Composer axe analysis, snapshot collision safety, malformed snapshot recovery without stale output, storage failure, visible import focus, keyboard ordering and 44 px control coverage.
 - Build gates: `npm run check` completed with 0 errors/warnings/hints; `npm run build` generated 95 static pages.
 - Visual review: populated Composer and catalog integration inspected at 1440×1000 and 390×844; the recipe spine, conflict hierarchy and primary Add/secondary Copy action order remained intact.
+- QA corrections: import now exposes a real keyboard focus target with a 2 px visible outline; snapshot decoding rejects malformed primitive fields, unsupported versions, oversized recipes, duplicate identities and invalid blend references before rendering.
 - API generation/spend remained outside runtime and unchanged at USD 0.
