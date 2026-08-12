@@ -39,6 +39,11 @@ const watercolor = {
   sourcePrompt: "A portrait looking into the camera.",
 };
 
+const resignSnapshot = async (snapshot) => {
+  const { sha256: _previousChecksum, ...body } = snapshot;
+  return { ...snapshot, sha256: await sha256Text(JSON.stringify(body)) };
+};
+
 test("recipe preserves explicit order, rejects duplicates and renders deterministically", () => {
   let draft = createDraft("draft-1", "2026-08-12T00:00:00.000Z");
   draft = addPrimitive(draft, glitch, "2026-08-12T00:00:01.000Z").draft;
@@ -142,11 +147,50 @@ test("oversized shares fall back to a lossless checksummed export", async () => 
 
 test("checksummed snapshots with malformed primitive fields are rejected before rendering", async () => {
   const draft = addPrimitive(createDraft("recipe-malformed", "2026-08-12T00:00:00.000Z"), glitch).draft;
-  const snapshot = await createSnapshot(draft, "2026-08-12T00:01:00.000Z");
+  let snapshot = await createSnapshot(draft, "2026-08-12T00:01:00.000Z");
   snapshot.recipe.items[0].sourcePrompt = null;
-  const { sha256: _previousChecksum, ...body } = snapshot;
-  snapshot.sha256 = await sha256Text(JSON.stringify(body));
+  snapshot = await resignSnapshot(snapshot);
 
   await assert.rejects(parseExportFile(JSON.stringify(snapshot)), /sourcePrompt/u);
   await assert.rejects(decodeSnapshot(encodeSnapshot(snapshot)), /sourcePrompt/u);
+});
+
+test("snapshot versions, item bounds, identities and accepted blend keys are enforced", async () => {
+  let draft = addPrimitive(createDraft("recipe-bounds", "2026-08-12T00:00:00.000Z"), glitch).draft;
+  draft = addPrimitive(draft, watercolor).draft;
+  const valid = await createSnapshot(draft, "2026-08-12T00:01:00.000Z");
+  const cases = [
+    {
+      expected: /Phiên bản snapshot/u,
+      mutate: (snapshot) => { snapshot.schemaVersion = "2.0.0"; },
+    },
+    {
+      expected: /Phiên bản snapshot/u,
+      mutate: (snapshot) => { snapshot.datasetVersion = "2.0.0"; },
+    },
+    {
+      expected: /primitiveId.*duy nhất/u,
+      mutate: (snapshot) => { snapshot.recipe.items[1].primitiveId = snapshot.recipe.items[0].primitiveId; },
+    },
+    {
+      expected: /blend key/u,
+      mutate: (snapshot) => { snapshot.recipe.acceptedBlendKeys = ["primitive.style.glitch-art::primitive.style.unknown"]; },
+    },
+    {
+      expected: /tối đa 90/u,
+      mutate: (snapshot) => {
+        snapshot.recipe.items = Array.from({ length: 91 }, (_, index) => ({
+          ...glitch,
+          primitiveId: `primitive.style.test-${index}`,
+          slug: `test-${index}`,
+        }));
+      },
+    },
+  ];
+
+  for (const scenario of cases) {
+    const snapshot = structuredClone(valid);
+    scenario.mutate(snapshot);
+    await assert.rejects(parseExportFile(JSON.stringify(await resignSnapshot(snapshot))), scenario.expected);
+  }
 });

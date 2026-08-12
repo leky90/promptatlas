@@ -1,4 +1,5 @@
 export const COMPOSER_SCHEMA_VERSION = "1.0.0";
+export const COMPOSER_DATASET_VERSION = "1.0.0";
 export const SHARE_FORMAT_VERSION = 1;
 export const SHARE_URL_LIMIT = 6000;
 
@@ -36,7 +37,7 @@ export function createDraft(draftId: string, now = new Date().toISOString()): Co
     format: "prompt-atlas-draft",
     formatVersion: 1,
     schemaVersion: COMPOSER_SCHEMA_VERSION,
-    datasetVersion: "1.0.0",
+    datasetVersion: COMPOSER_DATASET_VERSION,
     draftId,
     createdAt: now,
     updatedAt: now,

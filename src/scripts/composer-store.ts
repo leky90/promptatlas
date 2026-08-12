@@ -1,4 +1,6 @@
 import {
+  COMPOSER_DATASET_VERSION,
+  COMPOSER_SCHEMA_VERSION,
   SHARE_URL_LIMIT,
   addPrimitive,
   createDraft,
@@ -9,6 +11,7 @@ import {
 export const DRAFT_KEY_PREFIX = "pa:drafts:v1:";
 export const DRAFT_INDEX_KEY = "pa:drafts:index:v1";
 export const ACTIVE_DRAFT_KEY = "pa:drafts:active:v1";
+export const MAX_COMPOSER_ITEMS = 90;
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
@@ -93,6 +96,10 @@ const PRIMITIVE_STRING_LIMITS: Record<keyof ComposerPrimitive, number> = {
   sourcePrompt: 8000,
 };
 
+const isNonEmptyBoundedString = (value: unknown, limit: number) => (
+  typeof value === "string" && value.trim().length > 0 && value.length <= limit
+);
+
 const validatePrimitive = (value: unknown, index: number): value is ComposerPrimitive => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} phải là một object.`);
@@ -100,11 +107,47 @@ const validatePrimitive = (value: unknown, index: number): value is ComposerPrim
   const primitive = value as Record<string, unknown>;
   for (const [field, limit] of Object.entries(PRIMITIVE_STRING_LIMITS)) {
     const candidate = primitive[field];
-    if (typeof candidate !== "string" || candidate.trim().length === 0 || candidate.length > limit) {
+    if (!isNonEmptyBoundedString(candidate, limit)) {
       throw new Error(`Snapshot không hợp lệ: ${field} của thành phần ${index + 1} phải là chuỗi từ 1 đến ${limit} ký tự.`);
     }
   }
+  if (!/^[a-z0-9][a-z0-9._-]*$/iu.test(primitive.primitiveId as string)) {
+    throw new Error(`Snapshot không hợp lệ: primitiveId của thành phần ${index + 1} sai định dạng.`);
+  }
+  if (!/^[a-z0-9][a-z0-9-]*$/iu.test(primitive.slug as string)) {
+    throw new Error(`Snapshot không hợp lệ: slug của thành phần ${index + 1} sai định dạng.`);
+  }
   return true;
+};
+
+const validateRecipeRelationships = (snapshot: ShareSnapshot) => {
+  if (snapshot.recipe.items.length > MAX_COMPOSER_ITEMS) {
+    throw new Error(`Snapshot không hợp lệ: recipe có tối đa ${MAX_COMPOSER_ITEMS} thành phần.`);
+  }
+  snapshot.recipe.items.forEach(validatePrimitive);
+
+  const primitiveIds = snapshot.recipe.items.map((item) => item.primitiveId);
+  const slugs = snapshot.recipe.items.map((item) => item.slug);
+  if (new Set(primitiveIds).size !== primitiveIds.length) {
+    throw new Error("Snapshot không hợp lệ: primitiveId phải duy nhất trong recipe.");
+  }
+  if (new Set(slugs).size !== slugs.length) {
+    throw new Error("Snapshot không hợp lệ: slug phải duy nhất trong recipe.");
+  }
+
+  const validBlendKeys = new Set<string>();
+  for (let first = 0; first < primitiveIds.length; first += 1) {
+    for (let second = first + 1; second < primitiveIds.length; second += 1) {
+      validBlendKeys.add([primitiveIds[first], primitiveIds[second]].sort().join("::"));
+    }
+  }
+  const acceptedBlendKeys = snapshot.recipe.acceptedBlendKeys;
+  if (
+    acceptedBlendKeys.some((key) => typeof key !== "string" || !validBlendKeys.has(key))
+    || new Set(acceptedBlendKeys).size !== acceptedBlendKeys.length
+  ) {
+    throw new Error("Snapshot không hợp lệ: mỗi blend key phải duy nhất và tham chiếu đúng hai thành phần trong recipe.");
+  }
 };
 
 export async function sha256Text(value: string) {
@@ -155,16 +198,24 @@ async function validateSnapshot(value: unknown): Promise<ShareSnapshot> {
   if (
     snapshot.format !== "prompt-atlas-recipe"
     || snapshot.formatVersion !== 1
+    || snapshot.schemaVersion !== COMPOSER_SCHEMA_VERSION
+    || snapshot.datasetVersion !== COMPOSER_DATASET_VERSION
     || !snapshot.recipe
+    || typeof snapshot.recipe !== "object"
+    || Array.isArray(snapshot.recipe)
     || !Array.isArray(snapshot.recipe.items)
     || !Array.isArray(snapshot.recipe.acceptedBlendKeys)
+    || !isNonEmptyBoundedString(snapshot.snapshotId, 160)
+    || typeof snapshot.createdAt !== "string"
+    || Number.isNaN(Date.parse(snapshot.createdAt))
     || typeof snapshot.sha256 !== "string"
+    || !/^[a-f0-9]{64}$/u.test(snapshot.sha256)
   ) {
     throw new Error("Phiên bản snapshot không được hỗ trợ.");
   }
   const { sha256, ...body } = snapshot;
   if (await sha256Text(snapshotBody(body)) !== sha256) throw new Error("Checksum snapshot không khớp.");
-  snapshot.recipe.items.forEach(validatePrimitive);
+  validateRecipeRelationships(snapshot);
   return snapshot;
 }
 
