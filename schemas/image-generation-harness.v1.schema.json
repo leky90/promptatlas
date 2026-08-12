@@ -1,0 +1,552 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://promptatlas.ldktech.com/schemas/image-generation-harness.v1.schema.json",
+  "title": "Prompt Atlas image product-route generation harness v1",
+  "oneOf": [
+    { "$ref": "#/$defs/config" },
+    { "$ref": "#/$defs/plan" },
+    { "$ref": "#/$defs/attempt" }
+  ],
+  "$defs": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-z0-9.-]+)?$"
+    },
+    "entityId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "exactPrompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["language", "text", "sha256"],
+      "properties": {
+        "language": { "const": "en" },
+        "text": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "testCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "recipeId",
+        "recipeVersion",
+        "datasetVersion",
+        "exactPrompt"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "version": { "$ref": "#/$defs/version" },
+        "recipeId": { "$ref": "#/$defs/entityId" },
+        "recipeVersion": { "$ref": "#/$defs/version" },
+        "datasetVersion": { "$ref": "#/$defs/version" },
+        "exactPrompt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["language", "text"],
+          "properties": {
+            "language": { "const": "en" },
+            "text": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "requestedControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "properties": {
+        "name": { "$ref": "#/$defs/slug" },
+        "value": {}
+      }
+    },
+    "requestedSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mediaType", "aspectRatio", "count", "controls"],
+      "properties": {
+        "mediaType": { "const": "image" },
+        "aspectRatio": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*:[1-9][0-9]*$"
+        },
+        "count": { "const": 1 },
+        "controls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/requestedControl" }
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gflowCliVersion", "gflowCatalogName", "gflowAlias", "codexTool"],
+      "properties": {
+        "gflowCliVersion": { "type": "string", "minLength": 1 },
+        "gflowCatalogName": { "const": "GEM_PIX_2" },
+        "gflowAlias": { "const": "nano-pro" },
+        "codexTool": { "const": "image_gen.imagegen" }
+      }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "schemaVersion",
+        "frozenAt",
+        "testCase",
+        "routeIds",
+        "repeats",
+        "settings",
+        "environment"
+      ],
+      "properties": {
+        "$schema": { "type": "string", "format": "uri-reference" },
+        "kind": { "const": "image-generation-config" },
+        "schemaVersion": { "const": "1.0.0" },
+        "frozenAt": { "type": "string", "format": "date-time" },
+        "testCase": { "$ref": "#/$defs/testCase" },
+        "routeIds": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["codex-image-generation", "gflow-nano-pro"]
+          }
+        },
+        "repeats": { "const": 3 },
+        "settings": { "$ref": "#/$defs/requestedSettings" },
+        "environment": { "$ref": "#/$defs/environment" }
+      }
+    },
+    "modelVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "source"],
+      "properties": {
+        "status": { "enum": ["exact", "provider-alias", "unavailable"] },
+        "identifier": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "enum": ["exact", "provider-alias"] } } },
+          "then": { "required": ["identifier"] }
+        },
+        {
+          "if": { "properties": { "status": { "const": "unavailable" } } },
+          "then": { "required": ["reason"] }
+        }
+      ]
+    },
+    "productRoute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayName",
+        "provider",
+        "interface",
+        "identityStatus",
+        "modelFamily",
+        "modelVersion",
+        "adapterVersion"
+      ],
+      "properties": {
+        "id": { "enum": ["codex-image-generation", "gflow-nano-pro"] },
+        "displayName": { "type": "string", "minLength": 1 },
+        "provider": { "type": "string", "minLength": 1 },
+        "interface": { "enum": ["codex", "gflow-cli"] },
+        "identityStatus": { "enum": ["provider-alias", "unavailable"] },
+        "modelFamily": { "type": "string", "minLength": 1 },
+        "modelVersion": { "$ref": "#/$defs/modelVersion" },
+        "adapterVersion": { "$ref": "#/$defs/version" }
+      }
+    },
+    "setting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "requestedValue", "supportStatus"],
+      "properties": {
+        "name": { "$ref": "#/$defs/slug" },
+        "requestedValue": {},
+        "appliedValue": {},
+        "supportStatus": {
+          "enum": ["supported", "unsupported", "provider-default", "unknown"]
+        },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "toolInvocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "tool", "arguments"],
+      "properties": {
+        "kind": { "const": "codex-tool-request" },
+        "tool": { "const": "image_gen.imagegen" },
+        "arguments": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["prompt"],
+          "properties": {
+            "prompt": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "cliInvocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "executable", "arguments"],
+      "properties": {
+        "kind": { "const": "cli" },
+        "executable": { "const": "gflow" },
+        "arguments": {
+          "type": "array",
+          "minItems": 8,
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "route",
+        "repeat",
+        "settings",
+        "executionEligibility",
+        "invocation",
+        "outputPath"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "route": { "$ref": "#/$defs/productRoute" },
+        "repeat": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "settings": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "$ref": "#/$defs/setting" }
+        },
+        "executionEligibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["eligible", "reasons"],
+          "properties": {
+            "eligible": { "type": "boolean" },
+            "reasons": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "invocation": {
+          "oneOf": [
+            { "$ref": "#/$defs/toolInvocation" },
+            { "$ref": "#/$defs/cliInvocation" }
+          ]
+        },
+        "outputPath": {
+          "type": "string",
+          "pattern": "^\\.artifacts/generation-runs/.+\\.png$"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mediaType",
+        "apiSpendUsdLimit",
+        "plannedOutputsPerRoute",
+        "technicalRetryLimitTotal",
+        "technicalRetryLimitPerCell",
+        "retryableFailureClasses",
+        "selectionPolicy"
+      ],
+      "properties": {
+        "mediaType": { "const": "image" },
+        "apiSpendUsdLimit": { "const": 0 },
+        "plannedOutputsPerRoute": { "const": 72 },
+        "technicalRetryLimitTotal": { "const": 14 },
+        "technicalRetryLimitPerCell": { "const": 1 },
+        "retryableFailureClasses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["transport", "corrupt-output", "provider-transient"]
+          }
+        },
+        "selectionPolicy": { "const": "all-attempts" }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "$schema",
+        "kind",
+        "schemaVersion",
+        "planId",
+        "createdAt",
+        "testCase",
+        "exactPrompt",
+        "policy",
+        "environment",
+        "cells"
+      ],
+      "properties": {
+        "$schema": { "type": "string", "format": "uri-reference" },
+        "kind": { "const": "image-generation-plan" },
+        "schemaVersion": { "const": "1.0.0" },
+        "planId": { "$ref": "#/$defs/entityId" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "testCase": { "$ref": "#/$defs/testCase" },
+        "exactPrompt": { "$ref": "#/$defs/exactPrompt" },
+        "policy": { "$ref": "#/$defs/policy" },
+        "environment": { "$ref": "#/$defs/environment" },
+        "cells": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": { "$ref": "#/$defs/cell" }
+        }
+      }
+    },
+    "outputAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mimeType", "bytes", "width", "height", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "mimeType": { "enum": ["image/png", "image/jpeg", "image/webp"] },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "moderation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "categories"],
+      "properties": {
+        "status": { "enum": ["not-reported", "passed", "flagged", "blocked"] },
+        "categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "quotaUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "apiCostUsd", "note"],
+      "properties": {
+        "mode": { "enum": ["provider-quota", "subscription-included", "not-recorded"] },
+        "units": { "type": "number", "minimum": 0 },
+        "unitName": { "type": "string", "minLength": 1 },
+        "apiCostUsd": { "const": 0 },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "rawResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "path", "sha256"],
+      "properties": {
+        "source": { "enum": ["codex-tool", "gflow-cli"] },
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "retryable", "message"],
+      "properties": {
+        "classification": {
+          "enum": ["transport", "corrupt-output", "provider-transient", "refusal", "moderation", "valid-low-adherence", "unknown"]
+        },
+        "retryable": { "type": "boolean" },
+        "message": { "type": "string", "minLength": 1 }
+      }
+    },
+    "retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["isRetry"],
+      "properties": {
+        "isRetry": { "type": "boolean" },
+        "reason": { "type": "string", "minLength": 1 },
+        "previousAttemptId": { "$ref": "#/$defs/entityId" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "isRetry": { "const": true } } },
+          "then": { "required": ["reason", "previousAttemptId"] }
+        }
+      ]
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "$schema",
+        "kind",
+        "schemaVersion",
+        "attemptId",
+        "planId",
+        "cellId",
+        "testCase",
+        "productRoute",
+        "exactPrompt",
+        "settings",
+        "startedAt",
+        "completedAt",
+        "attempt",
+        "selectionPolicy",
+        "originalOutputs",
+        "moderation",
+        "outcome",
+        "quotaUsage",
+        "rawResponse",
+        "retry"
+      ],
+      "properties": {
+        "$schema": { "type": "string", "format": "uri-reference" },
+        "kind": { "const": "image-generation-attempt" },
+        "schemaVersion": { "const": "1.0.0" },
+        "attemptId": { "$ref": "#/$defs/entityId" },
+        "planId": { "$ref": "#/$defs/entityId" },
+        "cellId": { "$ref": "#/$defs/entityId" },
+        "testCase": { "$ref": "#/$defs/testCase" },
+        "productRoute": { "$ref": "#/$defs/productRoute" },
+        "exactPrompt": { "$ref": "#/$defs/exactPrompt" },
+        "settings": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "$ref": "#/$defs/setting" }
+        },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "attempt": { "type": "integer", "minimum": 1, "maximum": 2 },
+        "selectionPolicy": { "const": "all-attempts" },
+        "originalOutputs": {
+          "type": "array",
+          "maxItems": 1,
+          "items": { "$ref": "#/$defs/outputAsset" }
+        },
+        "moderation": { "$ref": "#/$defs/moderation" },
+        "outcome": { "enum": ["success", "partial", "failure", "refusal", "moderated"] },
+        "quotaUsage": { "$ref": "#/$defs/quotaUsage" },
+        "rawResponse": { "$ref": "#/$defs/rawResponse" },
+        "failure": { "$ref": "#/$defs/failure" },
+        "retry": { "$ref": "#/$defs/retry" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "outcome": { "const": "success" } } },
+          "then": {
+            "properties": { "originalOutputs": { "type": "array", "minItems": 1 } }
+          }
+        },
+        {
+          "if": { "properties": { "outcome": { "enum": ["partial", "failure", "refusal", "moderated"] } } },
+          "then": { "required": ["failure"] }
+        },
+        {
+          "if": { "properties": { "outcome": { "const": "refusal" } } },
+          "then": {
+            "properties": {
+              "failure": {
+                "allOf": [
+                  { "$ref": "#/$defs/failure" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "classification": { "const": "refusal" },
+                      "retryable": { "const": false }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["failure"],
+            "properties": {
+              "failure": {
+                "type": "object",
+                "required": ["classification"],
+                "properties": { "classification": { "const": "refusal" } }
+              }
+            }
+          },
+          "then": { "properties": { "outcome": { "const": "refusal" } } }
+        },
+        {
+          "if": { "properties": { "outcome": { "const": "moderated" } } },
+          "then": {
+            "properties": {
+              "moderation": {
+                "allOf": [
+                  { "$ref": "#/$defs/moderation" },
+                  {
+                    "type": "object",
+                    "properties": { "status": { "enum": ["flagged", "blocked"] } }
+                  }
+                ]
+              },
+              "failure": {
+                "allOf": [
+                  { "$ref": "#/$defs/failure" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "classification": { "const": "moderation" },
+                      "retryable": { "const": false }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["failure"],
+            "properties": {
+              "failure": {
+                "type": "object",
+                "required": ["classification"],
+                "properties": { "classification": { "const": "moderation" } }
+              }
+            }
+          },
+          "then": { "properties": { "outcome": { "const": "moderated" } } }
+        }
+      ]
+    }
+  }
+}
