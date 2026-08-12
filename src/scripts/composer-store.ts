@@ -85,6 +85,28 @@ export function addPrimitiveToActiveDraft(
 
 const snapshotBody = (snapshot: Omit<ShareSnapshot, "sha256">) => JSON.stringify(snapshot);
 
+const PRIMITIVE_STRING_LIMITS: Record<keyof ComposerPrimitive, number> = {
+  primitiveId: 160,
+  slug: 120,
+  label: 160,
+  fragment: 4000,
+  sourcePrompt: 8000,
+};
+
+const validatePrimitive = (value: unknown, index: number): value is ComposerPrimitive => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} phải là một object.`);
+  }
+  const primitive = value as Record<string, unknown>;
+  for (const [field, limit] of Object.entries(PRIMITIVE_STRING_LIMITS)) {
+    const candidate = primitive[field];
+    if (typeof candidate !== "string" || candidate.trim().length === 0 || candidate.length > limit) {
+      throw new Error(`Snapshot không hợp lệ: ${field} của thành phần ${index + 1} phải là chuỗi từ 1 đến ${limit} ký tự.`);
+    }
+  }
+  return true;
+};
+
 export async function sha256Text(value: string) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -142,6 +164,7 @@ async function validateSnapshot(value: unknown): Promise<ShareSnapshot> {
   }
   const { sha256, ...body } = snapshot;
   if (await sha256Text(snapshotBody(body)) !== sha256) throw new Error("Checksum snapshot không khớp.");
+  snapshot.recipe.items.forEach(validatePrimitive);
   return snapshot;
 }
 

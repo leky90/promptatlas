@@ -20,6 +20,7 @@ import {
   forkSnapshot,
   parseExportFile,
   readActiveDraft,
+  sha256Text,
 } from "../src/scripts/composer-store.ts";
 
 const glitch = {
@@ -137,4 +138,15 @@ test("oversized shares fall back to a lossless checksummed export", async () => 
   const tampered = JSON.parse(exported.content);
   tampered.recipe.items[0].label = "Changed";
   await assert.rejects(parseExportFile(JSON.stringify(tampered)), /Checksum/u);
+});
+
+test("checksummed snapshots with malformed primitive fields are rejected before rendering", async () => {
+  const draft = addPrimitive(createDraft("recipe-malformed", "2026-08-12T00:00:00.000Z"), glitch).draft;
+  const snapshot = await createSnapshot(draft, "2026-08-12T00:01:00.000Z");
+  snapshot.recipe.items[0].sourcePrompt = null;
+  const { sha256: _previousChecksum, ...body } = snapshot;
+  snapshot.sha256 = await sha256Text(JSON.stringify(body));
+
+  await assert.rejects(parseExportFile(JSON.stringify(snapshot)), /sourcePrompt/u);
+  await assert.rejects(decodeSnapshot(encodeSnapshot(snapshot)), /sourcePrompt/u);
 });
