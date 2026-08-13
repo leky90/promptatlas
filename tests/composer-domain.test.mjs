@@ -11,6 +11,7 @@ import {
 } from "../src/lib/composer.ts";
 import {
   ACTIVE_DRAFT_KEY,
+  MAX_COMPOSER_ITEMS,
   addPrimitiveToActiveDraft,
   buildShareUrl,
   createExportFile,
@@ -164,6 +165,32 @@ class FakeStorage {
     this.values.delete(key);
   }
 }
+
+test("the add path refuses to persist a recipe beyond MAX_COMPOSER_ITEMS", () => {
+  const storage = new FakeStorage();
+  for (let index = 0; index < MAX_COMPOSER_ITEMS; index += 1) {
+    const result = addPrimitiveToActiveDraft(storage, {
+      ...glitch,
+      primitiveId: `primitive.style.qa-${index}`,
+      slug: `qa-${index}`,
+      label: `QA ${index}`,
+    }, {
+      uuid: () => "bounded-draft",
+      now: () => "2026-08-13T00:00:00.000Z",
+    });
+    assert.equal(result.added, true);
+  }
+
+  const rejected = addPrimitiveToActiveDraft(storage, {
+    ...glitch,
+    primitiveId: "primitive.style.qa-overflow",
+    slug: "qa-overflow",
+    label: "QA overflow",
+  });
+  assert.equal(rejected.added, false);
+  assert.equal(rejected.reason, "limit");
+  assert.equal(readActiveDraft(storage)?.items.length, MAX_COMPOSER_ITEMS);
+});
 
 test("share snapshots are immutable and fork without overwriting the active draft", async () => {
   const storage = new FakeStorage();

@@ -83,6 +83,9 @@ export function addPrimitiveToActiveDraft(
   const now = options.now ?? defaultNow;
   const current = readActiveDraft(storage) ?? createDraft((options.uuid ?? defaultUuid)(), now());
   const result = addPrimitive(current, primitive, now());
+  if (result.added && current.items.length >= MAX_COMPOSER_ITEMS) {
+    return { draft: current, added: false, existingIndex: -1, reason: "limit" as const };
+  }
   if (result.added) persistDraft(storage, result.draft);
   return result;
 }

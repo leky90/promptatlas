@@ -153,8 +153,10 @@ function initializeComposerEntries() {
           ? "Đã thêm vào Composer."
           : result.reason === "dimension-conflict"
             ? "Dimension này đã có một giá trị trong Composer."
-            : "Thành phần này đã có trong recipe.";
-        showToast(message, result.reason === "dimension-conflict" ? "error" : "default");
+            : result.reason === "limit"
+              ? "Composer đã đạt giới hạn 90 thành phần."
+              : "Thành phần này đã có trong recipe.";
+        showToast(message, result.reason === "dimension-conflict" || result.reason === "limit" ? "error" : "default");
       } catch {
         showToast("Không thể lưu recipe trong trình duyệt này.", "error");
       }
