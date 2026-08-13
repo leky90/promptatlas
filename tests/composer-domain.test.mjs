@@ -25,6 +25,7 @@ import {
 
 const glitch = {
   primitiveId: "primitive.style.glitch-art",
+  dimensionId: "style.medium",
   slug: "glitch-art",
   label: "Glitch Art",
   fragment: "Style/medium: Glitch Art.",
@@ -33,6 +34,7 @@ const glitch = {
 
 const watercolor = {
   primitiveId: "primitive.style.watercolor",
+  dimensionId: "style.medium",
   slug: "watercolor",
   label: "Watercolor",
   fragment: "Style/medium: Watercolor.",
@@ -41,10 +43,38 @@ const watercolor = {
 
 const subjectRole = {
   primitiveId: "primitive.subject.role",
+  dimensionId: "subject.person.role",
   slug: "primitive-subject-role",
   label: "Vai trò",
   fragment: "a craftsperson",
   sourcePrompt: "a craftsperson repairing a ceramic bowl",
+};
+
+const shallowDepth = {
+  primitiveId: "camera.depth-of-field.shallow",
+  dimensionId: "camera.depth-of-field",
+  slug: "camera-depth-of-field-shallow",
+  label: "Độ sâu trường ảnh nông",
+  fragment: "shallow depth of field",
+  sourcePrompt: "A portrait looking into the camera.",
+};
+
+const deepDepth = {
+  primitiveId: "camera.depth-of-field.deep",
+  dimensionId: "camera.depth-of-field",
+  slug: "camera-depth-of-field-deep",
+  label: "Độ sâu trường ảnh sâu",
+  fragment: "deep depth of field",
+  sourcePrompt: "A portrait looking into the camera.",
+};
+
+const portraitRatio = {
+  primitiveId: "composition.aspect-ratio.portrait-4-5",
+  dimensionId: "composition.aspect-ratio",
+  slug: "composition-aspect-ratio-portrait-4-5",
+  label: "Dọc 4:5",
+  fragment: "portrait 4:5 aspect ratio",
+  sourcePrompt: "A portrait looking into the camera.",
 };
 
 const productionPrimitiveIdentities = new Map([
@@ -85,6 +115,34 @@ test("taxonomy primitives compose in order without false style blend conflicts",
   assert.equal(deriveBlendConflicts(draft).length, 0);
   assert.match(renderPrompt(draft), /Prompt recipe \(apply in this order\):/u);
   assert.ok(renderPrompt(draft).indexOf("a craftsperson") < renderPrompt(draft).indexOf("Glitch Art"));
+});
+
+test("single-select dimensions reject a second value while style.medium remains blendable", () => {
+  let draft = addPrimitive(createDraft("draft-dimension"), shallowDepth).draft;
+  const rejected = addPrimitive(draft, deepDepth);
+
+  assert.equal(rejected.added, false);
+  assert.equal(rejected.reason, "dimension-conflict");
+  assert.equal(rejected.existingIndex, 0);
+  assert.deepEqual(rejected.draft.items.map((item) => item.primitiveId), [shallowDepth.primitiveId]);
+
+  draft = addPrimitive(createDraft("draft-style-blend"), glitch).draft;
+  const blended = addPrimitive(draft, watercolor);
+  assert.equal(blended.added, true);
+  assert.equal(blended.draft.items.length, 2);
+  assert.equal(deriveBlendConflicts(blended.draft).length, 1);
+});
+
+test("selected aspect ratio controls framing and the default framing is ratio-neutral", () => {
+  const portraitDraft = addPrimitive(createDraft("draft-portrait"), portraitRatio).draft;
+  const portraitPrompt = renderPrompt(portraitDraft);
+  assert.match(portraitPrompt, /Composition\/framing: portrait 4:5 aspect ratio/u);
+  assert.doesNotMatch(portraitPrompt, /landscape 3:2/u);
+
+  const neutralDraft = addPrimitive(createDraft("draft-neutral"), subjectRole).draft;
+  const neutralPrompt = renderPrompt(neutralDraft);
+  assert.match(neutralPrompt, /Composition\/framing: clear focal subject/u);
+  assert.doesNotMatch(neutralPrompt, /landscape 3:2/u);
 });
 
 class FakeStorage {

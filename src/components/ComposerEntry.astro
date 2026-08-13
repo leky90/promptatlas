@@ -11,6 +11,7 @@ const { style, variant = "card" } = Astro.props;
   type="button"
   data-composer-add
   data-primitive-id={`primitive.style.${style.slug}`}
+  data-primitive-dimension="style.medium"
   data-primitive-slug={style.slug}
   data-primitive-label={style.name}
   data-primitive-fragment={`Style/medium: ${style.name}. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.`}

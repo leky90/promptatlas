@@ -91,6 +91,7 @@ const snapshotBody = (snapshot: Omit<ShareSnapshot, "sha256">) => JSON.stringify
 
 const PRIMITIVE_STRING_LIMITS: Record<keyof ComposerPrimitive, number> = {
   primitiveId: 160,
+  dimensionId: 160,
   slug: 120,
   label: 160,
   fragment: 4000,
