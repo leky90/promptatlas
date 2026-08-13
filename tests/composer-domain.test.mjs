@@ -79,8 +79,9 @@ const portraitRatio = {
 };
 
 const productionPrimitiveIdentities = new Map([
-  [glitch.primitiveId, glitch.slug],
-  [watercolor.primitiveId, watercolor.slug],
+  [glitch.primitiveId, { slug: glitch.slug, dimensionId: glitch.dimensionId }],
+  [watercolor.primitiveId, { slug: watercolor.slug, dimensionId: watercolor.dimensionId }],
+  [portraitRatio.primitiveId, { slug: portraitRatio.slug, dimensionId: portraitRatio.dimensionId }],
 ]);
 
 const resignSnapshot = async (snapshot) => {
@@ -325,4 +326,26 @@ test("snapshot primitive identities must match the canonical production registry
       /bộ dữ liệu Prompt Atlas production/u,
     );
   }
+});
+
+test("snapshot dimensions must match canonical metadata while legacy style recipes remain readable", async () => {
+  const portraitDraft = addPrimitive(createDraft("recipe-dimension"), portraitRatio).draft;
+  const validPortrait = await createSnapshot(portraitDraft, "2026-08-13T00:01:00.000Z");
+  const forgedDimension = structuredClone(validPortrait);
+  forgedDimension.recipe.items[0].dimensionId = "camera.depth-of-field";
+  await assert.rejects(
+    parseExportFile(JSON.stringify(await resignSnapshot(forgedDimension)), productionPrimitiveIdentities),
+    /bộ dữ liệu Prompt Atlas production/u,
+  );
+
+  const legacyDraft = addPrimitive(createDraft("recipe-legacy-style"), glitch).draft;
+  const legacySnapshot = await createSnapshot(legacyDraft, "2026-08-13T00:02:00.000Z");
+  delete legacySnapshot.recipe.items[0].dimensionId;
+  const signedLegacySnapshot = await resignSnapshot(legacySnapshot);
+  const opened = await parseExportFile(JSON.stringify(signedLegacySnapshot), productionPrimitiveIdentities);
+  assert.equal(opened.recipe.items[0].primitiveId, glitch.primitiveId);
+
+  const storage = new FakeStorage();
+  const forked = forkSnapshot(storage, opened, { uuid: () => "legacy-fork" });
+  assert.equal(forked.items[0].dimensionId, "style.medium");
 });

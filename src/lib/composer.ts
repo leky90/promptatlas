@@ -38,6 +38,10 @@ export const primitiveDimensionId = (primitive: Pick<ComposerPrimitive, "primiti
   primitive.dimensionId || (primitive.primitiveId.startsWith("primitive.style.") ? "style.medium" : "")
 );
 
+export const normalizeComposerPrimitive = (
+  primitive: Omit<ComposerPrimitive, "dimensionId"> & Partial<Pick<ComposerPrimitive, "dimensionId">>,
+): ComposerPrimitive => ({ ...primitive, dimensionId: primitiveDimensionId(primitive) });
+
 export function createDraft(draftId: string, now = new Date().toISOString()): ComposerDraft {
   return {
     format: "prompt-atlas-draft",
