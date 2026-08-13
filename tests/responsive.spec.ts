@@ -1,5 +1,28 @@
 import { expect, test } from "@playwright/test";
 
+test("tablet discovery and Composer remain usable without horizontal overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await page.goto("/discover/");
+
+  const viewport = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth);
+
+  const toggle = page.locator("[data-facet-toggle]");
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await page.locator('[data-dimension-filter="composition.aspect-ratio"]').click();
+  await expect(page).toHaveURL(/dimension=composition.aspect-ratio/u);
+
+  const add = page.locator("[data-primitive-card]:visible").first().getByRole("button", { name: /Thêm .* vào prompt/u });
+  await add.click();
+  await expect(page.locator("[data-composer-tray]")).toContainText("1 thành phần");
+  await page.locator("[data-composer-tray]").getByRole("link", { name: "Mở Composer" }).click();
+  await expect(page.locator("[data-composer-workspace]")).toBeVisible();
+});
+
 test("mobile navigation and core layouts remain usable", async ({ page }) => {
   await page.goto("/");
   const menu = page.locator("[data-nav-toggle]");

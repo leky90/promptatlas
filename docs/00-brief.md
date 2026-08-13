@@ -32,7 +32,7 @@ Không có backend, tài khoản, upload ảnh hay gọi API tạo ảnh.
 - Dùng kết quả 90 cặp ảnh đã tạo.
 - UI/UX tiện dụng, design direction phù hợp với kho tham khảo hình ảnh.
 - Deploy GitHub Pages.
-- Custom domain: `image-styles.ldktech.com`.
+- Custom domain: `prompt-atlas.ldktech.com`.
 
 ## Giả định tự chủ
 
@@ -46,7 +46,7 @@ Không có backend, tài khoản, upload ảnh hay gọi API tạo ảnh.
 
 - `build-static-demo`: lead studio cho product model, UX, art direction, implementation và QA.
 - `github:github`: định tuyến publish; phần tạo repo/push/Pages dùng `git` và `gh` vì connector không bao phủ đầy đủ GitHub Pages.
-- `cloudflare:cloudflare`: chỉ dùng cho DNS `image-styles.ldktech.com`; không dùng Cloudflare Pages/Workers vì hosting đã được yêu cầu là GitHub Pages.
+- `cloudflare:cloudflare`: chỉ dùng cho DNS `prompt-atlas.ldktech.com`; không dùng Cloudflare Pages/Workers vì hosting là GitHub Pages.
 - Không dùng `imagegen`: 180 ảnh người dùng đã cung cấp/tạo trước đó là media cuối cùng; không cần phát sinh artwork mới.
 - Không dùng `design-taste-frontend`: đây là hybrid catalog + công cụ so sánh, không phải marketing surface thuần; art direction của lead skill đủ phù hợp và tránh xung đột.
 
@@ -73,5 +73,4 @@ Không có backend, tài khoản, upload ảnh hay gọi API tạo ảnh.
 - Tất cả route build tĩnh, không 404 nội bộ, không lỗi console.
 - Kiểm tra desktop và mobile bằng trình duyệt thật.
 - Repo công khai trên GitHub, workflow Pages thành công.
-- `https://image-styles.ldktech.com` phân giải và phục vụ build đã xác minh.
-
+- `https://prompt-atlas.ldktech.com` phân giải và phục vụ build đã xác minh.

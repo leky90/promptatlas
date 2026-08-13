@@ -7,6 +7,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "prepare:data": "node scripts/prepare-site-data.mjs",
+    "build:og-cover": "node scripts/build-og-cover.mjs",
+    "smoke:production-domain": "node scripts/smoke-production-domain.mjs",
     "import:legacy-assets": "node scripts/import-legacy-source-assets.mjs",
     "build:image-data": "node scripts/build-image-content.mjs",
     "check:image-data": "node scripts/build-image-content.mjs --check",

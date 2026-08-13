@@ -2,7 +2,7 @@
 
 A Vietnamese-first visual reference for 90 image-generation styles. Every style pairs the same structured prompt across ChatGPT and Gemini, publishes both real outputs, and scores them on five consistent criteria.
 
-Live site: [image-styles.ldktech.com](https://image-styles.ldktech.com)
+Live site: [prompt-atlas.ldktech.com](https://prompt-atlas.ldktech.com)
 
 ## What is included
 
@@ -52,7 +52,7 @@ Composer drafts use versioned UUID records in `localStorage`; shared recipes use
 
 ## Deployment
 
-The site is a static Astro build deployed to GitHub Pages through `.github/workflows/deploy.yml`. The custom domain is declared in `public/CNAME`.
+The site is a static Astro build deployed to GitHub Pages through `.github/workflows/deploy.yml`. The sole production custom domain is declared in `public/CNAME` as `prompt-atlas.ldktech.com`.
 
 ## Interpretation note
 

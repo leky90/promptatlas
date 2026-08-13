@@ -1,6 +1,3 @@
-# Temporarily disabled to prevent GitHub Actions minute usage.
-# Restore automatic deployment by renaming this file to deploy.yml.
-
 name: Deploy Prompt Atlas to GitHub Pages
 
 on:
