@@ -62,6 +62,24 @@ test("primitive cards support search, copy, details and composer entry", async (
   await expect(page.locator("[data-composer-preview]")).toContainText("a craftsperson");
 });
 
+test("Composer rejects a second value from one dimension and honors an explicit aspect ratio", async ({ page }) => {
+  await page.goto("/discover/?q=trường%20ảnh%20nông");
+  await page.locator("[data-primitive-card]:visible").getByRole("button", { name: /Thêm trường ảnh nông vào prompt/u }).click();
+  await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
+
+  await page.locator("[data-discover-search]").fill("trường ảnh sâu");
+  await page.locator("[data-primitive-card]:visible").getByRole("button", { name: /Thêm trường ảnh sâu vào prompt/u }).click();
+  await expect(page.locator("[data-toast]")).toContainText("Dimension này đã có một giá trị");
+  await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
+
+  await page.locator("[data-discover-search]").fill("khung dọc 4:5");
+  await page.locator("[data-primitive-card]:visible").getByRole("button", { name: /Thêm khung dọc 4:5 vào prompt/u }).click();
+  await page.goto("/composer/");
+  await expect(page.locator("[data-recipe-item]")).toHaveCount(2);
+  await expect(page.locator("[data-composer-preview]")).toContainText("Composition/framing: portrait 4:5 aspect ratio");
+  await expect(page.locator("[data-composer-preview]")).not.toContainText("landscape 3:2");
+});
+
 test("discovery has no serious accessibility violations", async ({ page }) => {
   await page.goto("/discover/");
   const results = await new AxeBuilder({ page }).analyze();
