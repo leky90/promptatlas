@@ -1,6 +1,6 @@
 # LDK-344 — QA remediation for discovery and Composer integration
 
-**Status:** Second remediation in progress
+**Status:** Implemented; awaiting second QA re-review
 
 **Owner:** software engineer
 
@@ -75,6 +75,9 @@ All five P1/P2 review threads, including the import/share validation finding, mu
 - Prompt framing derives from an explicit aspect-ratio primitive and otherwise remains ratio-neutral.
 - The add path rejects the 91st item before persistence and reports the 90-item limit.
 - Snapshot validation checks ID, slug and dimension together; legacy style-only drafts/snapshots are normalized to `style.medium`.
+- Imported files and hash-shared snapshots now reject repeated canonical non-blendable dimensions before rendering or forking.
+- The `style.medium` exception remains valid across import and hash-share paths and still surfaces the explicit blend workflow.
 - Mobile facets use `hidden`, `inert` and `aria-hidden` while closed and restore focus to the Taxonomy toggle; desktop facets remain available.
-- Verification at the final local head: 12 unit + 47 contract tests passed; 23/23 Playwright desktop/mobile tests passed; 187/187 primitive assets validated; Astro reported 0 errors/warnings/hints; 96 static pages built; `git diff --check` passed.
+- Verification at the final local head: 14 unit + 47 contract tests passed; 23/23 Playwright desktop/mobile tests passed; 187/187 primitive assets validated; Astro reported 0 errors/warnings/hints; 96 static pages built; `git diff --check` passed.
 - Live browser verification at 1440×1000 and 390×844 reproduced dimension feedback, portrait 4:5 framing, closed/open/closed drawer isolation, focus restoration and zero console errors.
+- Live hash-share verification rejected a correctly checksummed shallow/deep depth-of-field conflict with zero rendered items, while a fresh two-style snapshot rendered both styles, kept the blend warning and produced zero console errors.
