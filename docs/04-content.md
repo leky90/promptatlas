@@ -60,7 +60,7 @@
 
 - Title: `Prompt Atlas — 90 phong cách tạo ảnh AI | LDKTech`
 - Description: `So sánh ChatGPT và Gemini qua 90 prompt tạo ảnh, xem 180 output thực tế và tìm phong cách phù hợp cho dự án của bạn.`
-- Canonical: `https://image-styles.ldktech.com/`
+- Canonical: `https://prompt-atlas.ldktech.com/`
 
 ### Detail pattern
 
@@ -70,4 +70,3 @@
 ## Footer
 
 `Một thử nghiệm trực quan của LDKTech. Không liên kết hay được bảo trợ bởi OpenAI hoặc Google. Ảnh được giữ nguyên để phục vụ so sánh.`
-

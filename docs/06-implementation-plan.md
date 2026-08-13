@@ -93,9 +93,9 @@ Không dùng hover là cơ chế duy nhất. Card text và actions luôn hiện.
 
 - Không backend, API, form submit hay AI generation.
 - GitHub Actions build từ repo root (`site/` sẽ là repo root khi publish).
-- Astro `site: 'https://image-styles.ldktech.com'`, không `base`.
+- Astro `site: 'https://prompt-atlas.ldktech.com'`, không `base`.
 - `public/CNAME` chứa custom domain.
-- Cloudflare CNAME DNS-only → `leky90.github.io`.
+- Cloudflare proxied CNAME → `leky90.github.io`.
 
 ## QA và acceptance
 
@@ -106,4 +106,3 @@ Không dùng hover là cơ chế duy nhất. Card text và actions luôn hiện.
 - Console errors = 0, broken local media/404 = 0.
 - Lighthouse hoặc tương đương: accessibility/performance inspected; không yêu cầu điểm giả định.
 - Visual review representative route trước khi propagate, sau đó final review.
-

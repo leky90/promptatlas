@@ -1,7 +1,7 @@
 # 07 — QA report
 
 Date: 2026-08-11  
-Target: `https://image-styles.ldktech.com`
+Historical target: `https://image-styles.ldktech.com` (retired by LDK-345; the current production target is `https://prompt-atlas.ldktech.com`)
 
 ## Build integrity
 

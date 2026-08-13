@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://image-styles.ldktech.com/sitemap-index.xml
-
+Sitemap: https://prompt-atlas.ldktech.com/sitemap-index.xml
