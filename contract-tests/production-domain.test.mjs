@@ -10,7 +10,6 @@ const retiredHost = "image-styles.ldktech.com";
 
 const activeDomainFiles = [
   "astro.config.mjs",
-  "public/CNAME",
   "public/robots.txt",
   "src/pages/index.astro",
   "src/pages/discover.astro",
@@ -21,15 +20,30 @@ const activeDomainFiles = [
 test("active production surfaces use only the Prompt Atlas hostname", async () => {
   for (const relativePath of activeDomainFiles) {
     const contents = await fs.readFile(path.join(root, relativePath), "utf8");
-    assert.equal(contents.includes(retiredHost), false, `${relativePath} still references ${retiredHost}`);
+    assert.equal(contents.includes(retiredHost), false, relativePath + " still references " + retiredHost);
   }
 
-  assert.equal((await fs.readFile(path.join(root, "public/CNAME"), "utf8")).trim(), productionHost);
-  assert.match(await fs.readFile(path.join(root, "astro.config.mjs"), "utf8"), new RegExp(`https://${productionHost}`));
-  assert.match(await fs.readFile(path.join(root, "public/robots.txt"), "utf8"), new RegExp(`https://${productionHost}/sitemap-index\\.xml`));
+  await assert.rejects(fs.access(path.join(root, "public/CNAME")));
+  assert.match(
+    await fs.readFile(path.join(root, "astro.config.mjs"), "utf8"),
+    new RegExp("https://" + productionHost),
+  );
+  assert.match(
+    await fs.readFile(path.join(root, "public/robots.txt"), "utf8"),
+    new RegExp("https://" + productionHost + "/sitemap-index\\.xml"),
+  );
 });
 
-test("the GitHub Pages deploy workflow is enabled", async () => {
-  await fs.access(path.join(root, ".github/workflows/deploy.yml"));
-  await assert.rejects(fs.access(path.join(root, ".github/workflows/deploy.yml.disabled")));
+test("Cloudflare Pages owns deploys and GitHub Actions is manual verification only", async () => {
+  await assert.rejects(fs.access(path.join(root, ".github/workflows/deploy.yml")));
+
+  const workflow = await fs.readFile(path.join(root, ".github/workflows/verify.yml"), "utf8");
+  assert.match(workflow, /workflow_dispatch:/u);
+  assert.doesNotMatch(workflow, /actions\/deploy-pages/u);
+  assert.doesNotMatch(workflow, /branches:\s*\[main\]/u);
+
+  const deployGuide = await fs.readFile(path.join(root, "DEPLOY.md"), "utf8");
+  assert.match(deployGuide, /Cloudflare Pages/u);
+  assert.match(deployGuide, /npm run verify:pages/u);
+  assert.equal((await fs.readFile(path.join(root, ".node-version"), "utf8")).trim(), "24");
 });

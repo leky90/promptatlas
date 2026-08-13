@@ -1,5 +1,7 @@
 # LDK-345 — Production domain migration
 
+> Hosting amendment — 2026-08-14: the hostname remains unchanged, but its origin moves from GitHub Pages to the prompt-atlas Cloudflare Pages project. See cloudflare-pages-migration.md. The sequence below is retained as the historical domain-cutover record.
+
 ## Effective decision
 
 `https://prompt-atlas.ldktech.com` is the sole production hostname for Prompt Atlas. The former `image-styles.ldktech.com` hostname is retired without a redirect; its Cloudflare DNS record must be deleted only after the new hostname, certificate and release smoke checks pass.

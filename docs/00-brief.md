@@ -31,7 +31,7 @@ Không có backend, tài khoản, upload ảnh hay gọi API tạo ảnh.
 
 - Dùng kết quả 90 cặp ảnh đã tạo.
 - UI/UX tiện dụng, design direction phù hợp với kho tham khảo hình ảnh.
-- Deploy GitHub Pages.
+- Deploy a static production site. The original implementation used GitHub Pages; the effective hosting decision from 2026-08-14 is Cloudflare Pages Git integration.
 - Custom domain: `prompt-atlas.ldktech.com`.
 
 ## Giả định tự chủ
@@ -45,8 +45,8 @@ Không có backend, tài khoản, upload ảnh hay gọi API tạo ảnh.
 ## Helper skills
 
 - `build-static-demo`: lead studio cho product model, UX, art direction, implementation và QA.
-- `github:github`: định tuyến publish; phần tạo repo/push/Pages dùng `git` và `gh` vì connector không bao phủ đầy đủ GitHub Pages.
-- `cloudflare:cloudflare`: chỉ dùng cho DNS `prompt-atlas.ldktech.com`; không dùng Cloudflare Pages/Workers vì hosting là GitHub Pages.
+- `github:github`: quản lý source, commit, review và manual verification workflow.
+- `cloudflare:cloudflare`: quản lý Cloudflare Pages, DNS, custom domain, cache và rollback production.
 - Không dùng `imagegen`: 180 ảnh người dùng đã cung cấp/tạo trước đó là media cuối cùng; không cần phát sinh artwork mới.
 - Không dùng `design-taste-frontend`: đây là hybrid catalog + công cụ so sánh, không phải marketing surface thuần; art direction của lead skill đủ phù hợp và tránh xung đột.
 
@@ -58,7 +58,7 @@ Không có backend, tài khoản, upload ảnh hay gọi API tạo ảnh.
 - Favorites cục bộ, copy prompt, trạng thái empty/success.
 - Responsive desktop/mobile, keyboard/focus, reduced motion.
 - SEO metadata, sitemap, robots, Open Graph, favicon.
-- Build tĩnh và deploy GitHub Pages + DNS Cloudflare.
+- Build tĩnh và deploy qua Cloudflare Pages Git integration.
 
 ## Ngoài phạm vi
 

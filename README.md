@@ -25,13 +25,9 @@ npm run dev
 Production checks:
 
 ```bash
-npm run check
-npm run build
-npm run check:image-data
-npm run validate:image-data
-npm run validate:contract
-npm run test:contract
+npm run verify:pages
 npm run test:e2e
+npm run smoke:production-domain
 ```
 
 ## Content and media
@@ -52,7 +48,7 @@ Composer drafts use versioned UUID records in `localStorage`; shared recipes use
 
 ## Deployment
 
-The site is a static Astro build deployed to GitHub Pages through `.github/workflows/deploy.yml`. The sole production custom domain is declared in `public/CNAME` as `prompt-atlas.ldktech.com`.
+The site is a static Astro build deployed through the Cloudflare Pages Git integration. Pushes to `main` run `npm run verify:pages`; only a successful build can become production. `prompt-atlas.ldktech.com` is the sole canonical hostname. See [`DEPLOY.md`](DEPLOY.md) for build settings, smoke checks and rollback.
 
 ## Interpretation note
 
