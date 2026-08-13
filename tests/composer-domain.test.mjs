@@ -39,6 +39,14 @@ const watercolor = {
   sourcePrompt: "A portrait looking into the camera.",
 };
 
+const subjectRole = {
+  primitiveId: "primitive.subject.role",
+  slug: "primitive-subject-role",
+  label: "Vai trò",
+  fragment: "a craftsperson",
+  sourcePrompt: "a craftsperson repairing a ceramic bowl",
+};
+
 const productionPrimitiveIdentities = new Map([
   [glitch.primitiveId, glitch.slug],
   [watercolor.primitiveId, watercolor.slug],
@@ -68,6 +76,15 @@ test("recipe preserves explicit order, rejects duplicates and renders determinis
   assert.equal(conflicts.length, 1);
   assert.deepEqual(conflicts[0].labels, ["Watercolor", "Glitch Art"]);
   assert.equal(deriveBlendConflicts(acceptBlend(reordered, conflicts[0].key, "2026-08-12T00:00:05.000Z")).length, 0);
+});
+
+test("taxonomy primitives compose in order without false style blend conflicts", () => {
+  let draft = createDraft("draft-primitives", "2026-08-13T00:00:00.000Z");
+  draft = addPrimitive(draft, subjectRole).draft;
+  draft = addPrimitive(draft, glitch).draft;
+  assert.equal(deriveBlendConflicts(draft).length, 0);
+  assert.match(renderPrompt(draft), /Prompt recipe \(apply in this order\):/u);
+  assert.ok(renderPrompt(draft).indexOf("a craftsperson") < renderPrompt(draft).indexOf("Glitch Art"));
 });
 
 class FakeStorage {
@@ -220,7 +237,7 @@ test("snapshot primitive identities must match the canonical production registry
     scenario.mutate(snapshot);
     await assert.rejects(
       parseExportFile(JSON.stringify(await resignSnapshot(snapshot)), productionPrimitiveIdentities),
-      /90 phong cách production/u,
+      /bộ dữ liệu Prompt Atlas production/u,
     );
   }
 });

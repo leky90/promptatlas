@@ -1,0 +1,128 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+import PrimitiveCard from "../components/PrimitiveCard.astro";
+import { primitiveEntries, primitiveGroups, primitiveManifestVersion } from "../lib/primitives";
+
+const specimens = [primitiveEntries[0], primitiveEntries[90], primitiveEntries[166]];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Discover image primitives | Prompt Atlas",
+  description: "Thư viện 187 image primitives có ảnh tham chiếu, prompt fragment và taxonomy phân cấp.",
+  url: "https://image-styles.ldktech.com/discover/",
+  numberOfItems: primitiveEntries.length,
+};
+---
+
+<BaseLayout
+  title="Discover image primitives | Prompt Atlas"
+  description="Khám phá 187 image primitives theo taxonomy phân cấp, xem bằng chứng trực quan và thêm trực tiếp vào Prompt Composer."
+  canonicalPath="/discover/"
+  bodyClass="discover-page"
+  jsonLd={jsonLd}
+>
+  <section class="discover-intro shell" aria-labelledby="discover-title">
+    <div class="discover-intro__copy">
+      <p class="eyebrow">IMAGE VOCABULARY / DATASET {primitiveManifestVersion}</p>
+      <h1 id="discover-title">Xây một khung hình<br /><em>từ ngôn ngữ nhìn thấy.</em></h1>
+      <p>187 primitive đã được kiểm chứng bằng ảnh tham chiếu. Lọc theo cấu trúc hình ảnh, đọc prompt fragment, rồi đưa thành phần vào Composer mà không rời mạch khám phá.</p>
+      <div class="discover-intro__metrics" aria-label="Quy mô thư viện">
+        <span><strong>187</strong> primitives</span>
+        <span><strong>07</strong> nhóm taxonomy</span>
+        <span><strong>1:1</strong> ảnh / prompt</span>
+      </div>
+    </div>
+    <div class="discover-specimens" aria-label="Mẫu image primitives">
+      {specimens.map((primitive, index) => (
+        <figure style={`--specimen-index:${index}`}>
+          <img src={primitive.thumbnail} width="640" height="512" alt={primitive.alt.vi} fetchpriority={index === 0 ? "high" : undefined} />
+          <figcaption><span>{String(primitive.index).padStart(3, "0")}</span><strong>{primitive.labelVi}</strong></figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section class="discover-workspace" aria-labelledby="library-title" data-discover-workspace>
+    <div class="discover-toolbar-wrap">
+      <div class="discover-toolbar shell">
+        <form class="discover-search" role="search" data-discover-search-form>
+          <label for="primitive-search">Tìm trong image vocabulary</label>
+          <span><Icon name="search" size={18} /></span>
+          <input id="primitive-search" type="search" name="q" autocomplete="off" placeholder="vai trò, vật liệu, góc máy, ánh sáng…" data-discover-search />
+          <button type="submit">Tìm</button>
+        </form>
+
+        <div class="discover-toolbar__actions">
+          <button class="facet-toggle" type="button" data-facet-toggle aria-expanded="false" aria-controls="taxonomy-panel">
+            Taxonomy <span data-active-filter-count>0</span>
+          </button>
+          <div class="view-switch" role="group" aria-label="Kiểu hiển thị">
+            <button type="button" data-view="grid" aria-pressed="true">Lưới</button>
+            <button type="button" data-view="list" aria-pressed="false">Danh sách</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="taxonomy-quick shell" aria-label="Lọc nhanh theo nhóm">
+      <button type="button" data-group-filter="all" aria-pressed="true"><span>00</span>Tất cả <b>{primitiveEntries.length}</b></button>
+      {primitiveGroups.map((group) => (
+        <button type="button" data-group-filter={group.id} aria-pressed="false"><span>{group.order}</span>{group.label} <b>{group.count}</b></button>
+      ))}
+    </div>
+
+    <div class="discover-layout shell">
+      <aside class="taxonomy-panel" id="taxonomy-panel" data-facet-panel data-open="false" aria-label="Taxonomy phân cấp">
+        <div class="taxonomy-panel__head">
+          <div><p class="eyebrow">HIERARCHICAL FACETS</p><h2>Image anatomy</h2></div>
+          <button type="button" data-facet-close aria-label="Đóng taxonomy"><Icon name="close" size={19} /></button>
+        </div>
+        <button class="taxonomy-all" type="button" data-group-filter="all" aria-pressed="true">Tất cả primitive <span>{primitiveEntries.length}</span></button>
+        <div class="taxonomy-tree">
+          {primitiveGroups.map((group) => (
+            <details open>
+              <summary><span>{group.order}</span><strong>{group.label}</strong><b>{group.count}</b></summary>
+              <button type="button" data-group-filter={group.id} aria-pressed="false">Toàn bộ {group.label.toLocaleLowerCase("vi")} <span>{group.count}</span></button>
+              {group.dimensions.map((dimension) => (
+                <button type="button" data-dimension-filter={dimension.id} data-dimension-group={group.id} aria-pressed="false">
+                  {dimension.label}<span>{dimension.count}</span>
+                </button>
+              ))}
+            </details>
+          ))}
+        </div>
+      </aside>
+
+      <div class="primitive-library">
+        <header class="primitive-library__head">
+          <div>
+            <p class="eyebrow">SPECIMEN INDEX</p>
+            <h2 id="library-title">Image primitives</h2>
+          </div>
+          <div class="primitive-library__status">
+            <p><strong data-result-count>{primitiveEntries.length}</strong> kết quả · hiển thị <span data-visible-count>24</span></p>
+            <p data-filter-summary>Tất cả taxonomy</p>
+          </div>
+        </header>
+
+        <div class="primitive-grid" data-primitive-grid data-view="grid">
+          {primitiveEntries.map((primitive, index) => <PrimitiveCard primitive={primitive} eager={index < 6} />)}
+        </div>
+
+        <div class="discover-empty" data-discover-empty hidden>
+          <span>00</span>
+          <div><h2>Không có primitive khớp.</h2><p>Thử rút ngắn từ khóa hoặc đặt lại taxonomy.</p></div>
+          <button class="button button--primary" type="button" data-discover-reset>Đặt lại bộ lọc</button>
+        </div>
+
+        <div class="discover-load-more" data-load-wrap>
+          <p>Đã hiển thị <strong data-load-visible>24</strong> / <span data-load-total>{primitiveEntries.length}</span></p>
+          <button class="button button--ghost" type="button" data-load-more>Xem thêm 24 primitive <Icon name="arrow-down" size={17} /></button>
+        </div>
+      </div>
+    </div>
+    <div class="facet-scrim" data-facet-scrim hidden></div>
+  </section>
+  <script src="../scripts/discover-ui.ts"></script>
+</BaseLayout>

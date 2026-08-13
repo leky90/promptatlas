@@ -143,7 +143,7 @@ const validateRecipeRelationships = (
   }
   snapshot.recipe.items.forEach((item, index) => {
     if (primitiveIdentities.get(item.primitiveId) !== item.slug) {
-      throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} không thuộc 90 phong cách production.`);
+      throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} không thuộc bộ dữ liệu Prompt Atlas production.`);
     }
   });
 

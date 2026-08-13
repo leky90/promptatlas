@@ -99,6 +99,7 @@ export function deriveBlendConflicts(draft: ComposerDraft): BlendConflict[] {
     for (let second = first + 1; second < draft.items.length; second += 1) {
       const firstItem = draft.items[first];
       const secondItem = draft.items[second];
+      if (!firstItem.primitiveId.startsWith("primitive.style.") || !secondItem.primitiveId.startsWith("primitive.style.")) continue;
       const key = blendKey(firstItem.primitiveId, secondItem.primitiveId);
       if (!accepted.has(key)) {
         conflicts.push({
@@ -128,10 +129,10 @@ export function renderPrompt(draft: ComposerDraft): string {
   return [
     "Use case: composed image direction",
     `Primary request: ${sourcePrompt}`,
-    "Style/medium recipe (apply in this order):",
+    "Prompt recipe (apply in this order):",
     fragments,
     "Composition/framing: landscape 3:2, clear focal subject, controlled hierarchy.",
-    "Lighting/mood: coherent with the ordered style recipe and primary request.",
+    "Lighting/mood: coherent with the ordered recipe and primary request.",
     "Constraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
   ].join("\n");
 }

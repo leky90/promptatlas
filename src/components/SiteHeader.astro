@@ -3,10 +3,10 @@ import Icon from "./Icon.astro";
 
 const path = Astro.url.pathname;
 const links = [
-  ["/", "Atlas"],
+  ["/discover/", "Discover"],
   ["/composer/", "Composer"],
-  ["/compare/", "So sánh model"],
-  ["/methodology/", "Phương pháp"],
+  ["/compare/", "Benchmarks"],
+  ["/methodology/", "Methodology"],
 ] as const;
 ---
 
@@ -26,7 +26,7 @@ const links = [
           {label} <span class="site-nav__count" data-composer-count>0</span>
         </a>
       ) : (
-        <a href={href} aria-current={path === href || (href !== "/" && path.startsWith(href)) ? "page" : undefined}>{label}</a>
+        <a href={href} aria-current={path === href || path.startsWith(href) ? "page" : undefined}>{label}</a>
       ))}
       <a class="site-nav__external" href="https://github.com/leky90/promptatlas" target="_blank" rel="noreferrer">
         GitHub <Icon name="arrow-up-right" size={16} />

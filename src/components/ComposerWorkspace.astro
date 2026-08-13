@@ -1,8 +1,12 @@
 ---
 import Icon from "./Icon.astro";
 import { styles } from "../lib/styles";
+import { primitiveEntries, primitiveSlug } from "../lib/primitives";
 
-const primitiveIdentityPairs = styles.map((style) => [`primitive.style.${style.slug}`, style.slug]);
+const primitiveIdentityPairs = [
+  ...styles.map((style) => [`primitive.style.${style.slug}`, style.slug]),
+  ...primitiveEntries.map((primitive) => [primitive.id, primitiveSlug(primitive)]),
+];
 ---
 
 <section
@@ -40,8 +44,8 @@ const primitiveIdentityPairs = styles.map((style) => [`primitive.style.${style.s
 
       <div class="composer-empty" data-composer-empty>
         <span aria-hidden="true">00</span>
-        <div><h3>Recipe đang trống.</h3><p>Chọn một phong cách có bằng chứng trực quan để bắt đầu.</p></div>
-        <a class="button button--primary" href="/#atlas">Thêm thành phần đầu tiên <Icon name="arrow-right" /></a>
+        <div><h3>Recipe đang trống.</h3><p>Chọn một primitive có bằng chứng trực quan để bắt đầu.</p></div>
+        <a class="button button--primary" href="/discover/">Thêm thành phần đầu tiên <Icon name="arrow-right" /></a>
       </div>
 
       <ol class="recipe-list" data-recipe-list aria-label="Thứ tự thành phần prompt"></ol>

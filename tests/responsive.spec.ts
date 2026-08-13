@@ -6,7 +6,7 @@ test("mobile navigation and core layouts remain usable", async ({ page }) => {
   await expect(menu).toBeVisible();
   await menu.click();
   await expect(page.locator("[data-site-nav]")).toHaveAttribute("data-open", "true");
-  await expect(page.locator("[data-site-nav]").getByRole("link", { name: "So sánh model" })).toBeVisible();
+  await expect(page.locator("[data-site-nav]").getByRole("link", { name: "Benchmarks" })).toBeVisible();
 
   await page.locator("[data-style-search]").fill("watercolor");
   await expect(page.locator("[data-result-count]")).not.toHaveText("00");
@@ -16,6 +16,29 @@ test("mobile navigation and core layouts remain usable", async ({ page }) => {
   await expect(page.locator("[data-compare-select]")).toBeVisible();
   await expect(page.locator("[data-compare-name]")).toHaveText("Watercolor");
   await expect(page.locator("[data-compare-image]")).toHaveCount(2);
+});
+
+test("mobile discovery uses a facet drawer and keeps composer entry reachable", async ({ page }) => {
+  await page.goto("/discover/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("ngôn ngữ nhìn thấy");
+  await expect(page.locator("[data-primitive-card]:visible")).toHaveCount(24);
+
+  const toggle = page.locator("[data-facet-toggle]");
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(page.locator("[data-facet-panel]")).toHaveAttribute("data-open", "true");
+  await page.locator('[data-dimension-filter="camera.shot-size"]').click();
+  await expect(page).toHaveURL(/dimension=camera.shot-size/u);
+  await expect(page.locator("[data-facet-panel]")).toHaveAttribute("data-open", "false");
+  await expect(page.locator("[data-result-count]")).not.toHaveText("0");
+
+  const add = page.locator("[data-primitive-card]:visible").first().getByRole("button", { name: /Thêm .* vào prompt/u });
+  const addBox = await add.boundingBox();
+  expect(addBox?.height).toBeGreaterThanOrEqual(44);
+  await add.click();
+  await expect(page.locator("[data-composer-tray]")).toBeVisible();
+  await expect(page.locator("[data-composer-tray]")).toContainText("1 thành phần");
+  await expect(page.getByText(/^Video$/u)).toHaveCount(0);
 });
 
 test("mobile methodology anchors clear the sticky header", async ({ page }) => {
