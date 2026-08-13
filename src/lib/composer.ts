@@ -33,6 +33,7 @@ export type BlendConflict = {
 
 const blendKey = (firstId: string, secondId: string) => [firstId, secondId].sort().join("::");
 const BLENDABLE_DIMENSION_IDS = new Set(["style.medium"]);
+export const isBlendableDimensionId = (dimensionId: string) => BLENDABLE_DIMENSION_IDS.has(dimensionId);
 
 export const primitiveDimensionId = (primitive: Pick<ComposerPrimitive, "primitiveId"> & Partial<Pick<ComposerPrimitive, "dimensionId">>) => (
   primitive.dimensionId || (primitive.primitiveId.startsWith("primitive.style.") ? "style.medium" : "")
@@ -60,7 +61,7 @@ export function addPrimitive(draft: ComposerDraft, primitive: ComposerPrimitive,
   const existingIndex = draft.items.findIndex((item) => item.primitiveId === primitive.primitiveId);
   if (existingIndex >= 0) return { draft, added: false, existingIndex, reason: "duplicate" as const };
   const dimensionId = primitiveDimensionId(primitive);
-  const dimensionConflictIndex = dimensionId && !BLENDABLE_DIMENSION_IDS.has(dimensionId)
+  const dimensionConflictIndex = dimensionId && !isBlendableDimensionId(dimensionId)
     ? draft.items.findIndex((item) => primitiveDimensionId(item) === dimensionId)
     : -1;
   if (dimensionConflictIndex >= 0) {

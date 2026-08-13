@@ -81,6 +81,8 @@ const portraitRatio = {
 const productionPrimitiveIdentities = new Map([
   [glitch.primitiveId, { slug: glitch.slug, dimensionId: glitch.dimensionId }],
   [watercolor.primitiveId, { slug: watercolor.slug, dimensionId: watercolor.dimensionId }],
+  [shallowDepth.primitiveId, { slug: shallowDepth.slug, dimensionId: shallowDepth.dimensionId }],
+  [deepDepth.primitiveId, { slug: deepDepth.slug, dimensionId: deepDepth.dimensionId }],
   [portraitRatio.primitiveId, { slug: portraitRatio.slug, dimensionId: portraitRatio.dimensionId }],
 ]);
 
@@ -261,6 +263,35 @@ test("checksummed snapshots with malformed primitive fields are rejected before 
 
   await assert.rejects(parseExportFile(JSON.stringify(snapshot), productionPrimitiveIdentities), /sourcePrompt/u);
   await assert.rejects(decodeSnapshot(encodeSnapshot(snapshot), productionPrimitiveIdentities), /sourcePrompt/u);
+});
+
+test("imported and shared snapshots reject repeated non-blendable dimensions", async () => {
+  const conflictingDraft = {
+    ...createDraft("recipe-dimension-conflict", "2026-08-13T00:00:00.000Z"),
+    items: [shallowDepth, deepDepth],
+  };
+  const snapshot = await createSnapshot(conflictingDraft, "2026-08-13T00:01:00.000Z");
+
+  await assert.rejects(
+    parseExportFile(JSON.stringify(snapshot), productionPrimitiveIdentities),
+    /dimension.*một giá trị/u,
+  );
+  await assert.rejects(
+    decodeSnapshot(encodeSnapshot(snapshot), productionPrimitiveIdentities),
+    /dimension.*một giá trị/u,
+  );
+});
+
+test("imported and shared snapshots preserve the style.medium blend exception", async () => {
+  let styleDraft = addPrimitive(createDraft("recipe-style-blend"), glitch).draft;
+  styleDraft = addPrimitive(styleDraft, watercolor).draft;
+  const snapshot = await createSnapshot(styleDraft, "2026-08-13T00:02:00.000Z");
+
+  const imported = await parseExportFile(JSON.stringify(snapshot), productionPrimitiveIdentities);
+  const shared = await decodeSnapshot(encodeSnapshot(snapshot), productionPrimitiveIdentities);
+  assert.equal(imported.recipe.items.length, 2);
+  assert.equal(shared.recipe.items.length, 2);
+  assert.equal(deriveBlendConflicts({ ...styleDraft, items: imported.recipe.items }).length, 1);
 });
 
 test("snapshot versions, item bounds, identities and accepted blend keys are enforced", async () => {

@@ -4,6 +4,7 @@ import {
   SHARE_URL_LIMIT,
   addPrimitive,
   createDraft,
+  isBlendableDimensionId,
   normalizeComposerPrimitive,
   primitiveDimensionId,
   type ComposerDraft,
@@ -165,6 +166,12 @@ const validateRecipeRelationships = (
       throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} không thuộc bộ dữ liệu Prompt Atlas production.`);
     }
   });
+  const nonBlendableDimensions = snapshot.recipe.items
+    .map(primitiveDimensionId)
+    .filter((dimensionId) => dimensionId && !isBlendableDimensionId(dimensionId));
+  if (new Set(nonBlendableDimensions).size !== nonBlendableDimensions.length) {
+    throw new Error("Snapshot không hợp lệ: mỗi dimension không blend chỉ được có một giá trị.");
+  }
 
   const validBlendKeys = new Set<string>();
   for (let first = 0; first < primitiveIds.length; first += 1) {
