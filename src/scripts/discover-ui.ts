@@ -45,11 +45,13 @@ if (workspace) {
     if (mobileFacets.matches) {
       panel.inert = true;
       panel.setAttribute("aria-hidden", "true");
+      panel.hidden = true;
       if (restoreFocus && wasOpen) panelToggle.focus();
     }
   };
 
   const openPanel = () => {
+    panel.hidden = false;
     panel.inert = false;
     panel.removeAttribute("aria-hidden");
     panel.dataset.open = "true";
@@ -62,15 +64,18 @@ if (workspace) {
   const syncPanelMode = () => {
     if (mobileFacets.matches) {
       if (panel.dataset.open === "true") {
+        panel.hidden = false;
         panel.inert = false;
         panel.removeAttribute("aria-hidden");
       } else {
         panel.inert = true;
         panel.setAttribute("aria-hidden", "true");
+        panel.hidden = true;
       }
       return;
     }
     panel.dataset.open = "false";
+    panel.hidden = false;
     panel.inert = false;
     panel.removeAttribute("aria-hidden");
     panelToggle.setAttribute("aria-expanded", "false");

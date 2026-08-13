@@ -27,16 +27,19 @@ test("mobile discovery uses a facet drawer and keeps composer entry reachable", 
   const panel = page.locator("[data-facet-panel]");
   await expect(toggle).toBeVisible();
   await expect(panel).toHaveAttribute("aria-hidden", "true");
-  expect(await panel.evaluate((element) => element.inert)).toBe(true);
+  await expect(panel).toHaveAttribute("hidden", "");
+  expect(await panel.evaluate((element) => (element as HTMLElement).inert)).toBe(true);
   await toggle.click();
   await expect(panel).toHaveAttribute("data-open", "true");
   await expect(panel).not.toHaveAttribute("aria-hidden", "true");
-  expect(await panel.evaluate((element) => element.inert)).toBe(false);
+  await expect(panel).not.toHaveAttribute("hidden", "");
+  expect(await panel.evaluate((element) => (element as HTMLElement).inert)).toBe(false);
 
   await page.getByRole("button", { name: "Đóng taxonomy" }).click();
   await expect(panel).toHaveAttribute("data-open", "false");
   await expect(panel).toHaveAttribute("aria-hidden", "true");
-  expect(await panel.evaluate((element) => element.inert)).toBe(true);
+  await expect(panel).toHaveAttribute("hidden", "");
+  expect(await panel.evaluate((element) => (element as HTMLElement).inert)).toBe(true);
   await expect(toggle).toBeFocused();
 
   await toggle.click();
@@ -44,7 +47,8 @@ test("mobile discovery uses a facet drawer and keeps composer entry reachable", 
   await expect(page).toHaveURL(/dimension=camera.shot-size/u);
   await expect(panel).toHaveAttribute("data-open", "false");
   await expect(panel).toHaveAttribute("aria-hidden", "true");
-  expect(await panel.evaluate((element) => element.inert)).toBe(true);
+  await expect(panel).toHaveAttribute("hidden", "");
+  expect(await panel.evaluate((element) => (element as HTMLElement).inert)).toBe(true);
   await expect(toggle).toBeFocused();
   await expect(page.locator("[data-result-count]")).not.toHaveText("0");
 
