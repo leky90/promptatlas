@@ -6,8 +6,8 @@ if (baseUrl.hostname !== expectedHost) {
   throw new Error(`Production smoke must target ${expectedHost}, received ${baseUrl.hostname}`);
 }
 
-async function fetchOk(url, expectedType) {
-  const response = await fetch(url, { redirect: "error" });
+async function fetchOk(url, expectedType, options = {}) {
+  const response = await fetch(url, { redirect: "error", ...options });
   if (!response.ok) throw new Error(`${url}: expected 2xx, received ${response.status}`);
   const contentType = response.headers.get("content-type") ?? "";
   if (expectedType && !contentType.includes(expectedType)) {
@@ -47,13 +47,13 @@ if (routeUrls.some((url) => new URL(url).hostname !== expectedHost)) {
 }
 
 for (let offset = 0; offset < routeUrls.length; offset += 10) {
-  await Promise.all(routeUrls.slice(offset, offset + 10).map((url) => fetchOk(url, "text/html")));
+  await Promise.all(routeUrls.slice(offset, offset + 10).map((url) => fetchOk(url, "text/html", { method: "HEAD" })));
 }
 
 await Promise.all([
-  fetchOk(new URL("/media/og-cover.webp", baseUrl), "image/webp"),
-  fetchOk(new URL("/media/styles/sumi-e-chatgpt.webp", baseUrl), "image/webp"),
-  fetchOk(new URL("/media/primitives/001-primitive-subject-role.webp", baseUrl), "image/webp"),
+  fetchOk(new URL("/media/og-cover.webp", baseUrl), "image/webp", { method: "HEAD" }),
+  fetchOk(new URL("/media/styles/sumi-e-chatgpt.webp", baseUrl), "image/webp", { method: "HEAD" }),
+  fetchOk(new URL("/media/primitives/001-primitive-subject-role.webp", baseUrl), "image/webp", { method: "HEAD" }),
 ]);
 
 console.log(JSON.stringify({
