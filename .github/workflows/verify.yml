@@ -1,0 +1,27 @@
+name: Prompt Atlas verify
+
+# Manual clean-run safety net. Production deploys are owned by the Cloudflare
+# Pages Git integration, whose build command is \`npm run verify:pages\`.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: prompt-atlas-verify
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run verify:pages
