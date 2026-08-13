@@ -141,6 +141,7 @@ function initializeComposerEntries() {
       try {
         const result = addPrimitiveToActiveDraft(localStorage, {
           primitiveId,
+          dimensionId: button.dataset.primitiveDimension ?? (primitiveId.startsWith("primitive.style.") ? "style.medium" : ""),
           slug: button.dataset.primitiveSlug ?? "",
           label: button.dataset.primitiveLabel ?? primitiveId,
           fragment: button.dataset.primitiveFragment ?? "",
@@ -148,7 +149,14 @@ function initializeComposerEntries() {
         });
         update();
         window.dispatchEvent(new CustomEvent("prompt-atlas:composer-change", { detail: result.draft }));
-        showToast(result.added ? "Đã thêm vào Composer." : "Thành phần này đã có trong recipe.");
+        const message = result.added
+          ? "Đã thêm vào Composer."
+          : result.reason === "dimension-conflict"
+            ? "Dimension này đã có một giá trị trong Composer."
+            : result.reason === "limit"
+              ? "Composer đã đạt giới hạn 90 thành phần."
+              : "Thành phần này đã có trong recipe.";
+        showToast(message, result.reason === "dimension-conflict" || result.reason === "limit" ? "error" : "default");
       } catch {
         showToast("Không thể lưu recipe trong trình duyệt này.", "error");
       }

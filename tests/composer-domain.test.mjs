@@ -11,6 +11,7 @@ import {
 } from "../src/lib/composer.ts";
 import {
   ACTIVE_DRAFT_KEY,
+  MAX_COMPOSER_ITEMS,
   addPrimitiveToActiveDraft,
   buildShareUrl,
   createExportFile,
@@ -25,6 +26,7 @@ import {
 
 const glitch = {
   primitiveId: "primitive.style.glitch-art",
+  dimensionId: "style.medium",
   slug: "glitch-art",
   label: "Glitch Art",
   fragment: "Style/medium: Glitch Art.",
@@ -33,15 +35,55 @@ const glitch = {
 
 const watercolor = {
   primitiveId: "primitive.style.watercolor",
+  dimensionId: "style.medium",
   slug: "watercolor",
   label: "Watercolor",
   fragment: "Style/medium: Watercolor.",
   sourcePrompt: "A portrait looking into the camera.",
 };
 
+const subjectRole = {
+  primitiveId: "primitive.subject.role",
+  dimensionId: "subject.person.role",
+  slug: "primitive-subject-role",
+  label: "Vai trò",
+  fragment: "a craftsperson",
+  sourcePrompt: "a craftsperson repairing a ceramic bowl",
+};
+
+const shallowDepth = {
+  primitiveId: "camera.depth-of-field.shallow",
+  dimensionId: "camera.depth-of-field",
+  slug: "camera-depth-of-field-shallow",
+  label: "Độ sâu trường ảnh nông",
+  fragment: "shallow depth of field",
+  sourcePrompt: "A portrait looking into the camera.",
+};
+
+const deepDepth = {
+  primitiveId: "camera.depth-of-field.deep",
+  dimensionId: "camera.depth-of-field",
+  slug: "camera-depth-of-field-deep",
+  label: "Độ sâu trường ảnh sâu",
+  fragment: "deep depth of field",
+  sourcePrompt: "A portrait looking into the camera.",
+};
+
+const portraitRatio = {
+  primitiveId: "composition.aspect-ratio.portrait-4-5",
+  dimensionId: "composition.aspect-ratio",
+  slug: "composition-aspect-ratio-portrait-4-5",
+  label: "Dọc 4:5",
+  fragment: "portrait 4:5 aspect ratio",
+  sourcePrompt: "A portrait looking into the camera.",
+};
+
 const productionPrimitiveIdentities = new Map([
-  [glitch.primitiveId, glitch.slug],
-  [watercolor.primitiveId, watercolor.slug],
+  [glitch.primitiveId, { slug: glitch.slug, dimensionId: glitch.dimensionId }],
+  [watercolor.primitiveId, { slug: watercolor.slug, dimensionId: watercolor.dimensionId }],
+  [shallowDepth.primitiveId, { slug: shallowDepth.slug, dimensionId: shallowDepth.dimensionId }],
+  [deepDepth.primitiveId, { slug: deepDepth.slug, dimensionId: deepDepth.dimensionId }],
+  [portraitRatio.primitiveId, { slug: portraitRatio.slug, dimensionId: portraitRatio.dimensionId }],
 ]);
 
 const resignSnapshot = async (snapshot) => {
@@ -70,6 +112,43 @@ test("recipe preserves explicit order, rejects duplicates and renders determinis
   assert.equal(deriveBlendConflicts(acceptBlend(reordered, conflicts[0].key, "2026-08-12T00:00:05.000Z")).length, 0);
 });
 
+test("taxonomy primitives compose in order without false style blend conflicts", () => {
+  let draft = createDraft("draft-primitives", "2026-08-13T00:00:00.000Z");
+  draft = addPrimitive(draft, subjectRole).draft;
+  draft = addPrimitive(draft, glitch).draft;
+  assert.equal(deriveBlendConflicts(draft).length, 0);
+  assert.match(renderPrompt(draft), /Prompt recipe \(apply in this order\):/u);
+  assert.ok(renderPrompt(draft).indexOf("a craftsperson") < renderPrompt(draft).indexOf("Glitch Art"));
+});
+
+test("single-select dimensions reject a second value while style.medium remains blendable", () => {
+  let draft = addPrimitive(createDraft("draft-dimension"), shallowDepth).draft;
+  const rejected = addPrimitive(draft, deepDepth);
+
+  assert.equal(rejected.added, false);
+  assert.equal(rejected.reason, "dimension-conflict");
+  assert.equal(rejected.existingIndex, 0);
+  assert.deepEqual(rejected.draft.items.map((item) => item.primitiveId), [shallowDepth.primitiveId]);
+
+  draft = addPrimitive(createDraft("draft-style-blend"), glitch).draft;
+  const blended = addPrimitive(draft, watercolor);
+  assert.equal(blended.added, true);
+  assert.equal(blended.draft.items.length, 2);
+  assert.equal(deriveBlendConflicts(blended.draft).length, 1);
+});
+
+test("selected aspect ratio controls framing and the default framing is ratio-neutral", () => {
+  const portraitDraft = addPrimitive(createDraft("draft-portrait"), portraitRatio).draft;
+  const portraitPrompt = renderPrompt(portraitDraft);
+  assert.match(portraitPrompt, /Composition\/framing: portrait 4:5 aspect ratio/u);
+  assert.doesNotMatch(portraitPrompt, /landscape 3:2/u);
+
+  const neutralDraft = addPrimitive(createDraft("draft-neutral"), subjectRole).draft;
+  const neutralPrompt = renderPrompt(neutralDraft);
+  assert.match(neutralPrompt, /Composition\/framing: clear focal subject/u);
+  assert.doesNotMatch(neutralPrompt, /landscape 3:2/u);
+});
+
 class FakeStorage {
   values = new Map();
   writes = 0;
@@ -89,6 +168,32 @@ class FakeStorage {
     this.values.delete(key);
   }
 }
+
+test("the add path refuses to persist a recipe beyond MAX_COMPOSER_ITEMS", () => {
+  const storage = new FakeStorage();
+  for (let index = 0; index < MAX_COMPOSER_ITEMS; index += 1) {
+    const result = addPrimitiveToActiveDraft(storage, {
+      ...glitch,
+      primitiveId: `primitive.style.qa-${index}`,
+      slug: `qa-${index}`,
+      label: `QA ${index}`,
+    }, {
+      uuid: () => "bounded-draft",
+      now: () => "2026-08-13T00:00:00.000Z",
+    });
+    assert.equal(result.added, true);
+  }
+
+  const rejected = addPrimitiveToActiveDraft(storage, {
+    ...glitch,
+    primitiveId: "primitive.style.qa-overflow",
+    slug: "qa-overflow",
+    label: "QA overflow",
+  });
+  assert.equal(rejected.added, false);
+  assert.equal(rejected.reason, "limit");
+  assert.equal(readActiveDraft(storage)?.items.length, MAX_COMPOSER_ITEMS);
+});
 
 test("share snapshots are immutable and fork without overwriting the active draft", async () => {
   const storage = new FakeStorage();
@@ -160,6 +265,35 @@ test("checksummed snapshots with malformed primitive fields are rejected before 
   await assert.rejects(decodeSnapshot(encodeSnapshot(snapshot), productionPrimitiveIdentities), /sourcePrompt/u);
 });
 
+test("imported and shared snapshots reject repeated non-blendable dimensions", async () => {
+  const conflictingDraft = {
+    ...createDraft("recipe-dimension-conflict", "2026-08-13T00:00:00.000Z"),
+    items: [shallowDepth, deepDepth],
+  };
+  const snapshot = await createSnapshot(conflictingDraft, "2026-08-13T00:01:00.000Z");
+
+  await assert.rejects(
+    parseExportFile(JSON.stringify(snapshot), productionPrimitiveIdentities),
+    /dimension.*một giá trị/u,
+  );
+  await assert.rejects(
+    decodeSnapshot(encodeSnapshot(snapshot), productionPrimitiveIdentities),
+    /dimension.*một giá trị/u,
+  );
+});
+
+test("imported and shared snapshots preserve the style.medium blend exception", async () => {
+  let styleDraft = addPrimitive(createDraft("recipe-style-blend"), glitch).draft;
+  styleDraft = addPrimitive(styleDraft, watercolor).draft;
+  const snapshot = await createSnapshot(styleDraft, "2026-08-13T00:02:00.000Z");
+
+  const imported = await parseExportFile(JSON.stringify(snapshot), productionPrimitiveIdentities);
+  const shared = await decodeSnapshot(encodeSnapshot(snapshot), productionPrimitiveIdentities);
+  assert.equal(imported.recipe.items.length, 2);
+  assert.equal(shared.recipe.items.length, 2);
+  assert.equal(deriveBlendConflicts({ ...styleDraft, items: imported.recipe.items }).length, 1);
+});
+
 test("snapshot versions, item bounds, identities and accepted blend keys are enforced", async () => {
   let draft = addPrimitive(createDraft("recipe-bounds", "2026-08-12T00:00:00.000Z"), glitch).draft;
   draft = addPrimitive(draft, watercolor).draft;
@@ -220,7 +354,29 @@ test("snapshot primitive identities must match the canonical production registry
     scenario.mutate(snapshot);
     await assert.rejects(
       parseExportFile(JSON.stringify(await resignSnapshot(snapshot)), productionPrimitiveIdentities),
-      /90 phong cách production/u,
+      /bộ dữ liệu Prompt Atlas production/u,
     );
   }
+});
+
+test("snapshot dimensions must match canonical metadata while legacy style recipes remain readable", async () => {
+  const portraitDraft = addPrimitive(createDraft("recipe-dimension"), portraitRatio).draft;
+  const validPortrait = await createSnapshot(portraitDraft, "2026-08-13T00:01:00.000Z");
+  const forgedDimension = structuredClone(validPortrait);
+  forgedDimension.recipe.items[0].dimensionId = "camera.depth-of-field";
+  await assert.rejects(
+    parseExportFile(JSON.stringify(await resignSnapshot(forgedDimension)), productionPrimitiveIdentities),
+    /bộ dữ liệu Prompt Atlas production/u,
+  );
+
+  const legacyDraft = addPrimitive(createDraft("recipe-legacy-style"), glitch).draft;
+  const legacySnapshot = await createSnapshot(legacyDraft, "2026-08-13T00:02:00.000Z");
+  delete legacySnapshot.recipe.items[0].dimensionId;
+  const signedLegacySnapshot = await resignSnapshot(legacySnapshot);
+  const opened = await parseExportFile(JSON.stringify(signedLegacySnapshot), productionPrimitiveIdentities);
+  assert.equal(opened.recipe.items[0].primitiveId, glitch.primitiveId);
+
+  const storage = new FakeStorage();
+  const forked = forkSnapshot(storage, opened, { uuid: () => "legacy-fork" });
+  assert.equal(forked.items[0].dimensionId, "style.medium");
 });

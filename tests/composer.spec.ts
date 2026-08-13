@@ -1,8 +1,10 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+const testOrigin = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4321";
+
 test("catalog additions become an ordered, persistent and conflict-aware recipe", async ({ context, page }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4321" });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/");
 
   const cards = page.locator("[data-style-card]");
@@ -36,7 +38,7 @@ test("catalog additions become an ordered, persistent and conflict-aware recipe"
 });
 
 test("share opens read-only and continue editing forks without replacing the active draft", async ({ context, page }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4321" });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/");
   await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
   await page.goto("/composer/");
@@ -69,7 +71,7 @@ test("share opens read-only and continue editing forks without replacing the act
 });
 
 test("storage failure keeps a shared snapshot readable and editing locked", async ({ context, page }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4321" });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/");
   await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
   await page.goto("/composer/");
@@ -162,7 +164,7 @@ test("a checksummed unknown primitive is rejected before it can render or fork",
     location.hash = `r=${payload}`;
   });
 
-  await expect(page.locator("[data-composer-error]")).toContainText("không thuộc 90 phong cách production");
+  await expect(page.locator("[data-composer-error]")).toContainText("không thuộc bộ dữ liệu Prompt Atlas production");
   await expect(page.locator("[data-composer-preview]")).toHaveText("Thêm thành phần để tạo prompt.");
   await expect(page.getByRole("button", { name: "Tiếp tục chỉnh sửa" })).toBeHidden();
   expect(await page.evaluate(() => localStorage.getItem("pa:drafts:active:v1"))).toBe(activeBefore);

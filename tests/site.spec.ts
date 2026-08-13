@@ -6,10 +6,11 @@ const styles = JSON.parse(readFileSync(new URL("../src/data/styles.json", import
   slug: string;
   images: { chatgpt: { full: string; thumb: string }; gemini: { full: string; thumb: string } };
 }>;
+const testOrigin = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4321";
 
 test("atlas supports copy, search, filters, favorites and empty recovery", async ({ context, page }) => {
   const errors: string[] = [];
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4321" });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
@@ -57,7 +58,7 @@ test("compare workbench reads query state and navigates records", async ({ page 
 });
 
 test("detail exposes full prompt and copy action", async ({ context, page }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4321" });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/styles/sumi-e/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sumi-e");
   await expect(page.locator(".specimen img")).toHaveCount(2);
@@ -69,7 +70,7 @@ test("detail exposes full prompt and copy action", async ({ context, page }) => 
   expect((await page.evaluate(() => navigator.clipboard.readText())).length).toBeGreaterThan(100);
 });
 
-for (const path of ["/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {
+for (const path of ["/", "/discover/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {
   test(`no serious accessibility violations on ${path}`, async ({ page }) => {
     await page.goto(path);
     const results = await new AxeBuilder({ page }).analyze();

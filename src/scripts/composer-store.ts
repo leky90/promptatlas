@@ -4,6 +4,9 @@ import {
   SHARE_URL_LIMIT,
   addPrimitive,
   createDraft,
+  isBlendableDimensionId,
+  normalizeComposerPrimitive,
+  primitiveDimensionId,
   type ComposerDraft,
   type ComposerPrimitive,
 } from "../lib/composer.ts";
@@ -14,7 +17,8 @@ export const ACTIVE_DRAFT_KEY = "pa:drafts:active:v1";
 export const MAX_COMPOSER_ITEMS = 90;
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
-export type PrimitiveIdentityRegistry = ReadonlyMap<string, string>;
+export type PrimitiveIdentity = Pick<ComposerPrimitive, "slug" | "dimensionId">;
+export type PrimitiveIdentityRegistry = ReadonlyMap<string, PrimitiveIdentity>;
 
 type DraftIndexItem = { draftId: string; updatedAt: string; itemCount: number };
 
@@ -48,7 +52,9 @@ const readIndex = (storage: StorageLike) => {
 
 export function readDraft(storage: StorageLike, draftId: string): ComposerDraft | undefined {
   const value = readJson<ComposerDraft>(storage.getItem(`${DRAFT_KEY_PREFIX}${draftId}`));
-  return value?.format === "prompt-atlas-draft" && Array.isArray(value.items) ? value : undefined;
+  return value?.format === "prompt-atlas-draft" && Array.isArray(value.items)
+    ? { ...value, items: value.items.map(normalizeComposerPrimitive) }
+    : undefined;
 }
 
 export function readActiveDraft(storage: StorageLike): ComposerDraft | undefined {
@@ -83,13 +89,16 @@ export function addPrimitiveToActiveDraft(
   const now = options.now ?? defaultNow;
   const current = readActiveDraft(storage) ?? createDraft((options.uuid ?? defaultUuid)(), now());
   const result = addPrimitive(current, primitive, now());
+  if (result.added && current.items.length >= MAX_COMPOSER_ITEMS) {
+    return { draft: current, added: false, existingIndex: -1, reason: "limit" as const };
+  }
   if (result.added) persistDraft(storage, result.draft);
   return result;
 }
 
 const snapshotBody = (snapshot: Omit<ShareSnapshot, "sha256">) => JSON.stringify(snapshot);
 
-const PRIMITIVE_STRING_LIMITS: Record<keyof ComposerPrimitive, number> = {
+const PRIMITIVE_STRING_LIMITS: Record<Exclude<keyof ComposerPrimitive, "dimensionId">, number> = {
   primitiveId: 160,
   slug: 120,
   label: 160,
@@ -114,6 +123,12 @@ const validatePrimitive = (
     if (!isNonEmptyBoundedString(candidate, limit)) {
       throw new Error(`Snapshot không hợp lệ: ${field} của thành phần ${index + 1} phải là chuỗi từ 1 đến ${limit} ký tự.`);
     }
+  }
+  const legacyStyle = primitive.dimensionId == null
+    && typeof primitive.primitiveId === "string"
+    && primitive.primitiveId.startsWith("primitive.style.");
+  if (!legacyStyle && !isNonEmptyBoundedString(primitive.dimensionId, 160)) {
+    throw new Error(`Snapshot không hợp lệ: dimensionId của thành phần ${index + 1} phải là chuỗi từ 1 đến 160 ký tự.`);
   }
   if (!/^[a-z0-9][a-z0-9._-]*$/iu.test(primitive.primitiveId as string)) {
     throw new Error(`Snapshot không hợp lệ: primitiveId của thành phần ${index + 1} sai định dạng.`);
@@ -142,10 +157,21 @@ const validateRecipeRelationships = (
     throw new Error("Snapshot không hợp lệ: slug phải duy nhất trong recipe.");
   }
   snapshot.recipe.items.forEach((item, index) => {
-    if (primitiveIdentities.get(item.primitiveId) !== item.slug) {
-      throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} không thuộc 90 phong cách production.`);
+    const canonical = primitiveIdentities.get(item.primitiveId);
+    if (
+      !canonical
+      || canonical.slug !== item.slug
+      || canonical.dimensionId !== primitiveDimensionId(item)
+    ) {
+      throw new Error(`Snapshot không hợp lệ: thành phần ${index + 1} không thuộc bộ dữ liệu Prompt Atlas production.`);
     }
   });
+  const nonBlendableDimensions = snapshot.recipe.items
+    .map(primitiveDimensionId)
+    .filter((dimensionId) => dimensionId && !isBlendableDimensionId(dimensionId));
+  if (new Set(nonBlendableDimensions).size !== nonBlendableDimensions.length) {
+    throw new Error("Snapshot không hợp lệ: mỗi dimension không blend chỉ được có một giá trị.");
+  }
 
   const validBlendKeys = new Set<string>();
   for (let first = 0; first < primitiveIds.length; first += 1) {
@@ -266,7 +292,7 @@ export function forkSnapshot(
   return persistDraft(storage, {
     ...draft,
     sourceSnapshotHash: snapshot.sha256,
-    items: structuredClone(snapshot.recipe.items),
+    items: snapshot.recipe.items.map(normalizeComposerPrimitive),
     acceptedBlendKeys: [...snapshot.recipe.acceptedBlendKeys],
   });
 }

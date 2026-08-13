@@ -1,0 +1,78 @@
+---
+import Icon from "./Icon.astro";
+import { primitiveGroupMeta, primitiveSlug, type PrimitiveEntry } from "../lib/primitives";
+
+type Props = { primitive: PrimitiveEntry; eager?: boolean };
+const { primitive, eager = false } = Astro.props;
+const slug = primitiveSlug(primitive);
+const group = primitiveGroupMeta.find((item) => item.id === primitive.group);
+const searchValue = [primitive.labelVi, primitive.definitionVi, primitive.promptFragment, primitive.example, primitive.dimensionId, primitive.group].join(" ");
+---
+
+<article
+  class="primitive-card"
+  id={`primitive-${slug}`}
+  data-primitive-card
+  data-group={primitive.group}
+  data-dimension={primitive.dimensionId}
+  data-search={searchValue}
+>
+  <a class="primitive-card__image" href={primitive.image} target="_blank" rel="noreferrer" aria-label={`Mở ảnh tham chiếu ${primitive.labelVi}`}>
+    <img
+      src={primitive.thumbnail}
+      width="640"
+      height="512"
+      alt={primitive.alt.vi}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+    />
+    <span>{String(primitive.index).padStart(3, "0")}</span>
+  </a>
+
+  <div class="primitive-card__body">
+    <div class="primitive-card__meta">
+      <span>{group?.label ?? primitive.group}</span>
+      <code>{primitive.id}</code>
+    </div>
+    <h2>{primitive.labelVi}</h2>
+    <p class="primitive-card__definition">{primitive.definitionVi}</p>
+    <p class="primitive-card__fragment"><span>Prompt fragment</span>{primitive.promptFragment}</p>
+
+    <div class="primitive-card__actions">
+      <button
+        class="button button--primary composer-entry"
+        type="button"
+        data-composer-add
+        data-primitive-id={primitive.id}
+        data-primitive-dimension={primitive.dimensionId}
+        data-primitive-slug={slug}
+        data-primitive-label={primitive.labelVi}
+        data-primitive-fragment={primitive.promptFragment}
+        data-source-prompt={primitive.example}
+        aria-pressed="false"
+        aria-label={`Thêm ${primitive.labelVi} vào prompt`}
+      >
+        <Icon name="plus" size={17} />
+        <span data-composer-add-label>Thêm vào prompt</span>
+      </button>
+      <button
+        class="primitive-card__copy"
+        type="button"
+        data-copy-value={primitive.promptFragment}
+        aria-label={`Sao chép prompt fragment ${primitive.labelVi}`}
+      >
+        <Icon name="copy" size={17} /><span data-copy-label>Sao chép</span>
+      </button>
+    </div>
+
+    <details class="primitive-card__details" data-primitive-details>
+      <summary>Chi tiết primitive <Icon name="arrow-down" size={15} /></summary>
+      <dl>
+        <div><dt>Dimension</dt><dd>{primitive.dimensionId}</dd></div>
+        <div><dt>Ví dụ</dt><dd>{primitive.example}</dd></div>
+        <div><dt>Prompt SHA-256</dt><dd><code>{primitive.exactPromptSha256}</code></dd></div>
+      </dl>
+      <p class="primitive-card__exact"><span>Exact reference prompt</span>{primitive.exactPrompt}</p>
+    </details>
+  </div>
+</article>

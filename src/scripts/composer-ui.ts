@@ -25,7 +25,7 @@ const workspace = document.querySelector<HTMLElement>("[data-composer-workspace]
 if (workspace) {
   const primitiveIdentityPairs = JSON.parse(
     workspace.dataset.composerPrimitiveIdentities ?? "[]",
-  ) as Array<[string, string]>;
+  ) as Array<[string, { slug: string; dimensionId: string }]>;
   const primitiveIdentities = new Map(primitiveIdentityPairs);
   const list = workspace.querySelector<HTMLOListElement>("[data-recipe-list]")!;
   const empty = workspace.querySelector<HTMLElement>("[data-composer-empty]")!;

@@ -5,6 +5,7 @@ export const SHARE_URL_LIMIT = 6000;
 
 export type ComposerPrimitive = {
   primitiveId: string;
+  dimensionId: string;
   slug: string;
   label: string;
   fragment: string;
@@ -31,6 +32,16 @@ export type BlendConflict = {
 };
 
 const blendKey = (firstId: string, secondId: string) => [firstId, secondId].sort().join("::");
+const BLENDABLE_DIMENSION_IDS = new Set(["style.medium"]);
+export const isBlendableDimensionId = (dimensionId: string) => BLENDABLE_DIMENSION_IDS.has(dimensionId);
+
+export const primitiveDimensionId = (primitive: Pick<ComposerPrimitive, "primitiveId"> & Partial<Pick<ComposerPrimitive, "dimensionId">>) => (
+  primitive.dimensionId || (primitive.primitiveId.startsWith("primitive.style.") ? "style.medium" : "")
+);
+
+export const normalizeComposerPrimitive = (
+  primitive: Omit<ComposerPrimitive, "dimensionId"> & Partial<Pick<ComposerPrimitive, "dimensionId">>,
+): ComposerPrimitive => ({ ...primitive, dimensionId: primitiveDimensionId(primitive) });
 
 export function createDraft(draftId: string, now = new Date().toISOString()): ComposerDraft {
   return {
@@ -48,10 +59,18 @@ export function createDraft(draftId: string, now = new Date().toISOString()): Co
 
 export function addPrimitive(draft: ComposerDraft, primitive: ComposerPrimitive, now = new Date().toISOString()) {
   const existingIndex = draft.items.findIndex((item) => item.primitiveId === primitive.primitiveId);
-  if (existingIndex >= 0) return { draft, added: false, existingIndex };
+  if (existingIndex >= 0) return { draft, added: false, existingIndex, reason: "duplicate" as const };
+  const dimensionId = primitiveDimensionId(primitive);
+  const dimensionConflictIndex = dimensionId && !isBlendableDimensionId(dimensionId)
+    ? draft.items.findIndex((item) => primitiveDimensionId(item) === dimensionId)
+    : -1;
+  if (dimensionConflictIndex >= 0) {
+    return { draft, added: false, existingIndex: dimensionConflictIndex, reason: "dimension-conflict" as const };
+  }
   return {
     added: true,
     existingIndex: -1,
+    reason: "added" as const,
     draft: { ...draft, updatedAt: now, items: [...draft.items, structuredClone(primitive)] },
   };
 }
@@ -99,6 +118,7 @@ export function deriveBlendConflicts(draft: ComposerDraft): BlendConflict[] {
     for (let second = first + 1; second < draft.items.length; second += 1) {
       const firstItem = draft.items[first];
       const secondItem = draft.items[second];
+      if (!firstItem.primitiveId.startsWith("primitive.style.") || !secondItem.primitiveId.startsWith("primitive.style.")) continue;
       const key = blendKey(firstItem.primitiveId, secondItem.primitiveId);
       if (!accepted.has(key)) {
         conflicts.push({
@@ -125,13 +145,18 @@ export function renderPrompt(draft: ComposerDraft): string {
   if (draft.items.length === 0) return "";
   const sourcePrompt = draft.items[0].sourcePrompt.trim();
   const fragments = draft.items.map((item, index) => `${index + 1}. ${item.fragment.trim()}`).join("\n");
+  const aspectRatio = draft.items.find((item) => primitiveDimensionId(item) === "composition.aspect-ratio")
+    ?.fragment.trim().replace(/\.+$/u, "");
+  const framing = aspectRatio
+    ? `${aspectRatio}, clear focal subject, controlled hierarchy.`
+    : "clear focal subject, controlled hierarchy.";
   return [
     "Use case: composed image direction",
     `Primary request: ${sourcePrompt}`,
-    "Style/medium recipe (apply in this order):",
+    "Prompt recipe (apply in this order):",
     fragments,
-    "Composition/framing: landscape 3:2, clear focal subject, controlled hierarchy.",
-    "Lighting/mood: coherent with the ordered style recipe and primary request.",
+    `Composition/framing: ${framing}`,
+    "Lighting/mood: coherent with the ordered recipe and primary request.",
     "Constraints: no text; no unrelated objects; no visible brand names; no logos; no watermark.",
   ].join("\n");
 }
