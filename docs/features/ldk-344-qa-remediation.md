@@ -1,16 +1,16 @@
 # LDK-344 — QA remediation for discovery and Composer integration
 
-**Status:** Implemented; awaiting QA re-review
+**Status:** Second remediation in progress
 
 **Owner:** software engineer
 
 **Reviewer:** QA
 
-**Source verdict:** PR #6 review at `5484c536b9c613be58633a950af87c50f07a41b0`
+**Source verdict:** PR #6 reviews at `5484c536b9c613be58633a950af87c50f07a41b0` and `d913c4fa622116259bfc78cbb864849b9e98aeff`
 
 ## Problem
 
-The image-first discovery workspace exposes 187 taxonomy primitives, but four defects make the resulting Composer state contradictory or inaccessible: values from a single-select dimension can coexist, an explicit aspect ratio is overridden by fixed framing text, creation can exceed the snapshot limit, and the closed mobile taxonomy drawer remains keyboard-accessible.
+The image-first discovery workspace exposes 187 taxonomy primitives. The first remediation fixed four contradictory or inaccessible UI/add-path behaviors, but QA found that correctly checksummed imported or hash-shared snapshots can still contain multiple canonical values from one non-blendable dimension. That supported entry point can therefore reintroduce the same contradictory Composer state that the add path now rejects.
 
 ## Scope
 
@@ -23,6 +23,7 @@ The image-first discovery workspace exposes 187 taxonomy primitives, but four de
 - Enforce `MAX_COMPOSER_ITEMS` before persisting an addition and expose a specific limit message.
 - Make the closed mobile taxonomy drawer inert and hidden from assistive technology, and restore focus to the Taxonomy toggle when it closes.
 - Preserve compatibility with pre-existing style-only local drafts and shared snapshots that predate `dimensionId`.
+- Enforce the same non-blendable dimension uniqueness rule when validating imported files and hash-shared snapshots, while preserving the `style.medium` exception.
 
 ### Out
 
@@ -39,12 +40,14 @@ The image-first discovery workspace exposes 187 taxonomy primitives, but four de
 5. Snapshot validation verifies canonical primitive ID, slug and dimension relationships. Legacy style-only recipes without `dimensionId` remain readable as `style.medium`; new taxonomy items require their canonical dimension.
 6. At widths below 960 px, a closed taxonomy drawer is inert and `aria-hidden`; opening removes both states. Closing by button, scrim, Escape or a selected facet restores focus to the Taxonomy toggle.
 7. Desktop taxonomy remains available without `inert` or `aria-hidden`.
+8. A correctly checksummed import or hash-share containing two canonical values from the same non-blendable dimension is rejected before rendering or forking.
+9. A correctly checksummed import or hash-share containing multiple canonical `style.medium` values remains valid and retains the explicit blend workflow.
 
 ## Test plan
 
 | Layer | Coverage |
 | --- | --- |
-| Unit (`node:test`) | Same-dimension rejection, style blend exception, selected/neutral aspect-ratio rendering, 90-item add limit, canonical dimension validation and legacy style compatibility. |
+| Unit (`node:test`) | Same-dimension rejection across add, import and hash-share paths; style blend exception; selected/neutral aspect-ratio rendering; 90-item add limit; canonical dimension validation and legacy style compatibility. |
 | E2E (`@playwright/test`) | Primitive selection feedback, aspect-ratio output, mobile drawer inert/ARIA/focus lifecycle and desktop availability. |
 | BDD | No Gherkin runner is configured; observable acceptance criteria are covered by named unit and Playwright scenarios. |
 | Regression | `npm test`, `npm run check`, `npm run build`, `npm run test:e2e` and `git diff --check`. |
@@ -64,7 +67,7 @@ The image-first discovery workspace exposes 187 taxonomy primitives, but four de
 
 ## Delivery gate
 
-All four open P1/P2 threads must have regression evidence at a new immutable PR head before LDK-344 returns to `In Review / role:qa`. This phase does not merge the PR.
+All five P1/P2 review threads, including the import/share validation finding, must have regression evidence at a new immutable PR head before LDK-344 returns to `In Review / role:qa`. This phase does not merge the PR.
 
 ## Implementation evidence
 
