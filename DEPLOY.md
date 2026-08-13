@@ -52,8 +52,8 @@ Do not accept a deployment based only on route \`200\` responses. CSS, JavaScrip
 
 - \`prompt-atlas.ldktech.com\` is the only canonical production hostname.
 - The custom domain is attached to the \`prompt-atlas\` Pages project.
-- The zone record points to \`prompt-atlas.pages.dev\` and is proxied by Cloudflare.
-- The bare \`prompt-atlas.pages.dev\` hostname redirects to the canonical domain while hash/branch preview hostnames remain available for QA.
+- The zone record points to `prompt-atlas-6p0.pages.dev` and is proxied by Cloudflare.
+- The bare `prompt-atlas-6p0.pages.dev` hostname redirects to the canonical domain while hash/branch preview hostnames remain available for QA.
 - \`image-styles.ldktech.com\` remains retired with no DNS record.
 
 ## Rollback
