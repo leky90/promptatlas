@@ -1,6 +1,6 @@
 # LDK-344 — QA remediation for discovery and Composer integration
 
-**Status:** Approved for implementation by the user's request to continue on 2026-08-13
+**Status:** Implemented; awaiting QA re-review
 
 **Owner:** software engineer
 
@@ -65,3 +65,13 @@ The image-first discovery workspace exposes 187 taxonomy primitives, but four de
 ## Delivery gate
 
 All four open P1/P2 threads must have regression evidence at a new immutable PR head before LDK-344 returns to `In Review / role:qa`. This phase does not merge the PR.
+
+## Implementation evidence
+
+- Composer items now retain canonical `dimensionId`; all non-style dimensions are single-select, while `style.medium` preserves the approved explicit blend workflow.
+- Prompt framing derives from an explicit aspect-ratio primitive and otherwise remains ratio-neutral.
+- The add path rejects the 91st item before persistence and reports the 90-item limit.
+- Snapshot validation checks ID, slug and dimension together; legacy style-only drafts/snapshots are normalized to `style.medium`.
+- Mobile facets use `hidden`, `inert` and `aria-hidden` while closed and restore focus to the Taxonomy toggle; desktop facets remain available.
+- Verification at the final local head: 12 unit + 47 contract tests passed; 23/23 Playwright desktop/mobile tests passed; 187/187 primitive assets validated; Astro reported 0 errors/warnings/hints; 96 static pages built; `git diff --check` passed.
+- Live browser verification at 1440×1000 and 390×844 reproduced dimension feedback, portrait 4:5 framing, closed/open/closed drawer isolation, focus restoration and zero console errors.
