@@ -23,6 +23,7 @@ if (workspace) {
   const panelClose = workspace.querySelector<HTMLButtonElement>("[data-facet-close]")!;
   const scrim = workspace.querySelector<HTMLElement>("[data-facet-scrim]")!;
   const activeFilterCount = workspace.querySelector<HTMLElement>("[data-active-filter-count]")!;
+  const mobileFacets = window.matchMedia("(max-width: 959px)");
 
   const normalize = (value: string) => value.toLocaleLowerCase("vi").normalize("NFD").replace(/[\u0300-\u036f]/gu, "");
   const readPositiveInt = (value: string | null) => Math.max(1, Number.parseInt(value ?? "1", 10) || 1);
@@ -35,19 +36,46 @@ if (workspace) {
   let batch = 1;
   let searchTimer = 0;
 
-  const closePanel = () => {
+  const closePanel = ({ restoreFocus = false } = {}) => {
+    const wasOpen = panel.dataset.open === "true";
     panel.dataset.open = "false";
     panelToggle.setAttribute("aria-expanded", "false");
     scrim.hidden = true;
     document.body.classList.remove("facet-panel-open");
+    if (mobileFacets.matches) {
+      panel.inert = true;
+      panel.setAttribute("aria-hidden", "true");
+      if (restoreFocus && wasOpen) panelToggle.focus();
+    }
   };
 
   const openPanel = () => {
+    panel.inert = false;
+    panel.removeAttribute("aria-hidden");
     panel.dataset.open = "true";
     panelToggle.setAttribute("aria-expanded", "true");
     scrim.hidden = false;
     document.body.classList.add("facet-panel-open");
     panelClose.focus();
+  };
+
+  const syncPanelMode = () => {
+    if (mobileFacets.matches) {
+      if (panel.dataset.open === "true") {
+        panel.inert = false;
+        panel.removeAttribute("aria-hidden");
+      } else {
+        panel.inert = true;
+        panel.setAttribute("aria-hidden", "true");
+      }
+      return;
+    }
+    panel.dataset.open = "false";
+    panel.inert = false;
+    panel.removeAttribute("aria-hidden");
+    panelToggle.setAttribute("aria-expanded", "false");
+    scrim.hidden = true;
+    document.body.classList.remove("facet-panel-open");
   };
 
   const syncControls = () => {
@@ -126,7 +154,7 @@ if (workspace) {
     dimension = "";
     batch = 1;
     render();
-    if (matchMedia("(max-width: 959px)").matches) closePanel();
+    if (mobileFacets.matches) closePanel({ restoreFocus: true });
   }));
 
   dimensionButtons.forEach((button) => button.addEventListener("click", () => {
@@ -134,7 +162,7 @@ if (workspace) {
     group = button.dataset.dimensionGroup ?? "all";
     batch = 1;
     render();
-    if (matchMedia("(max-width: 959px)").matches) closePanel();
+    if (mobileFacets.matches) closePanel({ restoreFocus: true });
   }));
 
   viewButtons.forEach((button) => button.addEventListener("click", () => {
@@ -173,13 +201,17 @@ if (workspace) {
     search.focus();
   });
 
-  panelToggle.addEventListener("click", () => panel.dataset.open === "true" ? closePanel() : openPanel());
-  panelClose.addEventListener("click", closePanel);
-  scrim.addEventListener("click", closePanel);
-  window.addEventListener("keydown", (event) => { if (event.key === "Escape") closePanel(); });
+  panelToggle.addEventListener("click", () => panel.dataset.open === "true" ? closePanel({ restoreFocus: true }) : openPanel());
+  panelClose.addEventListener("click", () => closePanel({ restoreFocus: true }));
+  scrim.addEventListener("click", () => closePanel({ restoreFocus: true }));
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && panel.dataset.open === "true") closePanel({ restoreFocus: true });
+  });
   window.addEventListener("popstate", () => { readUrl(); render({ updateUrl: false }); });
+  mobileFacets.addEventListener("change", syncPanelMode);
 
   readUrl();
+  syncPanelMode();
   render({ updateUrl: false });
 }
 

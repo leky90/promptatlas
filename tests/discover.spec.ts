@@ -15,6 +15,9 @@ test("discovery filters hierarchical taxonomy and preserves URL-backed view stat
   await expect(page.locator("[data-primitive-card]")).toHaveCount(187);
   await expect(page.locator("[data-primitive-card]:visible")).toHaveCount(24);
   await expect(page.locator("[data-visible-count]")).toHaveText("24");
+  const taxonomyPanel = page.locator("[data-facet-panel]");
+  await expect(taxonomyPanel).not.toHaveAttribute("aria-hidden", "true");
+  expect(await taxonomyPanel.evaluate((element) => element.inert)).toBe(false);
 
   await page.locator('.taxonomy-quick [data-group-filter="subject"]').click();
   await expect(page.locator("[data-result-count]")).toHaveText("55");
