@@ -5,8 +5,8 @@ const servingHost = baseUrl.hostname;
 
 if (
   servingHost !== expectedHost
-  && servingHost !== "prompt-atlas.pages.dev"
-  && !servingHost.endsWith(".prompt-atlas.pages.dev")
+  && servingHost !== "prompt-atlas-6p0.pages.dev"
+  && !servingHost.endsWith(".prompt-atlas-6p0.pages.dev")
 ) {
   throw new Error("Production smoke must target the canonical host or a Prompt Atlas Pages deployment, received " + servingHost);
 }

@@ -29,9 +29,9 @@ The reference operating model is the local-favorites-by-tui project:
 1. Merge the repository configuration and verify npm run verify:pages locally.
 2. Create the Git-connected Pages project and require the same build command.
 3. Verify a Pages deployment directly, including HTML, CSS, JavaScript, fonts, sitemap and media.
-4. Attach prompt-atlas.ldktech.com to the Pages project. Cloudflare replaces the existing CNAME target with prompt-atlas.pages.dev.
+4. Attach prompt-atlas.ldktech.com to the Pages project. Cloudflare replaces the existing CNAME target with prompt-atlas-6p0.pages.dev.
 5. Purge stale cache and run the full production smoke test.
-6. Redirect the bare prompt-atlas.pages.dev hostname to the custom domain while leaving deployment-preview subdomains reachable.
+6. Redirect the bare prompt-atlas-6p0.pages.dev hostname to the custom domain while leaving deployment-preview subdomains reachable.
 7. Disable GitHub Pages and remove the obsolete deployment branch only after the Cloudflare deployment and rollback target are verified.
 
 ## Rollback
