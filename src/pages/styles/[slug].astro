@@ -3,10 +3,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import FavoriteButton from "../../components/FavoriteButton.astro";
 import PairCard from "../../components/PairCard.astro";
 import PromptBlock from "../../components/PromptBlock.astro";
-import ScoreRail from "../../components/ScoreRail.astro";
 import Icon from "../../components/Icon.astro";
 import ComposerEntry from "../../components/ComposerEntry.astro";
-import { paddedId, styleBySlug, styles, winnerLabel, type StyleRecord } from "../../lib/styles";
+import PromptAnatomy from "../../components/PromptAnatomy.astro";
+import EvidencePanel from "../../components/EvidencePanel.astro";
+import { evidenceForStyle } from "../../lib/evidence";
+import { paddedId, styleBySlug, styles, type StyleRecord } from "../../lib/styles";
 
 export function getStaticPaths() {
   return styles.map((style) => ({ params: { slug: style.slug }, props: { style } }));
@@ -15,26 +17,30 @@ export function getStaticPaths() {
 type Props = { style: StyleRecord };
 const { style } = Astro.props;
 const related = style.related.map(styleBySlug).filter((item): item is StyleRecord => Boolean(item));
-const description = `${style.name}: xem cùng prompt qua ChatGPT và Gemini, điểm chi tiết và prompt có thể sao chép.`;
+const evidence = evidenceForStyle(style);
+const output = evidence.representative?.result ?? {
+  path: style.images.chatgpt.full,
+  width: style.images.chatgpt.width,
+  height: style.images.chatgpt.height,
+  alt: `${style.name} — ảnh tham chiếu.`,
+};
+const description = `${style.name}: xem output, hiểu prompt anatomy, cách dùng và đưa phong cách vào Composer.`;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "CreativeWork",
   name: `${style.name} — Prompt Atlas`,
   description,
   url: `https://prompt-atlas.ldktech.com/styles/${style.slug}/`,
-  image: [
-    `https://prompt-atlas.ldktech.com${style.images.chatgpt.full}`,
-    `https://prompt-atlas.ldktech.com${style.images.gemini.full}`,
-  ],
+  image: `https://prompt-atlas.ldktech.com${output.path}`,
   isPartOf: { "@type": "CollectionPage", name: "Prompt Atlas" },
 };
 ---
 
 <BaseLayout
-  title={`${style.name}: ChatGPT vs Gemini | Prompt Atlas`}
+  title={`${style.name}: output và prompt anatomy | Prompt Atlas`}
   description={description}
   canonicalPath={`/styles/${style.slug}/`}
-  image={style.images.chatgpt.full}
+  image={output.path}
   bodyClass="detail-page"
   jsonLd={jsonLd}
 >
@@ -54,45 +60,54 @@ const jsonLd = {
           <ul aria-label="Dấu hiệu nhận biết">
             {style.cues.map((cue) => <li>{cue}</li>)}
           </ul>
-          <div class="detail-hero__actions">
-            <ComposerEntry style={style} variant="button" />
-            <FavoriteButton slug={style.slug} name={style.name} />
-            <a class="button button--ghost" href={`/compare/?style=${style.slug}`}>Mở bàn so sánh <Icon name="arrow-up-right" /></a>
-          </div>
+          <div class="detail-hero__actions"><FavoriteButton slug={style.slug} name={style.name} /></div>
         </div>
       </div>
     </header>
 
-    <section class="detail-specimens" aria-labelledby="specimen-title">
-      <div class="shell detail-specimens__head">
-        <div><p class="eyebrow">CÙNG MỘT PROMPT</p><h2 id="specimen-title">Hai cách diễn giải.</h2></div>
-        <p>Ảnh được hiển thị trọn khung, không crop, để bạn đọc bố cục và artifact chính xác hơn.</p>
+    <section class="learning-output shell" data-learning-step="output" aria-labelledby={`output-${style.slug}`}>
+      <div class="learning-step__head">
+        <p class="step-number">01 / OUTPUT + PROMPT</p>
+        <div><h2 id={`output-${style.slug}`}>Nhìn kết quả, rồi đọc nguyên nhân.</h2><p>Ảnh và prompt đứng cạnh nhau để bạn đối chiếu trực tiếp từng lựa chọn ngôn ngữ.</p></div>
       </div>
-      <div class="shell specimen-grid">
-        <figure class="specimen specimen--chatgpt">
-          <div class="specimen__image"><img src={style.images.chatgpt.full} width={style.images.chatgpt.width} height={style.images.chatgpt.height} alt={`${style.name}: kết quả tạo bởi ChatGPT.`} fetchpriority="high" /></div>
-          <figcaption><span>CHATGPT</span><strong>{style.scores.chatgpt.average.toFixed(2)}</strong></figcaption>
+      <div class="output-prompt-grid">
+        <figure class="learning-output__plate" data-learning-output>
+          <img src={output.path} width={output.width} height={output.height} alt={output.alt} fetchpriority="high" />
+          <figcaption><span>OUTPUT / {paddedId(style.id)}</span><strong>{style.name}</strong></figcaption>
         </figure>
-        <figure class="specimen specimen--gemini">
-          <div class="specimen__image"><img src={style.images.gemini.full} width={style.images.gemini.width} height={style.images.gemini.height} alt={`${style.name}: kết quả tạo bởi Gemini.`} fetchpriority="high" /></div>
-          <figcaption><span>GEMINI / GFLOW-CLI</span><strong>{style.scores.gemini.average.toFixed(2)}</strong></figcaption>
-        </figure>
+        <div data-prompt-anchor>
+          <PromptBlock sourcePrompt={style.sourcePrompt} generationPrompt={style.generationPrompt} id={`prompt-${style.slug}`} />
+        </div>
       </div>
     </section>
 
-    <section class="detail-evaluation shell" aria-labelledby="evaluation-title">
-      <div class="detail-evaluation__verdict">
-        <p class="eyebrow">KẾT LUẬN MẪU NÀY</p>
-        <h2 id="evaluation-title">{winnerLabel(style.winner)}</h2>
-        <p>{style.observation}</p>
-        <span class:list={["verdict-stamp", `verdict-stamp--${style.winner === "Hòa" ? "hoa" : style.winner.toLowerCase()}`]}>{style.winner}</span>
+    <PromptAnatomy style={style} />
+
+    <section class="how-to-use shell" data-how-to-use data-learning-step="how-to-use" aria-labelledby={`use-${style.slug}`}>
+      <div class="learning-step__head">
+        <p class="step-number">03 / CÁCH DÙNG</p>
+        <div><h2 id={`use-${style.slug}`}>Giữ ngôn ngữ, thay nội dung.</h2><p>Bắt đầu bằng một thay đổi nhỏ; xem output mới trước khi thêm nhiều primitive.</p></div>
       </div>
-      <ScoreRail scores={style.scores} />
+      <div class="usage-grid">
+        <article><span>GIỮ</span><h3>Dấu hiệu phong cách</h3><ul>{style.cues.map((cue) => <li>{cue}</li>)}</ul></article>
+        <article><span>THAY</span><h3>Chủ thể và bối cảnh</h3><p>{style.sourcePrompt}</p><p>Thay câu này bằng đối tượng, hành động và bối cảnh của bạn.</p></article>
+        <article><span>KIỂM TRA</span><h3>Output trước, score sau</h3><p>Đọc bố cục, vật liệu và artifact trên ảnh. Chỉ mở comparison khi evidence panel xác nhận đủ điều kiện.</p></article>
+      </div>
     </section>
 
-    <div class="shell detail-prompt-wrap">
-      <PromptBlock sourcePrompt={style.sourcePrompt} generationPrompt={style.generationPrompt} id={`prompt-${style.slug}`} />
-    </div>
+    <section class="compose-step shell" data-compose-step data-learning-step="compose" aria-labelledby={`compose-${style.slug}`}>
+      <div>
+        <p class="step-number">04 / COMPOSE</p>
+        <h2 id={`compose-${style.slug}`}>Đưa phong cách này vào recipe.</h2>
+        <p>Composer lưu local-first. Nếu primitive xung đột, hệ thống giải thích trước khi thay đổi recipe.</p>
+      </div>
+      <div class="compose-step__actions">
+        <ComposerEntry style={style} variant="button" />
+        <a class="button button--ghost" href="/composer/">Mở Composer <Icon name="arrow-right" /></a>
+      </div>
+    </section>
+
+    <EvidencePanel style={style} />
 
     <section class="related-section shell" aria-labelledby="related-title">
       <div class="section-heading">

@@ -28,7 +28,7 @@
     "preview": "astro preview",
     "validate:contract": "node scripts/validate-prompt-atlas-data.mjs schemas/examples/prompt-atlas.v1.example.json",
     "test:contract": "node --test contract-tests/*.test.mjs",
-    "test:unit": "node --test tests/composer-domain.test.mjs",
+    "test:unit": "node --test tests/*.test.mjs",
     "test": "npm run test:unit && npm run test:contract",
     "test:e2e": "playwright test"
   },

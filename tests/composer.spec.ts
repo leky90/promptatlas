@@ -1,15 +1,19 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 
 const testOrigin = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4321";
+const addStyleCard = async (card: Locator) => {
+  await card.locator("[data-prompt-disclosure] summary").click();
+  await card.getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+};
 
 test("catalog additions become an ordered, persistent and conflict-aware recipe", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/");
 
   const cards = page.locator("[data-style-card]");
-  await cards.nth(0).getByRole("button", { name: /Thêm .* vào prompt/u }).click();
-  await cards.nth(1).getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await addStyleCard(cards.nth(0));
+  await addStyleCard(cards.nth(1));
   await expect(page.locator("[data-composer-count]").first()).toHaveText("2");
 
   await page.locator("[data-composer-nav]").click();
@@ -40,7 +44,7 @@ test("catalog additions become an ordered, persistent and conflict-aware recipe"
 test("share opens read-only and continue editing forks without replacing the active draft", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/");
-  await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await addStyleCard(page.locator("[data-style-card]").first());
   await page.goto("/composer/");
   const activeBefore = await page.evaluate(() => localStorage.getItem("pa:drafts:active:v1"));
 
@@ -73,7 +77,7 @@ test("share opens read-only and continue editing forks without replacing the act
 test("storage failure keeps a shared snapshot readable and editing locked", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/");
-  await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await addStyleCard(page.locator("[data-style-card]").first());
   await page.goto("/composer/");
   await page.getByRole("button", { name: "Chia sẻ recipe" }).click();
   await page.getByRole("button", { name: "Sao chép liên kết" }).click();
@@ -95,7 +99,7 @@ test("a checksummed malformed snapshot fails safely without stale output", async
   const pageErrors: Error[] = [];
   page.on("pageerror", (reason) => pageErrors.push(reason));
   await page.goto("/");
-  await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await addStyleCard(page.locator("[data-style-card]").first());
   await page.goto("/composer/");
   await expect(page.locator("[data-composer-preview]")).toContainText("Glitch Art");
 
@@ -132,7 +136,7 @@ test("a checksummed unknown primitive is rejected before it can render or fork",
   const pageErrors: Error[] = [];
   page.on("pageerror", (reason) => pageErrors.push(reason));
   await page.goto("/");
-  await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await addStyleCard(page.locator("[data-style-card]").first());
   await page.goto("/composer/");
   const activeBefore = await page.evaluate(() => localStorage.getItem("pa:drafts:active:v1"));
 

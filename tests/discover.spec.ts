@@ -7,11 +7,11 @@ test("discovery filters hierarchical taxonomy and preserves URL-backed view stat
   await page.goto("/discover/");
 
   const nav = page.locator("[data-site-nav]");
-  await expect(nav.locator('a[href="/discover/"]')).toContainText("Discover");
-  await expect(nav.locator('a[href="/composer/"]')).toContainText("Composer");
-  await expect(nav.locator('a[href="/compare/"]')).toContainText("Benchmarks");
-  await expect(nav.locator('a[href="/methodology/"]')).toContainText("Methodology");
-  await expect(nav.getByRole("link", { name: "Discover", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(nav.locator('a[href="/"]')).toContainText("Xem kết quả");
+  await expect(nav.locator('a[href="/discover/"]')).toContainText("Học primitives");
+  await expect(nav.locator('a[href="/composer/"]')).toContainText("Soạn prompt");
+  await expect(nav.locator('a[href="/compare/"]')).toContainText("Kiểm chứng provider");
+  await expect(nav.getByRole("link", { name: "Học primitives", exact: true })).toHaveAttribute("aria-current", "page");
   await expect(page.locator("[data-primitive-card]")).toHaveCount(187);
   await expect(page.locator("[data-primitive-card]:visible")).toHaveCount(24);
   await expect(page.locator("[data-visible-count]")).toHaveText("24");

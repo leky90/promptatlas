@@ -1,12 +1,21 @@
 ---
 import type { StyleRecord } from "../lib/styles";
-import { paddedId, winnerLabel } from "../lib/styles";
+import { paddedId } from "../lib/styles";
+import { evidenceForStyle } from "../lib/evidence";
 import FavoriteButton from "./FavoriteButton.astro";
 import ComposerEntry from "./ComposerEntry.astro";
 import Icon from "./Icon.astro";
 
 type Props = { style: StyleRecord; eager?: boolean };
 const { style, eager = false } = Astro.props;
+const evidence = evidenceForStyle(style);
+const output = evidence.representative?.result ?? {
+  path: style.images.chatgpt.full,
+  thumbnailPath: style.images.chatgpt.thumb,
+  width: style.images.chatgpt.width,
+  height: style.images.chatgpt.height,
+  alt: `${style.name} — ảnh tham chiếu.`,
+};
 const searchText = [style.name, style.title, style.subtitle, style.family, style.summary, style.sourcePrompt, ...style.cues]
   .join(" ")
   .toLocaleLowerCase("vi");
@@ -20,33 +29,18 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
   data-search={searchText}
 >
   <a class="style-card__link" href={`/styles/${style.slug}/`} aria-label={`Xem phong cách ${style.name}`}>
-    <div class="pair-visual">
-      <figure class="pair-visual__side pair-visual__side--chatgpt">
-        <img
-          src={style.images.chatgpt.thumb}
-          width="560"
-          height="373"
-          alt={`${style.name} — ${style.sourcePrompt}, kết quả ChatGPT.`}
-          loading={eager ? "eager" : "lazy"}
-          fetchpriority={eager ? "high" : "auto"}
-          decoding="async"
-        />
-        <figcaption>CHATGPT</figcaption>
-      </figure>
-      <figure class="pair-visual__side pair-visual__side--gemini">
-        <img
-          src={style.images.gemini.thumb}
-          width="560"
-          height="373"
-          alt={`${style.name} — ${style.sourcePrompt}, kết quả Gemini.`}
-          loading={eager ? "eager" : "lazy"}
-          fetchpriority={eager ? "high" : "auto"}
-          decoding="async"
-        />
-        <figcaption>GEMINI</figcaption>
-      </figure>
-      <span class="pair-visual__score" aria-hidden="true">{style.scores.chatgpt.average.toFixed(1)} / {style.scores.gemini.average.toFixed(1)}</span>
-    </div>
+    <figure class="style-card__output" data-learning-output>
+      <img
+        src={output.thumbnailPath}
+        width={output.width}
+        height={output.height}
+        alt={output.alt}
+        loading={eager ? "eager" : "lazy"}
+        fetchpriority={eager ? "high" : "auto"}
+        decoding="async"
+      />
+      <figcaption><span>OUTPUT</span><span>{paddedId(style.id)}</span></figcaption>
+    </figure>
     <div class="style-card__body">
       <div class="style-card__meta">
         <span>{paddedId(style.id)}</span>
@@ -54,23 +48,27 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
       </div>
       <h2>{style.name}</h2>
       <p>{style.subtitle}</p>
-      <div class="style-card__verdict">
-        <span class:list={["winner-dot", `winner-dot--${style.winner.toLowerCase().replace("ò", "o")}`]} aria-hidden="true"></span>
-        {winnerLabel(style.winner)}
-      </div>
+      <p class="style-card__prompt-cue"><b>Prompt cue</b>{style.sourcePrompt}</p>
     </div>
   </a>
-  <div class="style-card__actions" aria-label={`Thao tác với ${style.name}`}>
-    <ComposerEntry style={style} />
-    <button
-      class="card-action card-action--copy"
-      type="button"
-      data-copy-value={style.generationPrompt}
-      aria-label={`Sao chép prompt ${style.name}`}
-    >
-      <Icon name="copy" size={18} />
-      <span data-copy-label>Sao chép prompt</span>
-    </button>
-    <FavoriteButton slug={style.slug} name={style.name} />
-  </div>
+  <details class="style-card__prompt" data-prompt-disclosure>
+    <summary><span>Xem prompt</span><Icon name="arrow-down" size={18} /></summary>
+    <div class="style-card__prompt-preview">
+      <pre data-prompt-preview tabindex="0"><code>{style.generationPrompt}</code></pre>
+      <div class="style-card__actions" aria-label={`Dùng prompt ${style.name}`}>
+        <ComposerEntry style={style} />
+        <button
+          class="card-action card-action--copy"
+          type="button"
+          data-copy-value={style.generationPrompt}
+          data-copy-requires-preview
+          aria-label={`Sao chép prompt ${style.name}`}
+        >
+          <Icon name="copy" size={18} />
+          <span data-copy-label>Sao chép prompt</span>
+        </button>
+      </div>
+    </div>
+  </details>
+  <div class="style-card__save"><FavoriteButton slug={style.slug} name={style.name} /></div>
 </article>

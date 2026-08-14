@@ -67,6 +67,13 @@ function initializeFavorites() {
 function initializeCopy() {
   document.querySelectorAll<HTMLButtonElement>("[data-copy-target], [data-copy-value]").forEach((button) => {
     button.addEventListener("click", async () => {
+      const disclosure = button.closest<HTMLDetailsElement>("details[data-prompt-disclosure]");
+      if (button.hasAttribute("data-copy-requires-preview") && disclosure && !disclosure.open) {
+        showToast("Hãy xem prompt trước khi sao chép.", "error");
+        disclosure.open = true;
+        disclosure.querySelector<HTMLElement>("[data-prompt-preview]")?.focus();
+        return;
+      }
       const selector = button.dataset.copyTarget;
       const target = selector ? document.querySelector<HTMLElement>(selector) : null;
       const value = (button.dataset.copyValue ?? target?.innerText ?? "").trim();

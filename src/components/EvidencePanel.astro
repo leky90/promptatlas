@@ -1,0 +1,58 @@
+---
+import type { StyleRecord } from "../lib/styles";
+import { evidenceForStyle } from "../lib/evidence";
+import { winnerLabel } from "../lib/styles";
+import Icon from "./Icon.astro";
+import ScoreRail from "./ScoreRail.astro";
+
+type Props = { style: StyleRecord };
+const { style } = Astro.props;
+const evidence = evidenceForStyle(style);
+---
+
+<details
+  class="evidence-panel shell"
+  data-evidence-panel
+  data-comparison-eligible={String(evidence.comparisonEligible)}
+  data-learning-step="evidence"
+>
+  <summary>
+    <span class="step-number">05 / EVIDENCE</span>
+    <span>
+      <strong>{evidence.comparisonEligible ? "Kiểm chứng cùng prompt" : "Ảnh tham chiếu"}</strong>
+      <small>{evidence.comparisonEligible ? `${evidence.results.length} provider đủ điều kiện` : "Chưa đủ điều kiện so sánh provider"}</small>
+    </span>
+    <Icon name="arrow-down" size={20} />
+  </summary>
+  <div class="evidence-panel__body">
+    {evidence.promptIdentity && (
+      <p class="evidence-identity"><span>Prompt ID</span><code>{evidence.promptIdentity.id}</code><span>Hash</span><code>{evidence.promptIdentity.hash}</code></p>
+    )}
+    <div class:list={["evidence-results", { "evidence-results--single": !evidence.comparisonEligible }]}>
+      {evidence.results.map((item) => (
+        <figure class:list={["evidence-result", evidence.comparisonEligible && `evidence-result--${item.provider.id}`]} data-evidence-result>
+          <div class="evidence-result__image"><img src={item.result.path} width={item.result.width} height={item.result.height} alt={item.result.alt} loading="lazy" /></div>
+          <figcaption>
+            <dl>
+              <div><dt>Provider</dt><dd>{item.provider.label}</dd></div>
+              <div><dt>Model</dt><dd>{item.model.family}<small>{item.model.version}</small></dd></div>
+              <div><dt>Pipeline</dt><dd>{item.pipeline.label}<small>{item.pipeline.interface}</small></dd></div>
+              <div><dt>Result</dt><dd><code>{item.result.id}</code></dd></div>
+            </dl>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+    {evidence.comparison && (
+      <div class="evidence-reading">
+        <div>
+          <p class="eyebrow">NHẬN XÉT TRÊN MẪU</p>
+          <h3>{winnerLabel(evidence.comparison.winner)}</h3>
+          <p>{evidence.comparison.observation}</p>
+          <a class="button button--ghost" href={`/compare/?style=${style.slug}`}>Mở evidence mode <Icon name="arrow-up-right" /></a>
+        </div>
+        <ScoreRail scores={evidence.comparison.scores} />
+      </div>
+    )}
+  </div>
+</details>
