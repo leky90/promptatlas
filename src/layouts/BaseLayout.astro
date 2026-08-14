@@ -27,6 +27,26 @@ const {
 
 const canonical = new URL(canonicalPath, Astro.site);
 const ogImage = new URL(image, Astro.site);
+const brandIdentity = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Prompt Atlas",
+  alternateName: "Prompt Atlas by LDKTech",
+  url: new URL("/", Astro.site),
+  description,
+  inLanguage: "vi",
+  publisher: {
+    "@type": "Organization",
+    name: "LDKTech",
+    logo: {
+      "@type": "ImageObject",
+      url: new URL("/brand/prompt-atlas-mark-primary.svg", Astro.site),
+    },
+  },
+};
+const structuredData = jsonLd
+  ? (Array.isArray(jsonLd) ? [brandIdentity, ...jsonLd] : [brandIdentity, jsonLd])
+  : brandIdentity;
 ---
 
 <!doctype html>
@@ -38,6 +58,7 @@ const ogImage = new URL(image, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="vi_VN" />
     <meta property="og:site_name" content="Prompt Atlas by LDKTech" />
@@ -52,7 +73,7 @@ const ogImage = new URL(image, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <title>{title}</title>
-    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body class={bodyClass}>
     <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>

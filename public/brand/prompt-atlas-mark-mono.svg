@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Prompt Atlas — Output/Prompt Plate monochrome</title>
+  <desc id="desc">A one-colour square specimen with an output window, outlined prompt cue and Composer terminal.</desc>
+  <rect x="2" y="2" width="60" height="60" fill="none" stroke="#121311" stroke-width="4"/>
+  <rect x="12" y="10" width="40" height="28" fill="#121311"/>
+  <path d="M12 44H40V52H12Z M16 48V48H36" fill="#121311"/>
+  <rect x="44" y="44" width="8" height="8" fill="#121311"/>
+</svg>

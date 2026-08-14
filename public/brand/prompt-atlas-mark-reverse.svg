@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Prompt Atlas — Output/Prompt Plate reverse</title>
+  <desc id="desc">A square ink specimen with a paper output window, acid prompt cue and paper Composer terminal.</desc>
+  <rect x="2" y="2" width="60" height="60" fill="#121311" stroke="#F1EEE6" stroke-width="4"/>
+  <rect x="12" y="10" width="40" height="28" fill="#F1EEE6"/>
+  <rect x="12" y="44" width="28" height="8" fill="#D8FF45"/>
+  <rect x="44" y="44" width="8" height="8" fill="#F1EEE6"/>
+</svg>

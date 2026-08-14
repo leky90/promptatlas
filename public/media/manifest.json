@@ -18,19 +18,19 @@
       "file": "og-cover.webp",
       "kind": "image",
       "usage": "Open Graph cover",
-      "alt": "Prompt Atlas — 90 phong cách và 180 hình ảnh so sánh ChatGPT với Gemini.",
+      "alt": "Prompt Atlas — Nhìn output trước, hiểu prompt, rồi đưa thành phần vào Composer.",
       "sourceType": "derived",
-      "source": "Project image outputs and original SVG typography",
+      "source": "Project image outputs and Output/Prompt Plate geometry",
       "sourceUrl": null,
       "creator": "LDKTech image-styles project",
       "license": "project use",
       "createdOrDownloadedAt": "2026-08-11",
       "transformations": [
-        "editorial composite",
+        "learning-first editorial composite",
         "1200x630",
         "WebP quality 86"
       ],
-      "bytes": 76940
+      "bytes": 79186
     },
     {
       "file": "styles/3d-voxel-art-chatgpt.webp",
