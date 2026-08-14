@@ -5,8 +5,17 @@ import { deriveStyleEvidence } from "../src/lib/evidence.ts";
 
 const style = {
   slug: "glitch-art",
+  name: "Glitch Art",
   winner: "ChatGPT",
   observation: "OpenAI giữ chủ thể rõ hơn.",
+  images: {
+    chatgpt: {
+      full: "/media/styles/glitch-fallback.webp",
+      thumb: "/media/thumbs/glitch-fallback.webp",
+      width: 1200,
+      height: 800,
+    },
+  },
   scores: {
     chatgpt: { average: 8.8 },
     gemini: { average: 8.2 },
@@ -161,4 +170,20 @@ test("failed runs and outputs without a resolvable image asset cannot establish 
     assert.equal(evidence.mode, "single-result");
     assert.equal(evidence.comparison, null);
   }
+});
+
+test("no successful resolvable run still returns one provider-neutral style reference", () => {
+  const evidence = deriveStyleEvidence({
+    style,
+    runs: [{ ...openAiRun, outcome: "failed" }],
+    assets,
+  });
+
+  assert.equal(evidence.comparisonEligible, false);
+  assert.equal(evidence.mode, "single-result");
+  assert.equal(evidence.results.length, 1);
+  assert.equal(evidence.results[0].provider.id, "neutral");
+  assert.equal(evidence.results[0].provider.label, "Chưa xác minh");
+  assert.equal(evidence.results[0].result.path, style.images.chatgpt.full);
+  assert.equal(evidence.comparison, null);
 });

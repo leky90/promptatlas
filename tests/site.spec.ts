@@ -61,6 +61,11 @@ test("compare workbench reads query state and navigates records", async ({ page 
   await expect(page.locator("[data-compare-name]")).toHaveText("Sumi-e");
   await expect(page.locator("[data-compare-select]")).toHaveValue("sumi-e");
   await expect(page.locator('[data-compare-image="chatgpt"]')).toHaveAttribute("src", /sumi-e-chatgpt/);
+  const taxonomy = page.locator('[data-compare-taxonomy="chatgpt"]');
+  await expect(taxonomy).toContainText("ProviderOpenAI");
+  await expect(taxonomy).toContainText("ModelChatGPT image generation");
+  await expect(taxonomy).toContainText("PipelineChatGPT image generation (legacy atlas)");
+  await expect(taxonomy).toContainText("Resultasset.sumi-e.chatgpt");
   await page.locator("[data-compare-next]").click();
   await expect(page).toHaveURL(/style=splash-ink/);
   await expect(page.locator("[data-compare-name]")).toHaveText("Splash Ink");

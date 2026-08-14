@@ -1700,6 +1700,34 @@ button {
   font-size: 20px;
 }
 
+.compare-stage__side figcaption {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+}
+
+.compare-stage__taxonomy {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px 18px;
+  margin: 0;
+}
+
+.compare-stage__taxonomy dt {
+  color: #a9aaa3;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.compare-stage__taxonomy dd {
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
 .compare-stage__seam {
   position: absolute;
   top: 50%;

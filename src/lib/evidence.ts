@@ -33,7 +33,7 @@ type EvidenceAsset = {
   alt?: { vi?: string; en?: string };
 };
 
-type ComparativeStyle = Pick<StyleRecord, "winner" | "observation" | "scores"> & {
+type ComparativeStyle = Pick<StyleRecord, "winner" | "observation" | "scores"> & Partial<Pick<StyleRecord, "images" | "name">> & {
   slug?: string;
 };
 
@@ -110,6 +110,26 @@ const toResult = (run: EvidenceRun, assetsById: Map<string, EvidenceAsset>): Evi
   };
 };
 
+const neutralStyleReference = (style: ComparativeStyle): EvidenceResult | null => {
+  const image = style.images?.chatgpt;
+  if (!image) return null;
+  const referenceId = `reference.${style.slug || "style"}`;
+  return {
+    provider: { id: "neutral", label: "Chưa xác minh" },
+    model: { family: "Chưa xác minh", version: "Không áp dụng" },
+    pipeline: { id: "unverified-reference", label: "Ảnh tham chiếu", interface: "not-verified" },
+    result: {
+      id: referenceId,
+      runId: "not-available",
+      path: image.full,
+      thumbnailPath: image.thumb,
+      width: image.width,
+      height: image.height,
+      alt: `${style.name || "Phong cách"} — ảnh tham chiếu trung tính.`,
+    },
+  };
+};
+
 export function deriveStyleEvidence({
   style,
   runs,
@@ -141,7 +161,7 @@ export function deriveStyleEvidence({
   const promptIdentity = promptIds.size === 1 && promptHashes.size === 1 && allHavePromptIdentity
     ? { id: [...promptIds][0] as string, hash: [...promptHashes][0] as string }
     : null;
-  const representative = candidates[0]?.result ?? null;
+  const representative = candidates[0]?.result ?? neutralStyleReference(style);
   const eligibleResults = comparisonEligible
     ? [...new Map(candidates.map(({ result }) => [result.provider.id, result])).values()]
     : representative ? [representative] : [];

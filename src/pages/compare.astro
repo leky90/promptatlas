@@ -4,17 +4,22 @@ import Icon from "../components/Icon.astro";
 import { scoreLabels, styles } from "../lib/styles";
 import { evidenceForStyle } from "../lib/evidence";
 
-const eligibleStyles = styles.filter((style) => evidenceForStyle(style).comparisonEligible);
-const initial = eligibleStyles.find((style) => style.id === 88) ?? eligibleStyles[0];
-if (!initial) throw new Error("Compare requires at least one eligible same-prompt provider pair.");
-const providerAverage = (provider: "chatgpt" | "gemini") => eligibleStyles.reduce((sum, style) => sum + style.scores[provider].average, 0) / eligibleStyles.length;
+const compareRecords = styles
+  .map((style) => ({ style, evidence: evidenceForStyle(style) }))
+  .filter((record) => record.evidence.comparisonEligible);
+const initialRecord = compareRecords.find((record) => record.style.id === 88) ?? compareRecords[0];
+if (!initialRecord) throw new Error("Compare requires at least one eligible same-prompt provider pair.");
+const initial = initialRecord.style;
+const [initialPrimary, initialSecondary] = initialRecord.evidence.results;
+if (!initialPrimary || !initialSecondary) throw new Error("Eligible comparison requires two derived evidence results.");
+const providerAverage = (provider: "chatgpt" | "gemini") => compareRecords.reduce((sum, record) => sum + record.style.scores[provider].average, 0) / compareRecords.length;
 const chatgptAverage = providerAverage("chatgpt");
 const geminiAverage = providerAverage("gemini");
-const winCounts = eligibleStyles.reduce((result, style) => {
-  result[style.winner] += 1;
+const winCounts = compareRecords.reduce((result, record) => {
+  result[record.style.winner] += 1;
   return result;
 }, { ChatGPT: 0, Gemini: 0, Hòa: 0 });
-const compareData = JSON.stringify(eligibleStyles);
+const compareData = JSON.stringify(compareRecords);
 ---
 
 <BaseLayout
@@ -24,7 +29,7 @@ const compareData = JSON.stringify(eligibleStyles);
   bodyClass="compare-page"
 >
   <header class="compare-header shell">
-    <p class="eyebrow">EVIDENCE MODE / {eligibleStyles.length} ELIGIBLE PROMPTS</p>
+    <p class="eyebrow">EVIDENCE MODE / {compareRecords.length} ELIGIBLE PROMPTS</p>
     <div class="compare-header__grid">
       <h1>So sánh bằng hình.<br /><em>Không bằng cảm giác.</em></h1>
       <p>Mỗi cặp đã qua guard: cùng immutable prompt ID/hash và có ít nhất hai provider. Taxonomy đọc theo provider → model → pipeline → result.</p>
@@ -35,7 +40,7 @@ const compareData = JSON.stringify(eligibleStyles);
     <div class="aggregate__intro">
       <p class="eyebrow">TOÀN BỘ BỘ MẪU</p>
       <h2 id="aggregate-title">Điểm trung bình</h2>
-      <p>Đây là phép đo trên {eligibleStyles.length} prompt đủ điều kiện, không phải tuyên bố chất lượng tuyệt đối của model.</p>
+      <p>Đây là phép đo trên {compareRecords.length} prompt đủ điều kiện, không phải tuyên bố chất lượng tuyệt đối của model.</p>
     </div>
     <div class="aggregate__score aggregate__score--chatgpt"><span>ChatGPT</span><strong>{chatgptAverage.toFixed(2)}</strong><small>{winCounts.ChatGPT} thắng</small></div>
     <div class="aggregate__score aggregate__score--gemini"><span>Gemini</span><strong>{geminiAverage.toFixed(2)}</strong><small>{winCounts.Gemini} thắng</small></div>
@@ -47,7 +52,7 @@ const compareData = JSON.stringify(eligibleStyles);
       <div>
         <label for="compare-style">Phong cách đang xem</label>
         <select id="compare-style" data-compare-select>
-          {eligibleStyles.map((style) => <option value={style.slug} selected={style.slug === initial.slug}>{String(style.id).padStart(3, "0")} — {style.name}</option>)}
+          {compareRecords.map(({ style }) => <option value={style.slug} selected={style.slug === initial.slug}>{String(style.id).padStart(3, "0")} — {style.name}</option>)}
         </select>
       </div>
       <div class="compare-toolbar__pager" aria-label="Điều hướng phong cách">
@@ -63,12 +68,28 @@ const compareData = JSON.stringify(eligibleStyles);
 
     <div class="shell compare-stage">
       <figure class="compare-stage__side compare-stage__side--chatgpt">
-        <div><img data-compare-image="chatgpt" src={initial.images.chatgpt.full} width={initial.images.chatgpt.width} height={initial.images.chatgpt.height} alt={`${initial.name}: kết quả ChatGPT.`} fetchpriority="high" /></div>
-        <figcaption><span>CHATGPT</span><strong data-compare-average="chatgpt">{initial.scores.chatgpt.average.toFixed(2)}</strong></figcaption>
+        <div><img data-compare-image="chatgpt" src={initialPrimary.result.path} width={initialPrimary.result.width} height={initialPrimary.result.height} alt={initialPrimary.result.alt} fetchpriority="high" /></div>
+        <figcaption>
+          <dl class="compare-stage__taxonomy" data-compare-taxonomy="chatgpt">
+            <div><dt>Provider</dt><dd data-compare-provider="chatgpt">{initialPrimary.provider.label}</dd></div>
+            <div><dt>Model</dt><dd data-compare-model="chatgpt">{initialPrimary.model.family}</dd></div>
+            <div><dt>Pipeline</dt><dd data-compare-pipeline="chatgpt">{initialPrimary.pipeline.label}</dd></div>
+            <div><dt>Result</dt><dd data-compare-result="chatgpt">{initialPrimary.result.id}</dd></div>
+          </dl>
+          <strong data-compare-average="chatgpt">{initial.scores.chatgpt.average.toFixed(2)}</strong>
+        </figcaption>
       </figure>
       <figure class="compare-stage__side compare-stage__side--gemini">
-        <div><img data-compare-image="gemini" src={initial.images.gemini.full} width={initial.images.gemini.width} height={initial.images.gemini.height} alt={`${initial.name}: kết quả Gemini.`} fetchpriority="high" /></div>
-        <figcaption><span>GEMINI / GFLOW-CLI</span><strong data-compare-average="gemini">{initial.scores.gemini.average.toFixed(2)}</strong></figcaption>
+        <div><img data-compare-image="gemini" src={initialSecondary.result.path} width={initialSecondary.result.width} height={initialSecondary.result.height} alt={initialSecondary.result.alt} fetchpriority="high" /></div>
+        <figcaption>
+          <dl class="compare-stage__taxonomy" data-compare-taxonomy="gemini">
+            <div><dt>Provider</dt><dd data-compare-provider="gemini">{initialSecondary.provider.label}</dd></div>
+            <div><dt>Model</dt><dd data-compare-model="gemini">{initialSecondary.model.family}</dd></div>
+            <div><dt>Pipeline</dt><dd data-compare-pipeline="gemini">{initialSecondary.pipeline.label}</dd></div>
+            <div><dt>Result</dt><dd data-compare-result="gemini">{initialSecondary.result.id}</dd></div>
+          </dl>
+          <strong data-compare-average="gemini">{initial.scores.gemini.average.toFixed(2)}</strong>
+        </figcaption>
       </figure>
       <span class="compare-stage__seam" aria-hidden="true">VS</span>
     </div>
@@ -98,13 +119,22 @@ const compareData = JSON.stringify(eligibleStyles);
   <script is:inline id="compare-data" type="application/json" set:html={compareData}></script>
   <script>
     type CompareStyle = (typeof import("../data/styles.json"))[number];
+    type CompareEvidenceResult = {
+      provider: { id: string; label: string };
+      model: { family: string; version: string };
+      pipeline: { id: string; label: string; interface: string };
+      result: { id: string; path: string; width: number; height: number; alt: string };
+    };
+    type CompareRecord = { style: CompareStyle; evidence: { results: CompareEvidenceResult[] } };
     const dataNode = document.querySelector<HTMLScriptElement>("#compare-data");
-    const records = JSON.parse(dataNode?.textContent ?? "[]") as CompareStyle[];
+    const records = JSON.parse(dataNode?.textContent ?? "[]") as CompareRecord[];
     const select = document.querySelector<HTMLSelectElement>("[data-compare-select]");
 
     function render(slug: string, sync = true) {
-      const style = records.find((item) => item.slug === slug) ?? records[0];
-      if (!style || !select) return;
+      const record = records.find((item) => item.style.slug === slug) ?? records[0];
+      if (!record || !select) return;
+      const { style, evidence } = record;
+      if (evidence.results.length < 2) return;
       select.value = style.slug;
       const meta = document.querySelector<HTMLElement>("[data-compare-meta]");
       const name = document.querySelector<HTMLElement>("[data-compare-name]");
@@ -116,16 +146,27 @@ const compareData = JSON.stringify(eligibleStyles);
       if (detail) detail.href = `/styles/${style.slug}/`;
       if (winner) winner.textContent = style.winner === "Hòa" ? "Hòa trong biên độ 0,25" : `${style.winner} nhỉnh hơn`;
       if (observation) observation.textContent = style.observation;
-      (["chatgpt", "gemini"] as const).forEach((provider) => {
+      (["chatgpt", "gemini"] as const).forEach((provider, index) => {
+        const evidenceResult = evidence.results[index];
         const image = document.querySelector<HTMLImageElement>(`[data-compare-image="${provider}"]`);
         const average = document.querySelector<HTMLElement>(`[data-compare-average="${provider}"]`);
-        if (image) {
-          image.src = style.images[provider].full;
-          image.width = style.images[provider].width;
-          image.height = style.images[provider].height;
-          image.alt = `${style.name}: kết quả ${provider === "chatgpt" ? "ChatGPT" : "Gemini"}.`;
+        if (image && evidenceResult) {
+          image.src = evidenceResult.result.path;
+          image.width = evidenceResult.result.width;
+          image.height = evidenceResult.result.height;
+          image.alt = evidenceResult.result.alt;
         }
         if (average) average.textContent = style.scores[provider].average.toFixed(2);
+        const taxonomy = {
+          provider: evidenceResult?.provider.label,
+          model: evidenceResult?.model.family,
+          pipeline: evidenceResult?.pipeline.label,
+          result: evidenceResult?.result.id,
+        };
+        Object.entries(taxonomy).forEach(([key, value]) => {
+          const cell = document.querySelector<HTMLElement>(`[data-compare-${key}="${provider}"]`);
+          if (cell && value) cell.textContent = value;
+        });
       });
       document.querySelectorAll<HTMLElement>("[data-score-key]").forEach((row) => {
         const key = row.dataset.scoreKey as keyof Omit<CompareStyle["scores"]["chatgpt"], "average">;
@@ -138,17 +179,17 @@ const compareData = JSON.stringify(eligibleStyles);
     }
 
     const requested = new URLSearchParams(location.search).get("style");
-    render(requested ?? select?.value ?? records[0]?.slug, false);
+    render(requested ?? select?.value ?? records[0]?.style.slug, false);
     select?.addEventListener("change", () => render(select.value));
     document.querySelector("[data-compare-prev]")?.addEventListener("click", () => {
       if (!select) return;
-      const index = Math.max(0, records.findIndex((item) => item.slug === select.value));
-      render(records[(index - 1 + records.length) % records.length].slug);
+      const index = Math.max(0, records.findIndex((item) => item.style.slug === select.value));
+      render(records[(index - 1 + records.length) % records.length].style.slug);
     });
     document.querySelector("[data-compare-next]")?.addEventListener("click", () => {
       if (!select) return;
-      const index = Math.max(0, records.findIndex((item) => item.slug === select.value));
-      render(records[(index + 1) % records.length].slug);
+      const index = Math.max(0, records.findIndex((item) => item.style.slug === select.value));
+      render(records[(index + 1) % records.length].style.slug);
     });
   </script>
 </BaseLayout>
