@@ -182,32 +182,10 @@ button {
 }
 
 .brand__mark {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: block;
+  flex: 0 0 auto;
   width: 34px;
   height: 34px;
-  border: 1px solid var(--paper);
-}
-
-.brand__mark i:first-child {
-  background: var(--chatgpt);
-}
-
-.brand__mark i:nth-child(2) {
-  background: var(--gemini);
-}
-
-.brand__mark b {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 9px;
-  height: 9px;
-  background: var(--acid);
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .brand__text {
