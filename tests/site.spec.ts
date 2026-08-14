@@ -8,7 +8,7 @@ const styles = JSON.parse(readFileSync(new URL("../src/data/styles.json", import
 }>;
 const testOrigin = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4321";
 
-test("atlas supports copy, search, filters, favorites and empty recovery", async ({ context, page }) => {
+test("atlas previews one output and the prompt before reuse actions", async ({ context, page }) => {
   const errors: string[] = [];
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
@@ -16,7 +16,16 @@ test("atlas supports copy, search, filters, favorites and empty recovery", async
   await page.goto("/");
 
   await expect(page.locator("[data-style-card]")).toHaveCount(90);
-  const firstCopy = page.locator("[data-style-card] [data-copy-value]").first();
+  const firstCard = page.locator("[data-style-card]").first();
+  await expect(firstCard.locator("[data-learning-output] img")).toHaveCount(1);
+  await expect(firstCard.locator("[data-comparison-eligible]")).toHaveCount(0);
+  const disclosure = firstCard.locator("[data-prompt-disclosure]");
+  await expect(disclosure.getByText("Xem prompt", { exact: true })).toBeVisible();
+  const firstCopy = disclosure.locator("[data-copy-value]");
+  await expect(firstCopy).not.toBeVisible();
+  await disclosure.locator("summary").click();
+  await expect(disclosure.locator("[data-prompt-preview]")).toBeVisible();
+  await expect(firstCopy).toBeVisible();
   await firstCopy.click();
   await expect(firstCopy.locator("[data-copy-label]")).toHaveText("Đã sao chép");
   expect((await page.evaluate(() => navigator.clipboard.readText())).length).toBeGreaterThan(100);
@@ -57,17 +66,36 @@ test("compare workbench reads query state and navigates records", async ({ page 
   await expect(page.locator("[data-compare-name]")).toHaveText("Splash Ink");
 });
 
-test("detail exposes full prompt and copy action", async ({ context, page }) => {
+test("detail teaches output, prompt anatomy and usage before evidence", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/styles/sumi-e/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sumi-e");
-  await expect(page.locator(".specimen img")).toHaveCount(2);
+  await expect(page.locator('[data-learning-step="output"] [data-learning-output] img')).toHaveCount(1);
+  await expect(page.locator("[data-prompt-anchor]")).toBeVisible();
+  await expect(page.locator("[data-prompt-anatomy]")).toBeVisible();
+  await expect(page.locator("[data-how-to-use]")).toBeVisible();
+  await expect(page.locator("[data-compose-step]")).toBeVisible();
+  const order = await page.locator("[data-learning-step]").evaluateAll((nodes) =>
+    nodes.map((node) => node.getAttribute("data-learning-step")),
+  );
+  expect(order).toEqual(["output", "prompt-anatomy", "how-to-use", "compose", "evidence"]);
   await page.getByRole("button", { name: "Thêm Sumi-e vào prompt" }).click();
   await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
   const copy = page.locator("[data-copy-target]");
   await copy.click();
   await expect(copy.locator("[data-copy-label]")).toHaveText("Đã sao chép");
   expect((await page.evaluate(() => navigator.clipboard.readText())).length).toBeGreaterThan(100);
+
+  const evidence = page.locator("[data-evidence-panel]");
+  await expect(evidence).toHaveAttribute("data-comparison-eligible", "true");
+  await expect(evidence.locator("[data-evidence-result]").first()).not.toBeVisible();
+  await evidence.locator("summary").click();
+  await expect(evidence.locator("[data-evidence-result]")).toHaveCount(2);
+  await expect(evidence.locator("[data-evidence-result]").first()).toBeVisible();
+  await expect(evidence).toContainText("Provider");
+  await expect(evidence).toContainText("Model");
+  await expect(evidence).toContainText("Pipeline");
+  await expect(evidence).toContainText("Result");
 });
 
 for (const path of ["/", "/discover/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {

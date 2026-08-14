@@ -17,8 +17,8 @@ type Props = {
 };
 
 const {
-  title = "Prompt Atlas — 90 phong cách tạo ảnh AI | LDKTech",
-  description = "So sánh ChatGPT và Gemini qua 90 prompt tạo ảnh, xem 180 output thực tế và tìm phong cách phù hợp cho dự án của bạn.",
+  title = "Prompt Atlas — nhìn output, hiểu prompt | LDKTech",
+  description = "Kho tham chiếu prompt trực quan bằng tiếng Việt: nhìn output trước, hiểu prompt tạo ra nó, rồi đưa thành phần vào Composer.",
   canonicalPath = Astro.url.pathname,
   image = "/media/og-cover.webp",
   bodyClass = "",
@@ -60,8 +60,8 @@ const ogImage = new URL(image, Astro.site);
     <main id="main-content">
       <slot />
     </main>
-    <SiteFooter />
     <ComposerTray />
+    <SiteFooter />
     <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
     <script src="../scripts/global.ts"></script>
   </body>

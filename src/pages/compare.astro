@@ -2,49 +2,52 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
 import { scoreLabels, styles } from "../lib/styles";
+import { evidenceForStyle } from "../lib/evidence";
 
-const initial = styles.find((style) => style.id === 88) ?? styles[0];
-const providerAverage = (provider: "chatgpt" | "gemini") => styles.reduce((sum, style) => sum + style.scores[provider].average, 0) / styles.length;
+const eligibleStyles = styles.filter((style) => evidenceForStyle(style).comparisonEligible);
+const initial = eligibleStyles.find((style) => style.id === 88) ?? eligibleStyles[0];
+if (!initial) throw new Error("Compare requires at least one eligible same-prompt provider pair.");
+const providerAverage = (provider: "chatgpt" | "gemini") => eligibleStyles.reduce((sum, style) => sum + style.scores[provider].average, 0) / eligibleStyles.length;
 const chatgptAverage = providerAverage("chatgpt");
 const geminiAverage = providerAverage("gemini");
-const winCounts = styles.reduce((result, style) => {
+const winCounts = eligibleStyles.reduce((result, style) => {
   result[style.winner] += 1;
   return result;
 }, { ChatGPT: 0, Gemini: 0, Hòa: 0 });
-const compareData = JSON.stringify(styles);
+const compareData = JSON.stringify(eligibleStyles);
 ---
 
 <BaseLayout
-  title="So sánh ChatGPT và Gemini qua 90 prompt | Prompt Atlas"
-  description="Bảng so sánh trực quan 90 phong cách tạo ảnh từ ChatGPT và Gemini, gồm điểm tổng, điểm từng tiêu chí và output cùng prompt."
+  title="Kiểm chứng provider trên output cùng prompt | Prompt Atlas"
+  description="Evidence mode chỉ hiển thị provider comparison khi ít nhất hai provider dùng cùng immutable prompt ID và hash."
   canonicalPath="/compare/"
   bodyClass="compare-page"
 >
   <header class="compare-header shell">
-    <p class="eyebrow">MODEL COMPARISON / 90 PAIRED SAMPLES</p>
+    <p class="eyebrow">EVIDENCE MODE / {eligibleStyles.length} ELIGIBLE PROMPTS</p>
     <div class="compare-header__grid">
       <h1>So sánh bằng hình.<br /><em>Không bằng cảm giác.</em></h1>
-      <p>Mỗi hàng là cùng một prompt, chấm trên cùng năm tiêu chí. Chọn phong cách để xem chênh lệch và đọc output ở kích thước lớn.</p>
+      <p>Mỗi cặp đã qua guard: cùng immutable prompt ID/hash và có ít nhất hai provider. Taxonomy đọc theo provider → model → pipeline → result.</p>
     </div>
   </header>
 
-  <section class="aggregate shell" aria-labelledby="aggregate-title">
+  <section class="aggregate shell" data-comparison-eligible="true" aria-labelledby="aggregate-title">
     <div class="aggregate__intro">
       <p class="eyebrow">TOÀN BỘ BỘ MẪU</p>
       <h2 id="aggregate-title">Điểm trung bình</h2>
-      <p>Đây là phép đo trên bộ 90 prompt này, không phải tuyên bố chất lượng tuyệt đối của model.</p>
+      <p>Đây là phép đo trên {eligibleStyles.length} prompt đủ điều kiện, không phải tuyên bố chất lượng tuyệt đối của model.</p>
     </div>
     <div class="aggregate__score aggregate__score--chatgpt"><span>ChatGPT</span><strong>{chatgptAverage.toFixed(2)}</strong><small>{winCounts.ChatGPT} thắng</small></div>
     <div class="aggregate__score aggregate__score--gemini"><span>Gemini</span><strong>{geminiAverage.toFixed(2)}</strong><small>{winCounts.Gemini} thắng</small></div>
     <div class="aggregate__ties"><strong>{winCounts.Hòa}</strong><span>kết quả hòa<br />trong biên độ 0,25</span></div>
   </section>
 
-  <section class="compare-workbench" aria-labelledby="workbench-title">
+  <section class="compare-workbench" data-comparison-eligible="true" aria-labelledby="workbench-title">
     <div class="compare-toolbar shell">
       <div>
         <label for="compare-style">Phong cách đang xem</label>
         <select id="compare-style" data-compare-select>
-          {styles.map((style) => <option value={style.slug} selected={style.slug === initial.slug}>{String(style.id).padStart(3, "0")} — {style.name}</option>)}
+          {eligibleStyles.map((style) => <option value={style.slug} selected={style.slug === initial.slug}>{String(style.id).padStart(3, "0")} — {style.name}</option>)}
         </select>
       </div>
       <div class="compare-toolbar__pager" aria-label="Điều hướng phong cách">

@@ -19,6 +19,7 @@ test("tablet discovery and Composer remain usable without horizontal overflow", 
   const add = page.locator("[data-primitive-card]:visible").first().getByRole("button", { name: /Thêm .* vào prompt/u });
   await add.click();
   await expect(page.locator("[data-composer-tray]")).toContainText("1 thành phần");
+  await page.locator("[data-composer-tray] summary").click();
   await page.locator("[data-composer-tray]").getByRole("link", { name: "Mở Composer" }).click();
   await expect(page.locator("[data-composer-workspace]")).toBeVisible();
 });
@@ -29,7 +30,7 @@ test("mobile navigation and core layouts remain usable", async ({ page }) => {
   await expect(menu).toBeVisible();
   await menu.click();
   await expect(page.locator("[data-site-nav]")).toHaveAttribute("data-open", "true");
-  await expect(page.locator("[data-site-nav]").getByRole("link", { name: "Benchmarks" })).toBeVisible();
+  await expect(page.locator("[data-site-nav]").getByRole("link", { name: "Kiểm chứng provider" })).toBeVisible();
 
   await page.locator("[data-style-search]").fill("watercolor");
   await expect(page.locator("[data-result-count]")).not.toHaveText("00");
@@ -95,11 +96,17 @@ test("mobile methodology anchors clear the sticky header", async ({ page }) => {
 
 test("mobile composer tray exposes the active recipe without covering controls", async ({ page }) => {
   await page.goto("/");
-  await page.locator("[data-style-card]").first().getByRole("button", { name: /Thêm .* vào prompt/u }).click();
-  await page.locator("[data-style-card]").nth(1).getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  for (const card of [page.locator("[data-style-card]").first(), page.locator("[data-style-card]").nth(1)]) {
+    await card.locator("[data-prompt-disclosure] summary").click();
+    await card.getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  }
   const tray = page.locator("[data-composer-tray]");
   await expect(tray).toBeVisible();
   await expect(tray).toContainText("2 thành phần");
+  await expect(tray).not.toHaveAttribute("open", "");
+  expect(await tray.evaluate((element) => getComputedStyle(element).position)).not.toBe("fixed");
+  await tray.locator("summary").click();
+  await expect(tray).toHaveAttribute("open", "");
   await tray.getByRole("link", { name: "Mở Composer" }).click();
   await expect(page).toHaveURL(/\/composer\/$/u);
   await expect(page.locator("[data-composer-workspace]")).toBeVisible();

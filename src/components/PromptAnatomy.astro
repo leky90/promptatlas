@@ -1,0 +1,27 @@
+---
+import type { StyleRecord } from "../lib/styles";
+
+type Props = { style: StyleRecord };
+const { style } = Astro.props;
+const promptLines = style.generationPrompt.split("\n");
+const lineValue = (prefix: string) => promptLines.find((line) => line.startsWith(prefix))?.slice(prefix.length).trim() ?? "";
+const composition = lineValue("Composition/framing:");
+const lighting = lineValue("Lighting/mood:");
+const constraints = lineValue("Constraints:");
+---
+
+<section class="prompt-anatomy shell" data-prompt-anatomy data-learning-step="prompt-anatomy" aria-labelledby={`anatomy-${style.slug}`}>
+  <div class="learning-step__head">
+    <p class="step-number">02 / PROMPT ANATOMY</p>
+    <div>
+      <h2 id={`anatomy-${style.slug}`}>Đọc prompt theo vai trò.</h2>
+      <p>Mỗi khối điều khiển một phần khác của output. Đổi từng khối để biết chính xác điều gì đang tác động.</p>
+    </div>
+  </div>
+  <div class="anatomy-grid">
+    <article><span>01</span><h3>Chủ thể</h3><p>{style.sourcePrompt}</p><small>Thay phần này trước khi đổi phong cách.</small></article>
+    <article><span>02</span><h3>Ngôn ngữ nhìn</h3><p>{style.name}: {style.cues.join(", ")}.</p><small>Giữ để bảo toàn dấu hiệu nhận biết.</small></article>
+    <article><span>03</span><h3>Bố cục & ánh sáng</h3><p>{composition} {lighting}</p><small>Điều chỉnh theo asset đích.</small></article>
+    <article><span>04</span><h3>Ràng buộc</h3><p>{constraints}</p><small>Dùng để loại artifact và chi tiết ngoài ý muốn.</small></article>
+  </div>
+</section>
