@@ -76,6 +76,16 @@ test("gallery keeps an observable loading state until a thumbnail resolves", asy
   await expect(output).toHaveAttribute("data-image-state", "loaded");
 });
 
+test("gallery exposes thumbnail failures to assistive technology", async ({ page }) => {
+  await page.route("**/media/thumbs/glitch-art-chatgpt.webp", (route) => route.abort("failed"));
+
+  await page.goto("/");
+  const output = page.locator('[data-style-card][data-slug="glitch-art"] [data-image-frame]');
+  await expect(output).toHaveAttribute("aria-busy", "false");
+  await expect(output).toHaveAttribute("data-image-state", "error");
+  await expect(output.getByRole("status")).toHaveText("Không tải được ảnh");
+});
+
 test("compare workbench reads query state and navigates records", async ({ page }) => {
   await page.goto("/compare/?style=sumi-e");
   await expect(page.locator("[data-compare-name]")).toHaveText("Sumi-e");
