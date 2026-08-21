@@ -4152,7 +4152,7 @@ button {
 .image-load-state {
   position: absolute;
   inset: 0 0 44px;
-  display: grid;
+  display: none;
   place-items: center;
   padding: 18px;
   color: var(--paper);
@@ -4162,11 +4162,12 @@ button {
   text-transform: uppercase;
 }
 
-[data-image-state="loaded"] .image-load-state {
-  display: none;
+[data-image-state="loading"] .image-load-state {
+  display: grid;
 }
 
 [data-image-state="error"] .image-load-state {
+  display: grid;
   color: var(--ink);
   background: var(--paper);
 }

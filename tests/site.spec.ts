@@ -86,6 +86,24 @@ test("gallery exposes thumbnail failures to assistive technology", async ({ page
   await expect(output.getByRole("status")).toHaveText("Không tải được ảnh");
 });
 
+test("gallery keeps thumbnails visible when JavaScript is unavailable", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+
+  try {
+    await page.goto("/");
+    const output = page.locator('[data-style-card][data-slug="glitch-art"] [data-image-frame]');
+    await expect.poll(() => output.locator("img").evaluate((image) => {
+      const thumbnail = image as HTMLImageElement;
+      return thumbnail.complete && thumbnail.naturalWidth > 0;
+    })).toBe(true);
+    await expect(output).not.toHaveAttribute("aria-busy", "true");
+    await expect(output.locator("[data-image-load-state]")).toBeHidden();
+  } finally {
+    await context.close();
+  }
+});
+
 test("compare workbench reads query state and navigates records", async ({ page }) => {
   await page.goto("/compare/?style=sumi-e");
   await expect(page.locator("[data-compare-name]")).toHaveText("Sumi-e");

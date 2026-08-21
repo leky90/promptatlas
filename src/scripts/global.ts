@@ -110,6 +110,9 @@ function initializeImageStates() {
     const label = frame.querySelector<HTMLElement>("[data-image-load-state]");
     if (!image) return;
 
+    frame.dataset.imageState = "loading";
+    frame.setAttribute("aria-busy", "true");
+
     const setState = (state: "loaded" | "error") => {
       frame.dataset.imageState = state;
       frame.setAttribute("aria-busy", "false");
