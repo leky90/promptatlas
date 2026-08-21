@@ -104,6 +104,29 @@ function initializeCopy() {
   });
 }
 
+function initializeImageStates() {
+  document.querySelectorAll<HTMLElement>("[data-image-frame]").forEach((frame) => {
+    const image = frame.querySelector<HTMLImageElement>("img");
+    const label = frame.querySelector<HTMLElement>("[data-image-load-state]");
+    if (!image) return;
+
+    frame.dataset.imageState = "loading";
+    frame.setAttribute("aria-busy", "true");
+
+    const setState = (state: "loaded" | "error") => {
+      frame.dataset.imageState = state;
+      frame.setAttribute("aria-busy", "false");
+      if (label) label.textContent = state === "loaded" ? "" : "Không tải được ảnh";
+    };
+
+    if (image.complete) setState(image.naturalWidth > 0 ? "loaded" : "error");
+    else {
+      image.addEventListener("load", () => setState("loaded"), { once: true });
+      image.addEventListener("error", () => setState("error"), { once: true });
+    }
+  });
+}
+
 function initializeNavigation() {
   const toggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
   const nav = document.querySelector<HTMLElement>("[data-site-nav]");
@@ -177,6 +200,7 @@ function initializeComposerEntries() {
 initializeNavigation();
 initializeFavorites();
 initializeCopy();
+initializeImageStates();
 initializeComposerEntries();
 
 window.promptAtlas = { readFavorites, showToast, readActiveComposerDraft: () => readActiveDraft(localStorage) };

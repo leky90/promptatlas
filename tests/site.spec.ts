@@ -56,6 +56,54 @@ test("atlas previews one output and the prompt before reuse actions", async ({ c
   expect(errors).toEqual([]);
 });
 
+test("gallery keeps an observable loading state until a thumbnail resolves", async ({ page }) => {
+  let releaseThumbnail = () => {};
+  const thumbnailGate = new Promise<void>((resolve) => {
+    releaseThumbnail = resolve;
+  });
+  await page.route("**/media/thumbs/glitch-art-chatgpt.webp", async (route) => {
+    await thumbnailGate;
+    await route.continue();
+  });
+
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const output = page.locator('[data-style-card][data-slug="glitch-art"] [data-image-frame]');
+  await expect(output).toHaveAttribute("aria-busy", "true");
+  await expect(output).toHaveAttribute("data-image-state", "loading");
+
+  releaseThumbnail();
+  await expect(output).toHaveAttribute("aria-busy", "false");
+  await expect(output).toHaveAttribute("data-image-state", "loaded");
+});
+
+test("gallery exposes thumbnail failures to assistive technology", async ({ page }) => {
+  await page.route("**/media/thumbs/glitch-art-chatgpt.webp", (route) => route.abort("failed"));
+
+  await page.goto("/");
+  const output = page.locator('[data-style-card][data-slug="glitch-art"] [data-image-frame]');
+  await expect(output).toHaveAttribute("aria-busy", "false");
+  await expect(output).toHaveAttribute("data-image-state", "error");
+  await expect(output.getByRole("status")).toHaveText("Không tải được ảnh");
+});
+
+test("gallery keeps thumbnails visible when JavaScript is unavailable", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+
+  try {
+    await page.goto("/");
+    const output = page.locator('[data-style-card][data-slug="glitch-art"] [data-image-frame]');
+    await expect.poll(() => output.locator("img").evaluate((image) => {
+      const thumbnail = image as HTMLImageElement;
+      return thumbnail.complete && thumbnail.naturalWidth > 0;
+    })).toBe(true);
+    await expect(output).not.toHaveAttribute("aria-busy", "true");
+    await expect(output.locator("[data-image-load-state]")).toBeHidden();
+  } finally {
+    await context.close();
+  }
+});
+
 test("compare workbench reads query state and navigates records", async ({ page }) => {
   await page.goto("/compare/?style=sumi-e");
   await expect(page.locator("[data-compare-name]")).toHaveText("Sumi-e");
@@ -101,6 +149,17 @@ test("detail teaches output, prompt anatomy and usage before evidence", async ({
   await expect(evidence).toContainText("Model");
   await expect(evidence).toContainText("Pipeline");
   await expect(evidence).toContainText("Result");
+});
+
+test("detail links exact prompt provenance when source metadata is available", async ({ page }) => {
+  await page.goto("/styles/sumi-e/");
+  const source = page.locator("[data-prompt-source]");
+  await expect(source).toContainText("LDKTech");
+  await expect(source).toContainText("src/data/styles.json");
+  await expect(source.getByRole("link", { name: "Mở nguồn trên GitHub" })).toHaveAttribute(
+    "href",
+    "https://github.com/leky90/promptatlas/blob/main/src/data/styles.json",
+  );
 });
 
 for (const path of ["/", "/discover/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {
