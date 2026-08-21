@@ -7,7 +7,7 @@ import Icon from "../../components/Icon.astro";
 import ComposerEntry from "../../components/ComposerEntry.astro";
 import PromptAnatomy from "../../components/PromptAnatomy.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
-import { evidenceForStyle } from "../../lib/evidence";
+import { evidenceForStyle, promptSourceForStyle } from "../../lib/evidence";
 import { paddedId, styleBySlug, styles, type StyleRecord } from "../../lib/styles";
 
 export function getStaticPaths() {
@@ -18,6 +18,7 @@ type Props = { style: StyleRecord };
 const { style } = Astro.props;
 const related = style.related.map(styleBySlug).filter((item): item is StyleRecord => Boolean(item));
 const evidence = evidenceForStyle(style);
+const promptSource = promptSourceForStyle(style);
 const output = evidence.representative?.result ?? {
   path: style.images.chatgpt.full,
   width: style.images.chatgpt.width,
@@ -77,6 +78,16 @@ const jsonLd = {
         </figure>
         <div data-prompt-anchor>
           <PromptBlock sourcePrompt={style.sourcePrompt} generationPrompt={style.generationPrompt} id={`prompt-${style.slug}`} />
+          {promptSource && (
+            <dl class="prompt-source" data-prompt-source>
+              <div><dt>Nguồn prompt</dt><dd>{promptSource.reference}</dd></div>
+              <div><dt>Tác giả</dt><dd>{promptSource.author}</dd></div>
+              <div>
+                <dt>Liên kết</dt>
+                <dd><a href={promptSource.url}>Mở nguồn trên GitHub <Icon name="arrow-up-right" size={16} /></a></dd>
+              </div>
+            </dl>
+          )}
         </div>
       </div>
     </section>

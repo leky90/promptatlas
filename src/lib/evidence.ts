@@ -181,7 +181,14 @@ export function deriveStyleEvidence({
 }
 
 type CanonicalEvidenceData = {
-  recipes: Array<{ id: string; slug: string }>;
+  recipes: Array<{
+    id: string;
+    slug: string;
+    provenance?: {
+      author?: string;
+      sourceReference?: string;
+    };
+  }>;
   generationRuns: EvidenceRun[];
   assets: EvidenceAsset[];
 };
@@ -194,4 +201,16 @@ export function evidenceForStyle(style: StyleRecord): StyleEvidence {
     ? canonicalEvidence.generationRuns.filter((run) => run.recipeId === recipe.id)
     : [];
   return deriveStyleEvidence({ style, runs, assets: canonicalEvidence.assets });
+}
+
+export function promptSourceForStyle(style: StyleRecord) {
+  const provenance = canonicalEvidence.recipes.find((candidate) => candidate.slug === style.slug)?.provenance;
+  const reference = provenance?.sourceReference?.trim();
+  if (!reference) return null;
+
+  return {
+    author: provenance?.author || "Không xác định",
+    reference,
+    url: `https://github.com/leky90/promptatlas/blob/main/${reference}`,
+  };
 }

@@ -4142,10 +4142,33 @@ button {
   aspect-ratio: 3 / 2;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
+  position: relative;
   margin: 0 8px 8px 0;
   overflow: hidden;
   background: #080908;
   border-bottom: 0;
+}
+
+.image-load-state {
+  position: absolute;
+  inset: 0 0 44px;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  color: var(--paper);
+  background: #080908;
+  font: 600 11px/1.4 var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+[data-image-state="loaded"] .image-load-state {
+  display: none;
+}
+
+[data-image-state="error"] .image-load-state {
+  color: var(--ink);
+  background: var(--paper);
 }
 
 .style-card__output img {
@@ -4170,6 +4193,43 @@ button {
   border-top: 1px solid var(--line);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+}
+
+.prompt-source {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 14px 0 0;
+  border: 1px solid var(--ink);
+}
+
+.prompt-source > div {
+  min-width: 0;
+  padding: 14px;
+}
+
+.prompt-source > div + div {
+  border-left: 1px solid var(--ink);
+}
+
+.prompt-source dt {
+  margin-bottom: 7px;
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.prompt-source dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font: 400 12px/1.5 var(--font-mono);
+}
+
+.prompt-source a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  font-weight: 600;
 }
 
 .style-card__prompt-cue b {
@@ -4643,6 +4703,7 @@ button {
   }
 
   .style-card__actions,
+  .prompt-source,
   .learning-step__head,
   .anatomy-grid,
   .usage-grid,
@@ -4650,6 +4711,11 @@ button {
   .evidence-results,
   .evidence-result dl {
     grid-template-columns: 1fr;
+  }
+
+  .prompt-source > div + div {
+    border-top: 1px solid var(--ink);
+    border-left: 0;
   }
 
   .learning-step__head,

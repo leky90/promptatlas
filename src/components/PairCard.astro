@@ -29,7 +29,7 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
   data-search={searchText}
 >
   <a class="style-card__link" href={`/styles/${style.slug}/`} aria-label={`Xem phong cách ${style.name}`}>
-    <figure class="style-card__output" data-learning-output>
+    <figure class="style-card__output" data-learning-output data-image-frame data-image-state="loading" aria-busy="true">
       <img
         src={output.thumbnailPath}
         width={output.width}
@@ -39,6 +39,7 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
         fetchpriority={eager ? "high" : "auto"}
         decoding="async"
       />
+      <span class="image-load-state" data-image-load-state aria-hidden="true">Đang tải ảnh…</span>
       <figcaption><span>OUTPUT</span><span>{paddedId(style.id)}</span></figcaption>
     </figure>
     <div class="style-card__body">
