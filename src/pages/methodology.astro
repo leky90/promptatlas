@@ -5,14 +5,14 @@ import Icon from "../components/Icon.astro";
 
 <BaseLayout
   title="Phương pháp đánh giá | Prompt Atlas"
-  description="Cách Prompt Atlas tạo 180 ảnh, giữ prompt nhất quán và chấm ChatGPT cùng Gemini qua năm tiêu chí."
+  description="Cách Prompt Atlas đọc bằng chứng product route lịch sử qua ba trục độc lập: tuân thủ prompt, thẩm mỹ và artifact."
   canonicalPath="/methodology/"
   bodyClass="method-page"
 >
   <header class="method-hero shell">
-    <p class="eyebrow">METHODOLOGY / V1.0</p>
-    <h1>Một bộ mẫu rõ ràng.<br /><em>Không phải bảng xếp hạng tuyệt đối.</em></h1>
-    <p>Prompt Atlas giúp đọc khác biệt trực quan giữa hai quy trình tạo ảnh. Mọi con số đều cần được hiểu trong phạm vi 90 prompt và một output cho mỗi model.</p>
+    <p class="eyebrow">BENCHMARK PROTOCOL / V0.2</p>
+    <h1>Ba trục độc lập.<br /><em>Không có “model thắng”.</em></h1>
+    <p>Prompt Atlas giúp đọc khác biệt giữa hai product route lịch sử. Mọi con số chỉ mô tả 90 prompt và một output đã chọn cho mỗi route; chúng không phải API model benchmark.</p>
   </header>
 
   <div class="method-layout shell">
@@ -28,39 +28,37 @@ import Icon from "../components/Icon.astro";
       <section id="setup">
         <p class="method-content__number">01</p>
         <h2>Thiết lập so sánh</h2>
-        <p>Mỗi phong cách bắt đầu từ một ý tưởng gốc và được chuyển thành prompt có cấu trúc gồm mục đích, chủ thể, medium, bố cục, ánh sáng và ràng buộc. Cùng prompt đó được đưa vào hai luồng tạo ảnh.</p>
+        <p>Mỗi phong cách bắt đầu từ một exact prompt có immutable recipe ID và SHA-256. Evidence mode chỉ mở so sánh khi có ít nhất hai provider thành công với cùng hai định danh này và còn truy xuất được output.</p>
         <div class="method-flow" aria-label="Quy trình tạo mẫu">
           <div><b>01</b><span>Ý tưởng + tên phong cách</span></div>
           <i aria-hidden="true"><Icon name="arrow-right" size={18} /></i>
           <div><b>02</b><span>Prompt có cấu trúc dùng chung</span></div>
           <i aria-hidden="true"><Icon name="arrow-right" size={18} /></i>
-          <div><b>03A</b><span>ChatGPT / OpenAI</span></div>
+          <div><b>03A</b><span>OpenAI / legacy ChatGPT route</span></div>
           <i aria-hidden="true"><Icon name="plus" size={18} /></i>
-          <div><b>03B</b><span>Gemini qua gflow-cli</span></div>
+          <div><b>03B</b><span>Google / legacy gflow route</span></div>
         </div>
-        <p>Ảnh ChatGPT được tạo qua công cụ tạo ảnh của OpenAI. Ảnh Gemini được tạo bằng gflow-cli với Nano Banana Pro. Kích thước nguồn khác nhau nên giao diện luôn hiển thị trọn khung khi đánh giá chi tiết.</p>
+        <p>Hai nhãn trên là product route, không phải immutable API model snapshot. Route OpenAI không giữ lại model version; route Google chỉ giữ provider alias. Applied settings lịch sử không có snapshot đáng tin cậy và được hiển thị là unknown.</p>
       </section>
 
       <section id="criteria">
         <p class="method-content__number">02</p>
-        <h2>Năm tiêu chí, thang 10</h2>
+        <h2>Ba trục, không trộn overall</h2>
         <div class="criteria-list">
-          <article><b>01</b><h3>Bám prompt</h3><p>Chủ thể, hành động, bối cảnh và các ràng buộc chính có xuất hiện đúng không.</p></article>
-          <article><b>02</b><h3>Đúng phong cách</h3><p>Medium, nét, chất liệu, bảng màu và ngôn ngữ thị giác có đặc trưng rõ không.</p></article>
-          <article><b>03</b><h3>Bố cục</h3><p>Tiêu điểm, nhịp hình, cân bằng và khả năng đọc chủ thể trong khung.</p></article>
-          <article><b>04</b><h3>Kỹ thuật</h3><p>Ánh sáng, màu, độ nét, chuyển sắc và độ hoàn thiện tổng thể.</p></article>
-          <article><b>05</b><h3>Chi tiết / artifact</h3><p>Tính toàn vẹn của giải phẫu, vật thể, chữ vô tình và lỗi sinh ảnh.</p></article>
+          <article data-method-axis="adherence"><b>01</b><h3>Tuân thủ prompt</h3><p>Metric: bám prompt. Đọc riêng việc chủ thể, hành động, bối cảnh và ràng buộc có xuất hiện đúng hay không.</p></article>
+          <article data-method-axis="aesthetics"><b>02</b><h3>Chất lượng thẩm mỹ</h3><p>Metrics: đúng phong cách, bố cục và kỹ thuật. Trục này không thay thế cho tuân thủ prompt.</p></article>
+          <article data-method-axis="artifacts"><b>03</b><h3>Artifact</h3><p>Dữ liệu cũ lưu “toàn vẹn chi tiết” theo hướng 10 = ít artifact. UI công khai phép ánh xạ này thay vì giả định đây là thang severity gốc.</p></article>
         </div>
       </section>
 
       <section id="reading">
         <p class="method-content__number">03</p>
         <h2>Cách đọc kết quả</h2>
-        <p>Điểm trung bình là trung bình cộng của năm tiêu chí. Một model được ghi nhận “nhỉnh hơn” khi chênh lệch điểm trung bình lớn hơn 0,25; ngược lại kết quả được xem là hòa.</p>
+        <p>Đối chiếu exact prompt, product route, model disclosure, settings và output trước; sau đó đọc từng trục cùng scoring rationale. Prompt Atlas không công bố overall average, win count hay universal winner từ bộ mẫu này.</p>
         <div class="reading-key">
-          <span><i class="key-dot key-dot--chatgpt"></i>ChatGPT</span>
-          <span><i class="key-dot key-dot--gemini"></i>Gemini</span>
-          <span><i class="key-dot key-dot--tie"></i>Hòa ≤ 0,25</span>
+          <span><i class="key-dot key-dot--chatgpt"></i>ChatGPT route</span>
+          <span><i class="key-dot key-dot--gemini"></i>Gemini route</span>
+          <span><i class="key-dot key-dot--tie"></i>Exploratory only</span>
         </div>
       </section>
 
@@ -68,10 +66,11 @@ import Icon from "../components/Icon.astro";
         <p class="method-content__number">04</p>
         <h2>Giới hạn cần biết</h2>
         <ul class="method-bullets">
-          <li>Mỗi phong cách chỉ có một output từ mỗi phía; chạy lại có thể cho kết quả khác.</li>
+          <li>Mỗi phong cách chỉ có một output đã chọn từ mỗi route; không có repeat để đo variance hay reliability.</li>
           <li>Bộ prompt ưu tiên độ rộng phong cách, không bao phủ mọi loại chủ thể hay workflow thương mại.</li>
-          <li>Đánh giá thị giác luôn có phần chủ quan, dù tiêu chí và thang điểm đã được cố định.</li>
-          <li>Model, giao diện và cấu hình có thể thay đổi theo thời gian; kết quả phản ánh lần chạy của bộ dữ liệu này.</li>
+          <li>Scoring rationale là annotation khám phá, không phải đánh giá mù có inter-rater reliability.</li>
+          <li>Model identity và applied settings thiếu hoặc chỉ ở mức alias thì không so sánh được; UI không nội suy phần thiếu.</li>
+          <li>Không có video comparison và không suy rộng kết quả thành universal-winner claim.</li>
           <li>Đây là tài nguyên tham khảo độc lập, không liên kết hoặc được bảo trợ bởi OpenAI hay Google.</li>
         </ul>
       </section>

@@ -45,24 +45,11 @@ export const families: StyleRecord["family"][] = [
   "Lai phong cách",
 ];
 
-export const scoreLabels: Array<[keyof Omit<ProviderScores, "average">, string]> = [
-  ["promptAdherence", "Bám prompt"],
-  ["styleFidelity", "Đúng phong cách"],
-  ["composition", "Bố cục"],
-  ["technicalQuality", "Kỹ thuật"],
-  ["detailIntegrity", "Chi tiết / artifact"],
-];
-
 export function styleBySlug(slug: string) {
   return styles.find((style) => style.slug === slug);
 }
 
 export function paddedId(id: number) {
   return String(id).padStart(3, "0");
-}
-
-export function winnerLabel(winner: StyleRecord["winner"]) {
-  if (winner === "Hòa") return "Hòa trong biên độ 0,25";
-  return `${winner} nhỉnh hơn`;
 }
 

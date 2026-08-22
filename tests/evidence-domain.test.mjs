@@ -17,8 +17,22 @@ const style = {
     },
   },
   scores: {
-    chatgpt: { average: 8.8 },
-    gemini: { average: 8.2 },
+    chatgpt: {
+      promptAdherence: 9.2,
+      styleFidelity: 8.8,
+      composition: 8.7,
+      technicalQuality: 8.9,
+      detailIntegrity: 8.4,
+      average: 8.8,
+    },
+    gemini: {
+      promptAdherence: 8.4,
+      styleFidelity: 8.3,
+      composition: 8.1,
+      technicalQuality: 8.2,
+      detailIntegrity: 8.0,
+      average: 8.2,
+    },
   },
 };
 
@@ -50,29 +64,41 @@ const run = ({
     displayName: `${provider} product route`,
     provider,
     interface: `${provider.toLowerCase()}-ui`,
+    identityStatus: "legacy-label",
     modelFamily: `${provider} image model`,
-    modelVersion: { status: "provider-alias", identifier: `${provider}/latest` },
+    modelVersion: {
+      status: "provider-alias",
+      identifier: `${provider}/latest`,
+      source: "legacy-generation-summary",
+    },
   },
+  settings: [{
+    name: "aspect-ratio",
+    requestedValue: "3:2",
+    supportStatus: "unknown",
+    note: "The legacy run did not expose a trustworthy applied-settings snapshot.",
+  }],
+  selectionPolicy: "legacy-selected-output",
   outputAssetIds: [assetId],
 });
 
 const openAiRun = run({
   id: "run.openai",
   provider: "OpenAI",
-  route: "openai-route",
+  route: "legacy-chatgpt-ui",
   assetId: "asset.openai",
 });
 
 const googleRun = run({
   id: "run.google",
   provider: "Google",
-  route: "google-route",
+  route: "legacy-gflow-cli",
   assetId: "asset.google",
 });
 
 const assets = [
-  asset("asset.openai", "openai-route", "/media/styles/glitch-openai.webp"),
-  asset("asset.google", "google-route", "/media/styles/glitch-google.webp"),
+  asset("asset.openai", "legacy-chatgpt-ui", "/media/styles/glitch-openai.webp"),
+  asset("asset.google", "legacy-gflow-cli", "/media/styles/glitch-google.webp"),
 ];
 
 test("two providers sharing one immutable prompt identity produce eligible evidence taxonomy", () => {
@@ -86,13 +112,28 @@ test("two providers sharing one immutable prompt identity produce eligible evide
   });
   assert.equal(evidence.results.length, 2);
   assert.deepEqual(evidence.results[0], {
+    scoreKey: "chatgpt",
     provider: { id: "openai", label: "OpenAI" },
-    model: { family: "OpenAI image model", version: "OpenAI/latest" },
+    model: {
+      family: "OpenAI image model",
+      version: "OpenAI/latest",
+      identityStatus: "legacy-label",
+      versionStatus: "provider-alias",
+      disclosure: "legacy-generation-summary",
+    },
     pipeline: {
-      id: "openai-route",
+      id: "legacy-chatgpt-ui",
       label: "OpenAI product route",
       interface: "openai-ui",
     },
+    settings: [{
+      name: "aspect-ratio",
+      requestedValue: "3:2",
+      appliedValue: "Không có snapshot đáng tin cậy",
+      supportStatus: "unknown",
+      note: "The legacy run did not expose a trustworthy applied-settings snapshot.",
+    }],
+    selectionPolicy: "legacy-selected-output",
     result: {
       id: "asset.openai",
       runId: "run.openai",
@@ -103,11 +144,53 @@ test("two providers sharing one immutable prompt identity produce eligible evide
       alt: "Ảnh asset.openai",
     },
   });
-  assert.deepEqual(evidence.comparison, {
-    winner: "ChatGPT",
-    observation: "OpenAI giữ chủ thể rõ hơn.",
-    scores: style.scores,
+  assert.equal(evidence.prompt?.text, "Generate a glitch-art portrait.");
+  assert.equal(evidence.comparison.classification, "historical-product-route-diagnostic");
+  assert.equal(evidence.comparison.rationale, "OpenAI giữ chủ thể rõ hơn.");
+  assert.deepEqual(evidence.comparison.axes.map((axis) => axis.id), ["adherence", "aesthetics", "artifacts"]);
+  assert.deepEqual(evidence.comparison.axes.map((axis) => axis.metrics.map(([key]) => key)), [
+    ["promptAdherence"],
+    ["styleFidelity", "composition", "technicalQuality"],
+    ["detailIntegrity"],
+  ]);
+  assert.equal(evidence.comparison.axes.flatMap((axis) => axis.metrics).some(([key]) => key === "average"), false);
+  assert.equal("winner" in evidence.comparison, false);
+  assert.equal("average" in evidence.comparison.scores.chatgpt, false);
+  assert.equal("average" in evidence.comparison.scores.gemini, false);
+  assert.equal(evidence.comparison.results.chatgpt.provider.id, "openai");
+  assert.equal(evidence.comparison.results.gemini.provider.id, "google");
+  assert.match(evidence.comparison.uncertainty.join(" "), /một output/i);
+  assert.match(evidence.comparison.uncertainty.join(" "), /không so sánh được/i);
+});
+
+test("route evidence binds to stable score identities regardless of run order", () => {
+  const evidence = deriveStyleEvidence({ style, runs: [googleRun, openAiRun], assets });
+
+  assert.equal(evidence.comparisonEligible, true);
+  assert.deepEqual(evidence.results.map((result) => result.scoreKey), ["chatgpt", "gemini"]);
+  assert.equal(evidence.comparison.results.chatgpt.result.id, "asset.openai");
+  assert.equal(evidence.comparison.results.gemini.result.id, "asset.google");
+});
+
+test("duplicate or unexpected route evidence fails closed", () => {
+  const duplicateOpenAi = { ...openAiRun, id: "run.openai.duplicate" };
+  const unexpectedRun = run({
+    id: "run.unexpected",
+    provider: "Unexpected Provider",
+    route: "unexpected-route",
+    assetId: "asset.unexpected",
   });
+  const assetsWithUnexpected = [
+    ...assets,
+    asset("asset.unexpected", "unexpected-route", "/media/styles/glitch-unexpected.webp"),
+  ];
+
+  for (const candidateRuns of [[openAiRun, duplicateOpenAi, googleRun], [openAiRun, googleRun, unexpectedRun]]) {
+    const evidence = deriveStyleEvidence({ style, runs: candidateRuns, assets: assetsWithUnexpected });
+    assert.equal(evidence.comparisonEligible, false);
+    assert.equal(evidence.mode, "single-result");
+    assert.equal(evidence.comparison, null);
+  }
 });
 
 test("one provider produces a single neutral reference without comparative claims", () => {
@@ -124,7 +207,7 @@ test("different prompt hashes fail closed even when two providers exist", () => 
   const mismatchedGoogle = run({
     id: "run.google-mismatch",
     provider: "Google",
-    route: "google-route",
+    route: "legacy-gflow-cli",
     promptHash: "b".repeat(64),
     assetId: "asset.google",
   });
@@ -140,14 +223,14 @@ test("missing or different immutable prompt IDs fail closed", () => {
   const missingId = run({
     id: "run.google-no-id",
     provider: "Google",
-    route: "google-route",
+    route: "legacy-gflow-cli",
     recipeId: "",
     assetId: "asset.google",
   });
   const differentId = run({
     id: "run.google-other-id",
     provider: "Google",
-    route: "google-route",
+    route: "legacy-gflow-cli",
     recipeId: "recipe.style.other",
     assetId: "asset.google",
   });
@@ -158,6 +241,15 @@ test("missing or different immutable prompt IDs fail closed", () => {
     assert.equal(evidence.results.length, 1);
     assert.equal(evidence.comparison, null);
   }
+});
+
+test("an uninspectable exact prompt fails closed", () => {
+  const missingPromptText = { ...googleRun, exactPrompt: { ...googleRun.exactPrompt, text: "" } };
+  const evidence = deriveStyleEvidence({ style, runs: [openAiRun, missingPromptText], assets });
+
+  assert.equal(evidence.comparisonEligible, false);
+  assert.equal(evidence.mode, "single-result");
+  assert.equal(evidence.comparison, null);
 });
 
 test("failed runs and outputs without a resolvable image asset cannot establish eligibility", () => {

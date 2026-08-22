@@ -40,6 +40,12 @@ test("mobile navigation and core layouts remain usable", async ({ page }) => {
   await expect(page.locator("[data-compare-select]")).toBeVisible();
   await expect(page.locator("[data-compare-name]")).toHaveText("Watercolor");
   await expect(page.locator("[data-compare-image]")).toHaveCount(2);
+  await expect(page.locator("[data-score-axis]")).toHaveCount(3);
+  const compareViewport = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  expect(compareViewport.scrollWidth).toBeLessThanOrEqual(compareViewport.clientWidth);
 });
 
 test("mobile discovery uses a facet drawer and keeps composer entry reachable", async ({ page }) => {

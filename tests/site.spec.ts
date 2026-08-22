@@ -106,17 +106,43 @@ test("gallery keeps thumbnails visible when JavaScript is unavailable", async ({
 
 test("compare workbench reads query state and navigates records", async ({ page }) => {
   await page.goto("/compare/?style=sumi-e");
+  await expect(page.locator("[data-comparison-classification]")).toContainText("Chẩn đoán product route lịch sử");
   await expect(page.locator("[data-compare-name]")).toHaveText("Sumi-e");
   await expect(page.locator("[data-compare-select]")).toHaveValue("sumi-e");
   await expect(page.locator('[data-compare-image="chatgpt"]')).toHaveAttribute("src", /sumi-e-chatgpt/);
   const taxonomy = page.locator('[data-compare-taxonomy="chatgpt"]');
   await expect(taxonomy).toContainText("ProviderOpenAI");
   await expect(taxonomy).toContainText("ModelChatGPT image generation");
-  await expect(taxonomy).toContainText("PipelineChatGPT image generation (legacy atlas)");
-  await expect(taxonomy).toContainText("Resultasset.sumi-e.chatgpt");
+  await expect(taxonomy).toContainText("Model disclosureKhông công khai");
+  await expect(taxonomy).toContainText("Product routeChatGPT image generation (legacy atlas)");
+  await expect(taxonomy).toContainText("Outputasset.sumi-e.chatgpt");
+  await expect(page.locator("[data-compare-taxonomy] dd small")).toHaveCount(8);
+  await expect(page.locator('[data-compare-route="chatgpt"] small')).toContainText("legacy-chatgpt-ui");
+  await expect(page.locator('[data-compare-settings="chatgpt"] small')).toContainText("Selection:");
+  await expect(page.locator('[data-compare-output="chatgpt"] small')).toContainText("Run:");
+  await expect(page.locator("[data-compare-prompt]")).toContainText("Use case: stylized-concept");
+  await expect(page.locator('[data-compare-settings="chatgpt"]')).toContainText("aspect-ratio");
+  await expect(page.locator('[data-compare-settings="chatgpt"]')).toContainText("3:2");
+  await expect(page.locator("[data-score-axis]")).toHaveCount(3);
+  await expect(page.locator('[data-score-axis="adherence"]')).toContainText("Tuân thủ prompt");
+  await expect(page.locator('[data-score-axis="aesthetics"]')).toContainText("Chất lượng thẩm mỹ");
+  await expect(page.locator('[data-score-axis="artifacts"]')).toContainText("Artifact");
+  await expect(page.locator("[data-compare-rationale]")).toContainText(/sumi-e/iu);
+  await expect(page.locator("[data-compare-uncertainty]")).toContainText("một output");
+  const comparePayload = JSON.parse(await page.locator("#compare-data").textContent() ?? "[]");
+  expect(comparePayload.length).toBeGreaterThan(0);
+  expect(Object.hasOwn(comparePayload[0].style, "winner")).toBe(false);
+  expect(Object.hasOwn(comparePayload[0].evidence.scores.chatgpt, "average")).toBe(false);
+  expect(Object.hasOwn(comparePayload[0].evidence.scores.gemini, "average")).toBe(false);
+  await expect(page.getByText("Điểm trung bình", { exact: true })).toHaveCount(0);
+  await expect(page.locator("[data-compare-winner], .aggregate__score")).toHaveCount(0);
+  await expect(page.getByText(/nhỉnh hơn/iu)).toHaveCount(0);
   await page.locator("[data-compare-next]").click();
   await expect(page).toHaveURL(/style=splash-ink/);
   await expect(page.locator("[data-compare-name]")).toHaveText("Splash Ink");
+  await expect(page.locator("[data-compare-taxonomy] dd small")).toHaveCount(8);
+  await expect(page.locator('[data-compare-output="chatgpt"]')).toContainText("asset.splash-ink.chatgpt");
+  await expect(page.locator('[data-compare-output="chatgpt"] small')).toContainText("Run:");
 });
 
 test("detail teaches output, prompt anatomy and usage before evidence", async ({ context, page }) => {
@@ -142,13 +168,16 @@ test("detail teaches output, prompt anatomy and usage before evidence", async ({
   const evidence = page.locator("[data-evidence-panel]");
   await expect(evidence).toHaveAttribute("data-comparison-eligible", "true");
   await expect(evidence.locator("[data-evidence-result]").first()).not.toBeVisible();
-  await evidence.locator("summary").click();
+  await evidence.locator(":scope > summary").click();
   await expect(evidence.locator("[data-evidence-result]")).toHaveCount(2);
   await expect(evidence.locator("[data-evidence-result]").first()).toBeVisible();
   await expect(evidence).toContainText("Provider");
   await expect(evidence).toContainText("Model");
-  await expect(evidence).toContainText("Pipeline");
-  await expect(evidence).toContainText("Result");
+  await expect(evidence).toContainText("Model disclosure");
+  await expect(evidence).toContainText("Product route");
+  await expect(evidence).toContainText("Settings");
+  await expect(evidence).toContainText("Output");
+  await expect(evidence).toContainText(/uncertainty/iu);
 });
 
 test("detail links exact prompt provenance when source metadata is available", async ({ page }) => {
@@ -160,6 +189,17 @@ test("detail links exact prompt provenance when source metadata is available", a
     "href",
     "https://github.com/leky90/promptatlas/blob/main/src/data/styles.json",
   );
+});
+
+test("methodology keeps the three evidence axes independent and discloses legacy scope", async ({ page }) => {
+  await page.goto("/methodology/");
+  await expect(page.locator("[data-method-axis]")).toHaveCount(3);
+  await expect(page.locator('[data-method-axis="adherence"]')).toContainText("Tuân thủ prompt");
+  await expect(page.locator('[data-method-axis="aesthetics"]')).toContainText("Chất lượng thẩm mỹ");
+  await expect(page.locator('[data-method-axis="artifacts"]')).toContainText("10 = ít artifact");
+  await expect(page.getByText(/product route, không phải immutable API model snapshot/iu)).toBeVisible();
+  await expect(page.getByText(/không có video comparison/iu)).toBeVisible();
+  await expect(page.getByText(/điểm trung bình là trung bình cộng/iu)).toHaveCount(0);
 });
 
 for (const path of ["/", "/discover/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {
