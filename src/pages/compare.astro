@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
-import { scoreLabels, styles } from "../lib/styles";
-import { evidenceForStyle } from "../lib/evidence";
+import { evidenceForStyle, scoreAxes, type EvidenceResult } from "../lib/evidence";
+import { styles } from "../lib/styles";
 
 const compareRecords = styles
   .map((style) => ({ style, evidence: evidenceForStyle(style) }))
@@ -10,41 +10,46 @@ const compareRecords = styles
 const initialRecord = compareRecords.find((record) => record.style.id === 88) ?? compareRecords[0];
 if (!initialRecord) throw new Error("Compare requires at least one eligible same-prompt provider pair.");
 const initial = initialRecord.style;
+const initialPrompt = initialRecord.evidence.prompt;
+const initialComparison = initialRecord.evidence.comparison;
 const [initialPrimary, initialSecondary] = initialRecord.evidence.results;
-if (!initialPrimary || !initialSecondary) throw new Error("Eligible comparison requires two derived evidence results.");
-const providerAverage = (provider: "chatgpt" | "gemini") => compareRecords.reduce((sum, record) => sum + record.style.scores[provider].average, 0) / compareRecords.length;
-const chatgptAverage = providerAverage("chatgpt");
-const geminiAverage = providerAverage("gemini");
-const winCounts = compareRecords.reduce((result, record) => {
-  result[record.style.winner] += 1;
-  return result;
-}, { ChatGPT: 0, Gemini: 0, Hòa: 0 });
+if (!initialPrimary || !initialSecondary || !initialPrompt || !initialComparison) {
+  throw new Error("Eligible comparison requires two inspectable evidence results and one exact prompt.");
+}
+const settingsLabel = (result: EvidenceResult) => result.settings.length
+  ? result.settings.map((setting) => `${setting.name}: yêu cầu ${setting.requestedValue}; applied ${setting.appliedValue}; ${setting.supportStatus}`).join(" · ")
+  : "Không ghi nhận";
+const modelDisclosureLabel = (result: EvidenceResult) => `${result.model.version} · ${result.model.versionStatus} · ${result.model.identityStatus}`;
 const compareData = JSON.stringify(compareRecords);
 ---
 
 <BaseLayout
-  title="Kiểm chứng provider trên output cùng prompt | Prompt Atlas"
-  description="Evidence mode chỉ hiển thị provider comparison khi ít nhất hai provider dùng cùng immutable prompt ID và hash."
+  title="Chẩn đoán product route trên output cùng prompt | Prompt Atlas"
+  description="Evidence view tách tuân thủ prompt, thẩm mỹ và artifact; đồng thời công khai prompt, route, model disclosure, settings, output và uncertainty."
   canonicalPath="/compare/"
   bodyClass="compare-page"
 >
   <header class="compare-header shell">
     <p class="eyebrow">EVIDENCE MODE / {compareRecords.length} ELIGIBLE PROMPTS</p>
     <div class="compare-header__grid">
-      <h1>So sánh bằng hình.<br /><em>Không bằng cảm giác.</em></h1>
-      <p>Mỗi cặp đã qua guard: cùng immutable prompt ID/hash và có ít nhất hai provider. Taxonomy đọc theo provider → model → pipeline → result.</p>
+      <h1>Đọc bằng chứng.<br /><em>Không xếp hạng model.</em></h1>
+      <p>Mỗi cặp dùng cùng immutable prompt ID/hash. Đây là dữ liệu product route lịch sử, dùng để quan sát output đã chọn chứ không đại diện cho một API model snapshot bất biến.</p>
     </div>
   </header>
 
-  <section class="aggregate shell" data-comparison-eligible="true" aria-labelledby="aggregate-title">
+  <section class="aggregate aggregate--axes shell" data-comparison-classification aria-labelledby="aggregate-title">
     <div class="aggregate__intro">
-      <p class="eyebrow">TOÀN BỘ BỘ MẪU</p>
-      <h2 id="aggregate-title">Điểm trung bình</h2>
-      <p>Đây là phép đo trên {compareRecords.length} prompt đủ điều kiện, không phải tuyên bố chất lượng tuyệt đối của model.</p>
+      <p class="eyebrow">PHẠM VI BẰNG CHỨNG</p>
+      <h2 id="aggregate-title">Chẩn đoán product route lịch sử</h2>
+      <p>{compareRecords.length} prompt đủ điều kiện cùng prompt identity. Không dùng overall average, số lần thắng hay tuyên bố “model tốt nhất”.</p>
     </div>
-    <div class="aggregate__score aggregate__score--chatgpt"><span>ChatGPT</span><strong>{chatgptAverage.toFixed(2)}</strong><small>{winCounts.ChatGPT} thắng</small></div>
-    <div class="aggregate__score aggregate__score--gemini"><span>Gemini</span><strong>{geminiAverage.toFixed(2)}</strong><small>{winCounts.Gemini} thắng</small></div>
-    <div class="aggregate__ties"><strong>{winCounts.Hòa}</strong><span>kết quả hòa<br />trong biên độ 0,25</span></div>
+    {scoreAxes.map((axis, index) => (
+      <article class="aggregate__axis">
+        <span>0{index + 1}</span>
+        <h3>{axis.label}</h3>
+        <p>{axis.description}</p>
+      </article>
+    ))}
   </section>
 
   <section class="compare-workbench" data-comparison-eligible="true" aria-labelledby="workbench-title">
@@ -63,8 +68,17 @@ const compareData = JSON.stringify(compareRecords);
 
     <div class="shell workbench-title">
       <div><p class="eyebrow" data-compare-meta>{initial.family} / {String(initial.id).padStart(3, "0")}</p><h2 id="workbench-title" data-compare-name>{initial.name}</h2></div>
-      <a class="button button--primary" data-compare-detail href={`/styles/${initial.slug}/`}>Xem prompt đầy đủ <Icon name="arrow-up-right" /></a>
+      <a class="button button--primary" data-compare-detail href={`/styles/${initial.slug}/`}>Xem trang phong cách <Icon name="arrow-up-right" /></a>
     </div>
+
+    <details class="shell compare-prompt" data-compare-prompt open>
+      <summary><span>Exact prompt</span><small>Cùng ID/hash cho hai route</small></summary>
+      <dl>
+        <div><dt>Prompt ID</dt><dd><code data-compare-prompt-id>{initialPrompt.id}</code></dd></div>
+        <div><dt>SHA-256</dt><dd><code data-compare-prompt-hash>{initialPrompt.hash}</code></dd></div>
+      </dl>
+      <pre data-compare-prompt-text>{initialPrompt.text}</pre>
+    </details>
 
     <div class="shell compare-stage">
       <figure class="compare-stage__side compare-stage__side--chatgpt">
@@ -73,10 +87,11 @@ const compareData = JSON.stringify(compareRecords);
           <dl class="compare-stage__taxonomy" data-compare-taxonomy="chatgpt">
             <div><dt>Provider</dt><dd data-compare-provider="chatgpt">{initialPrimary.provider.label}</dd></div>
             <div><dt>Model</dt><dd data-compare-model="chatgpt">{initialPrimary.model.family}</dd></div>
-            <div><dt>Pipeline</dt><dd data-compare-pipeline="chatgpt">{initialPrimary.pipeline.label}</dd></div>
-            <div><dt>Result</dt><dd data-compare-result="chatgpt">{initialPrimary.result.id}</dd></div>
+            <div><dt>Model disclosure</dt><dd data-compare-model-disclosure="chatgpt">{modelDisclosureLabel(initialPrimary)}<small>{initialPrimary.model.disclosure}</small></dd></div>
+            <div><dt>Product route</dt><dd data-compare-route="chatgpt">{initialPrimary.pipeline.label}<small>{initialPrimary.pipeline.interface} · {initialPrimary.pipeline.id}</small></dd></div>
+            <div><dt>Settings</dt><dd data-compare-settings="chatgpt">{settingsLabel(initialPrimary)}<small>Selection: {initialPrimary.selectionPolicy}</small></dd></div>
+            <div><dt>Output</dt><dd data-compare-output="chatgpt">{initialPrimary.result.id}<small>Run: {initialPrimary.result.runId}</small></dd></div>
           </dl>
-          <strong data-compare-average="chatgpt">{initial.scores.chatgpt.average.toFixed(2)}</strong>
         </figcaption>
       </figure>
       <figure class="compare-stage__side compare-stage__side--gemini">
@@ -85,34 +100,48 @@ const compareData = JSON.stringify(compareRecords);
           <dl class="compare-stage__taxonomy" data-compare-taxonomy="gemini">
             <div><dt>Provider</dt><dd data-compare-provider="gemini">{initialSecondary.provider.label}</dd></div>
             <div><dt>Model</dt><dd data-compare-model="gemini">{initialSecondary.model.family}</dd></div>
-            <div><dt>Pipeline</dt><dd data-compare-pipeline="gemini">{initialSecondary.pipeline.label}</dd></div>
-            <div><dt>Result</dt><dd data-compare-result="gemini">{initialSecondary.result.id}</dd></div>
+            <div><dt>Model disclosure</dt><dd data-compare-model-disclosure="gemini">{modelDisclosureLabel(initialSecondary)}<small>{initialSecondary.model.disclosure}</small></dd></div>
+            <div><dt>Product route</dt><dd data-compare-route="gemini">{initialSecondary.pipeline.label}<small>{initialSecondary.pipeline.interface} · {initialSecondary.pipeline.id}</small></dd></div>
+            <div><dt>Settings</dt><dd data-compare-settings="gemini">{settingsLabel(initialSecondary)}<small>Selection: {initialSecondary.selectionPolicy}</small></dd></div>
+            <div><dt>Output</dt><dd data-compare-output="gemini">{initialSecondary.result.id}<small>Run: {initialSecondary.result.runId}</small></dd></div>
           </dl>
-          <strong data-compare-average="gemini">{initial.scores.gemini.average.toFixed(2)}</strong>
         </figcaption>
       </figure>
-      <span class="compare-stage__seam" aria-hidden="true">VS</span>
+      <span class="compare-stage__seam" aria-hidden="true">↔</span>
     </div>
 
     <div class="shell compare-reading">
       <div class="compare-reading__note">
-        <p class="eyebrow">NHẬN XÉT</p>
-        <h3 data-compare-winner>{initial.winner === "Hòa" ? "Hòa trong biên độ 0,25" : `${initial.winner} nhỉnh hơn`}</h3>
-        <p data-compare-observation>{initial.observation}</p>
+        <p class="eyebrow">SCORING RATIONALE</p>
+        <h3>Quan sát trên output đã chọn</h3>
+        <p data-compare-rationale>{initialComparison.rationale}</p>
       </div>
       <div class="compare-score-table" data-compare-scores>
-        <div class="compare-score-table__head"><span>Tiêu chí</span><span>ChatGPT</span><span>Gemini</span></div>
-        {scoreLabels.map(([key, label]) => (
-          <div class="compare-score-table__row" data-score-key={key}>
-            <span>{label}</span><strong data-score-provider="chatgpt">{initial.scores.chatgpt[key].toFixed(1)}</strong><strong data-score-provider="gemini">{initial.scores.gemini[key].toFixed(1)}</strong>
-          </div>
+        <div class="compare-score-table__head"><span>Trục / tiêu chí</span><span>ChatGPT</span><span>Gemini</span></div>
+        {scoreAxes.map((axis) => (
+          <section class="compare-score-axis" data-score-axis={axis.id} aria-labelledby={`compare-axis-${axis.id}`}>
+            <header>
+              <h4 id={`compare-axis-${axis.id}`}>{axis.label}</h4>
+              <p>{axis.description}</p>
+            </header>
+            {axis.metrics.map(([key, label]) => (
+              <div class="compare-score-table__row" data-score-key={key}>
+                <span>{label}</span><strong data-score-provider="chatgpt">{initial.scores.chatgpt[key].toFixed(1)}</strong><strong data-score-provider="gemini">{initial.scores.gemini[key].toFixed(1)}</strong>
+              </div>
+            ))}
+          </section>
         ))}
       </div>
     </div>
+
+    <aside class="shell compare-uncertainty" data-compare-uncertainty aria-labelledby="uncertainty-title">
+      <div><p class="eyebrow">UNCERTAINTY</p><h3 id="uncertainty-title">Điều dữ liệu này chưa chứng minh</h3></div>
+      <ul>{initialComparison.uncertainty.map((item) => <li>{item}</li>)}</ul>
+    </aside>
   </section>
 
   <section class="compare-method shell">
-    <p><b>Cách đọc:</b> điểm 1–10 do cùng một quy trình đánh giá có cấu trúc. Chênh lệch nhỏ hơn 0,25 được xem là hòa.</p>
+    <p><b>Cách đọc:</b> đọc từng trục độc lập và đối chiếu với exact prompt, route disclosure, settings cùng output. Giá trị thiếu hoặc unknown được giữ nguyên, không nội suy.</p>
     <a href="/methodology/">Xem phương pháp và giới hạn <Icon name="arrow-right" /></a>
   </section>
 
@@ -121,51 +150,68 @@ const compareData = JSON.stringify(compareRecords);
     type CompareStyle = (typeof import("../data/styles.json"))[number];
     type CompareEvidenceResult = {
       provider: { id: string; label: string };
-      model: { family: string; version: string };
+      model: { family: string; version: string; identityStatus: string; versionStatus: string; disclosure: string };
       pipeline: { id: string; label: string; interface: string };
-      result: { id: string; path: string; width: number; height: number; alt: string };
+      settings: Array<{ name: string; requestedValue: string; appliedValue: string; supportStatus: string; note: string }>;
+      selectionPolicy: string;
+      result: { id: string; runId: string; path: string; width: number; height: number; alt: string };
     };
-    type CompareRecord = { style: CompareStyle; evidence: { results: CompareEvidenceResult[] } };
+    type CompareRecord = {
+      style: CompareStyle;
+      evidence: {
+        prompt: { id: string; hash: string; text: string };
+        results: CompareEvidenceResult[];
+        comparison: { rationale: string; uncertainty: string[] };
+      };
+    };
     const dataNode = document.querySelector<HTMLScriptElement>("#compare-data");
     const records = JSON.parse(dataNode?.textContent ?? "[]") as CompareRecord[];
     const select = document.querySelector<HTMLSelectElement>("[data-compare-select]");
+    const settingsText = (result: CompareEvidenceResult) => result.settings.length
+      ? result.settings.map((setting) => `${setting.name}: yêu cầu ${setting.requestedValue}; applied ${setting.appliedValue}; ${setting.supportStatus}`).join(" · ")
+      : "Không ghi nhận";
 
     function render(slug: string, sync = true) {
       const record = records.find((item) => item.style.slug === slug) ?? records[0];
       if (!record || !select) return;
       const { style, evidence } = record;
-      if (evidence.results.length < 2) return;
+      if (evidence.results.length < 2 || !evidence.prompt || !evidence.comparison) return;
       select.value = style.slug;
       const meta = document.querySelector<HTMLElement>("[data-compare-meta]");
       const name = document.querySelector<HTMLElement>("[data-compare-name]");
       const detail = document.querySelector<HTMLAnchorElement>("[data-compare-detail]");
-      const winner = document.querySelector<HTMLElement>("[data-compare-winner]");
-      const observation = document.querySelector<HTMLElement>("[data-compare-observation]");
+      const rationale = document.querySelector<HTMLElement>("[data-compare-rationale]");
+      const promptId = document.querySelector<HTMLElement>("[data-compare-prompt-id]");
+      const promptHash = document.querySelector<HTMLElement>("[data-compare-prompt-hash]");
+      const promptText = document.querySelector<HTMLElement>("[data-compare-prompt-text]");
       if (meta) meta.textContent = `${style.family} / ${String(style.id).padStart(3, "0")}`;
       if (name) name.textContent = style.name;
       if (detail) detail.href = `/styles/${style.slug}/`;
-      if (winner) winner.textContent = style.winner === "Hòa" ? "Hòa trong biên độ 0,25" : `${style.winner} nhỉnh hơn`;
-      if (observation) observation.textContent = style.observation;
+      if (rationale) rationale.textContent = evidence.comparison.rationale;
+      if (promptId) promptId.textContent = evidence.prompt.id;
+      if (promptHash) promptHash.textContent = evidence.prompt.hash;
+      if (promptText) promptText.textContent = evidence.prompt.text;
       (["chatgpt", "gemini"] as const).forEach((provider, index) => {
         const evidenceResult = evidence.results[index];
         const image = document.querySelector<HTMLImageElement>(`[data-compare-image="${provider}"]`);
-        const average = document.querySelector<HTMLElement>(`[data-compare-average="${provider}"]`);
         if (image && evidenceResult) {
           image.src = evidenceResult.result.path;
           image.width = evidenceResult.result.width;
           image.height = evidenceResult.result.height;
           image.alt = evidenceResult.result.alt;
         }
-        if (average) average.textContent = style.scores[provider].average.toFixed(2);
+        if (!evidenceResult) return;
         const taxonomy = {
-          provider: evidenceResult?.provider.label,
-          model: evidenceResult?.model.family,
-          pipeline: evidenceResult?.pipeline.label,
-          result: evidenceResult?.result.id,
+          provider: evidenceResult.provider.label,
+          model: evidenceResult.model.family,
+          "model-disclosure": `${evidenceResult.model.version} · ${evidenceResult.model.versionStatus} · ${evidenceResult.model.identityStatus}\n${evidenceResult.model.disclosure}`,
+          route: `${evidenceResult.pipeline.label}\n${evidenceResult.pipeline.interface} · ${evidenceResult.pipeline.id}`,
+          settings: `${settingsText(evidenceResult)}\nSelection: ${evidenceResult.selectionPolicy}`,
+          output: `${evidenceResult.result.id}\nRun: ${evidenceResult.result.runId}`,
         };
         Object.entries(taxonomy).forEach(([key, value]) => {
           const cell = document.querySelector<HTMLElement>(`[data-compare-${key}="${provider}"]`);
-          if (cell && value) cell.textContent = value;
+          if (cell) cell.textContent = value;
         });
       });
       document.querySelectorAll<HTMLElement>("[data-score-key]").forEach((row) => {

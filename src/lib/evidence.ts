@@ -1,10 +1,20 @@
 import rawEvidence from "../data/prompt-atlas.image.v1.json" with { type: "json" };
 
-import type { StyleRecord } from "./styles";
+import type { ProviderScores, StyleRecord } from "./styles";
 
 type ModelVersion = {
   status?: string;
   identifier?: string;
+  source?: string;
+  reason?: string;
+};
+
+type EvidenceSetting = {
+  name?: string;
+  requestedValue?: string;
+  appliedValue?: string;
+  supportStatus?: string;
+  note?: string;
 };
 
 type EvidenceRun = {
@@ -17,9 +27,12 @@ type EvidenceRun = {
     displayName?: string;
     provider?: string;
     interface?: string;
+    identityStatus?: string;
     modelFamily?: string;
     modelVersion?: ModelVersion;
   };
+  settings?: EvidenceSetting[];
+  selectionPolicy?: string;
   outputAssetIds?: string[];
 };
 
@@ -33,14 +46,28 @@ type EvidenceAsset = {
   alt?: { vi?: string; en?: string };
 };
 
-type ComparativeStyle = Pick<StyleRecord, "winner" | "observation" | "scores"> & Partial<Pick<StyleRecord, "images" | "name">> & {
+type ComparativeStyle = Pick<StyleRecord, "observation" | "scores"> & Partial<Pick<StyleRecord, "images" | "name">> & {
   slug?: string;
 };
 
 export type EvidenceResult = {
   provider: { id: string; label: string };
-  model: { family: string; version: string };
+  model: {
+    family: string;
+    version: string;
+    identityStatus: string;
+    versionStatus: string;
+    disclosure: string;
+  };
   pipeline: { id: string; label: string; interface: string };
+  settings: Array<{
+    name: string;
+    requestedValue: string;
+    appliedValue: string;
+    supportStatus: string;
+    note: string;
+  }>;
+  selectionPolicy: string;
   result: {
     id: string;
     runId: string;
@@ -52,16 +79,57 @@ export type EvidenceResult = {
   };
 };
 
+type ScoreMetricKey = keyof Omit<ProviderScores, "average">;
+
+export const scoreAxes: Array<{
+  id: "adherence" | "aesthetics" | "artifacts";
+  label: string;
+  description: string;
+  metrics: Array<[ScoreMetricKey, string]>;
+}> = [
+  {
+    id: "adherence",
+    label: "Tuân thủ prompt",
+    description: "Đọc riêng mức độ output đáp ứng yêu cầu đã ghi trong exact prompt.",
+    metrics: [["promptAdherence", "Bám prompt"]],
+  },
+  {
+    id: "aesthetics",
+    label: "Chất lượng thẩm mỹ",
+    description: "Đọc phong cách, bố cục và độ hoàn thiện; không trộn với tuân thủ prompt.",
+    metrics: [
+      ["styleFidelity", "Đúng phong cách"],
+      ["composition", "Bố cục"],
+      ["technicalQuality", "Kỹ thuật"],
+    ],
+  },
+  {
+    id: "artifacts",
+    label: "Artifact",
+    description: "Điểm toàn vẹn chi tiết: 10 nghĩa là ít artifact hơn; đây không phải thang severity gốc.",
+    metrics: [["detailIntegrity", "Toàn vẹn chi tiết (10 = ít artifact)"]],
+  },
+];
+
+const comparisonUncertainty = [
+  "Mỗi product route chỉ có một output cho mỗi prompt; chưa có repeat để ước lượng độ ổn định.",
+  "Model identity và applied settings của dữ liệu lịch sử không đồng nhất; giá trị thiếu hoặc unknown không so sánh được.",
+  "Điểm là annotation khám phá trên output đã chọn, không phải benchmark mù hay bảng xếp hạng model.",
+];
+
 export type StyleEvidence = {
   mode: "comparison" | "single-result";
   comparisonEligible: boolean;
   promptIdentity: { id: string; hash: string } | null;
+  prompt: { id: string; hash: string; text: string } | null;
   representative: EvidenceResult | null;
   results: EvidenceResult[];
   comparison: {
-    winner: StyleRecord["winner"];
-    observation: string;
+    classification: "historical-product-route-diagnostic";
+    rationale: string;
     scores: StyleRecord["scores"];
+    axes: typeof scoreAxes;
+    uncertainty: string[];
   } | null;
 };
 
@@ -76,6 +144,18 @@ const modelVersionLabel = (version?: ModelVersion) => {
   if (version?.status === "unavailable") return "Không công khai";
   return version?.status || "Không xác định";
 };
+
+const modelDisclosure = (version?: ModelVersion) => (
+  version?.reason || version?.source || "Không có ghi chú disclosure."
+);
+
+const normalizeSettings = (settings?: EvidenceSetting[]): EvidenceResult["settings"] => (settings ?? []).map((setting) => ({
+  name: setting.name || "setting-không-xác-định",
+  requestedValue: setting.requestedValue || "Không ghi nhận",
+  appliedValue: setting.appliedValue || "Không có snapshot đáng tin cậy",
+  supportStatus: setting.supportStatus || "unknown",
+  note: setting.note || "Không có ghi chú.",
+}));
 
 const toResult = (run: EvidenceRun, assetsById: Map<string, EvidenceAsset>): EvidenceResult | null => {
   if (run.outcome !== "success") return null;
@@ -92,12 +172,17 @@ const toResult = (run: EvidenceRun, assetsById: Map<string, EvidenceAsset>): Evi
     model: {
       family: route?.modelFamily || "Không xác định",
       version: modelVersionLabel(route?.modelVersion),
+      identityStatus: route?.identityStatus || "unknown",
+      versionStatus: route?.modelVersion?.status || "unknown",
+      disclosure: modelDisclosure(route?.modelVersion),
     },
     pipeline: {
       id: route?.id || "unknown-pipeline",
       label: route?.displayName || route?.id || "Pipeline không xác định",
       interface: route?.interface || "unknown",
     },
+    settings: normalizeSettings(run.settings),
+    selectionPolicy: run.selectionPolicy || "Không ghi nhận",
     result: {
       id: asset.id,
       runId: run.id,
@@ -116,8 +201,16 @@ const neutralStyleReference = (style: ComparativeStyle): EvidenceResult | null =
   const referenceId = `reference.${style.slug || "style"}`;
   return {
     provider: { id: "neutral", label: "Chưa xác minh" },
-    model: { family: "Chưa xác minh", version: "Không áp dụng" },
+    model: {
+      family: "Chưa xác minh",
+      version: "Không áp dụng",
+      identityStatus: "unverified-reference",
+      versionStatus: "unavailable",
+      disclosure: "Ảnh tham chiếu không có generation run đã xác minh.",
+    },
     pipeline: { id: "unverified-reference", label: "Ảnh tham chiếu", interface: "not-verified" },
+    settings: [],
+    selectionPolicy: "Không áp dụng",
     result: {
       id: referenceId,
       runId: "not-available",
@@ -147,7 +240,9 @@ export function deriveStyleEvidence({
   const promptIds = new Set(candidates.map(({ run }) => run.recipeId?.trim()).filter(Boolean));
   const promptHashes = new Set(candidates.map(({ run }) => run.exactPrompt?.sha256?.trim()).filter(Boolean));
   const allHavePromptIdentity = candidates.length > 0 && candidates.every(({ run }) => (
-    Boolean(run.recipeId?.trim()) && Boolean(run.exactPrompt?.sha256?.trim())
+    Boolean(run.recipeId?.trim())
+    && Boolean(run.exactPrompt?.sha256?.trim())
+    && Boolean(run.exactPrompt?.text?.trim())
   ));
   const distinctProviders = new Set(candidates.map(({ result }) => result.provider.id));
   const comparisonEligible = (
@@ -161,6 +256,10 @@ export function deriveStyleEvidence({
   const promptIdentity = promptIds.size === 1 && promptHashes.size === 1 && allHavePromptIdentity
     ? { id: [...promptIds][0] as string, hash: [...promptHashes][0] as string }
     : null;
+  const promptText = candidates[0]?.run.exactPrompt?.text?.trim();
+  const prompt = promptIdentity && promptText
+    ? { ...promptIdentity, text: promptText }
+    : null;
   const representative = candidates[0]?.result ?? neutralStyleReference(style);
   const eligibleResults = comparisonEligible
     ? [...new Map(candidates.map(({ result }) => [result.provider.id, result])).values()]
@@ -170,12 +269,15 @@ export function deriveStyleEvidence({
     mode: comparisonEligible ? "comparison" : "single-result",
     comparisonEligible,
     promptIdentity,
+    prompt,
     representative,
     results: eligibleResults,
     comparison: comparisonEligible ? {
-      winner: style.winner,
-      observation: style.observation,
+      classification: "historical-product-route-diagnostic",
+      rationale: style.observation,
       scores: style.scores,
+      axes: scoreAxes,
+      uncertainty: comparisonUncertainty,
     } : null,
   };
 }

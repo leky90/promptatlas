@@ -1,6 +1,6 @@
 ---
 import type { StyleRecord } from "../lib/styles";
-import { scoreLabels } from "../lib/styles";
+import { scoreAxes } from "../lib/evidence";
 
 type Props = {
   scores: StyleRecord["scores"];
@@ -16,22 +16,25 @@ const { scores, compact = false } = Astro.props;
     <span class="score-rail__model score-rail__model--chatgpt">ChatGPT</span>
     <span class="score-rail__model score-rail__model--gemini">Gemini</span>
   </div>
-  {scoreLabels.map(([key, label]) => (
-    <div class="score-row">
-      <span class="score-row__label">{label}</span>
-      <div class="score-cell" aria-label={`ChatGPT: ${scores.chatgpt[key]} trên 10`}>
-        <span class="score-cell__track"><i class="score-cell__bar score-cell__bar--chatgpt" style={`--score:${scores.chatgpt[key]}`}></i></span>
-        <b>{scores.chatgpt[key].toFixed(1)}</b>
-      </div>
-      <div class="score-cell" aria-label={`Gemini: ${scores.gemini[key]} trên 10`}>
-        <span class="score-cell__track"><i class="score-cell__bar score-cell__bar--gemini" style={`--score:${scores.gemini[key]}`}></i></span>
-        <b>{scores.gemini[key].toFixed(1)}</b>
-      </div>
-    </div>
+  {scoreAxes.map((axis) => (
+    <section class="score-axis" data-score-axis={axis.id} aria-labelledby={`score-axis-${axis.id}`}>
+      <header class="score-axis__head">
+        <strong id={`score-axis-${axis.id}`}>{axis.label}</strong>
+        <small>{axis.description}</small>
+      </header>
+      {axis.metrics.map(([key, label]) => (
+        <div class="score-row">
+          <span class="score-row__label">{label}</span>
+          <div class="score-cell" aria-label={`ChatGPT: ${scores.chatgpt[key]} trên 10`}>
+            <span class="score-cell__track"><i class="score-cell__bar score-cell__bar--chatgpt" style={`--score:${scores.chatgpt[key]}`}></i></span>
+            <b>{scores.chatgpt[key].toFixed(1)}</b>
+          </div>
+          <div class="score-cell" aria-label={`Gemini: ${scores.gemini[key]} trên 10`}>
+            <span class="score-cell__track"><i class="score-cell__bar score-cell__bar--gemini" style={`--score:${scores.gemini[key]}`}></i></span>
+            <b>{scores.gemini[key].toFixed(1)}</b>
+          </div>
+        </div>
+      ))}
+    </section>
   ))}
-  <div class="score-row score-row--average">
-    <span class="score-row__label">Trung bình</span>
-    <strong>{scores.chatgpt.average.toFixed(2)}</strong>
-    <strong>{scores.gemini.average.toFixed(2)}</strong>
-  </div>
 </div>
