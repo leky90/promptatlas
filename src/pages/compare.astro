@@ -99,12 +99,12 @@ const compareData = JSON.stringify(compareRecords);
         <div><img data-compare-image="chatgpt" src={initialPrimary.result.path} width={initialPrimary.result.width} height={initialPrimary.result.height} alt={initialPrimary.result.alt} fetchpriority="high" /></div>
         <figcaption>
           <dl class="compare-stage__taxonomy" data-compare-taxonomy="chatgpt">
-            <div><dt>Provider</dt><dd data-compare-provider="chatgpt">{initialPrimary.provider.label}</dd></div>
-            <div><dt>Model</dt><dd data-compare-model="chatgpt">{initialPrimary.model.family}</dd></div>
-            <div><dt>Model disclosure</dt><dd data-compare-model-disclosure="chatgpt">{modelDisclosureLabel(initialPrimary)}<small>{initialPrimary.model.disclosure}</small></dd></div>
-            <div><dt>Product route</dt><dd data-compare-route="chatgpt">{initialPrimary.pipeline.label}<small>{initialPrimary.pipeline.interface} · {initialPrimary.pipeline.id}</small></dd></div>
-            <div><dt>Settings</dt><dd data-compare-settings="chatgpt">{settingsLabel(initialPrimary)}<small>Selection: {initialPrimary.selectionPolicy}</small></dd></div>
-            <div><dt>Output</dt><dd data-compare-output="chatgpt">{initialPrimary.result.id}<small>Run: {initialPrimary.result.runId}</small></dd></div>
+            <div><dt>Provider</dt><dd data-compare-provider="chatgpt"><span data-compare-taxonomy-primary>{initialPrimary.provider.label}</span></dd></div>
+            <div><dt>Model</dt><dd data-compare-model="chatgpt"><span data-compare-taxonomy-primary>{initialPrimary.model.family}</span></dd></div>
+            <div><dt>Model disclosure</dt><dd data-compare-model-disclosure="chatgpt"><span data-compare-taxonomy-primary>{modelDisclosureLabel(initialPrimary)}</span><small data-compare-taxonomy-secondary>{initialPrimary.model.disclosure}</small></dd></div>
+            <div><dt>Product route</dt><dd data-compare-route="chatgpt"><span data-compare-taxonomy-primary>{initialPrimary.pipeline.label}</span><small data-compare-taxonomy-secondary>{initialPrimary.pipeline.interface} · {initialPrimary.pipeline.id}</small></dd></div>
+            <div><dt>Settings</dt><dd data-compare-settings="chatgpt"><span data-compare-taxonomy-primary>{settingsLabel(initialPrimary)}</span><small data-compare-taxonomy-secondary>Selection: {initialPrimary.selectionPolicy}</small></dd></div>
+            <div><dt>Output</dt><dd data-compare-output="chatgpt"><span data-compare-taxonomy-primary>{initialPrimary.result.id}</span><small data-compare-taxonomy-secondary>Run: {initialPrimary.result.runId}</small></dd></div>
           </dl>
         </figcaption>
       </figure>
@@ -112,12 +112,12 @@ const compareData = JSON.stringify(compareRecords);
         <div><img data-compare-image="gemini" src={initialSecondary.result.path} width={initialSecondary.result.width} height={initialSecondary.result.height} alt={initialSecondary.result.alt} fetchpriority="high" /></div>
         <figcaption>
           <dl class="compare-stage__taxonomy" data-compare-taxonomy="gemini">
-            <div><dt>Provider</dt><dd data-compare-provider="gemini">{initialSecondary.provider.label}</dd></div>
-            <div><dt>Model</dt><dd data-compare-model="gemini">{initialSecondary.model.family}</dd></div>
-            <div><dt>Model disclosure</dt><dd data-compare-model-disclosure="gemini">{modelDisclosureLabel(initialSecondary)}<small>{initialSecondary.model.disclosure}</small></dd></div>
-            <div><dt>Product route</dt><dd data-compare-route="gemini">{initialSecondary.pipeline.label}<small>{initialSecondary.pipeline.interface} · {initialSecondary.pipeline.id}</small></dd></div>
-            <div><dt>Settings</dt><dd data-compare-settings="gemini">{settingsLabel(initialSecondary)}<small>Selection: {initialSecondary.selectionPolicy}</small></dd></div>
-            <div><dt>Output</dt><dd data-compare-output="gemini">{initialSecondary.result.id}<small>Run: {initialSecondary.result.runId}</small></dd></div>
+            <div><dt>Provider</dt><dd data-compare-provider="gemini"><span data-compare-taxonomy-primary>{initialSecondary.provider.label}</span></dd></div>
+            <div><dt>Model</dt><dd data-compare-model="gemini"><span data-compare-taxonomy-primary>{initialSecondary.model.family}</span></dd></div>
+            <div><dt>Model disclosure</dt><dd data-compare-model-disclosure="gemini"><span data-compare-taxonomy-primary>{modelDisclosureLabel(initialSecondary)}</span><small data-compare-taxonomy-secondary>{initialSecondary.model.disclosure}</small></dd></div>
+            <div><dt>Product route</dt><dd data-compare-route="gemini"><span data-compare-taxonomy-primary>{initialSecondary.pipeline.label}</span><small data-compare-taxonomy-secondary>{initialSecondary.pipeline.interface} · {initialSecondary.pipeline.id}</small></dd></div>
+            <div><dt>Settings</dt><dd data-compare-settings="gemini"><span data-compare-taxonomy-primary>{settingsLabel(initialSecondary)}</span><small data-compare-taxonomy-secondary>Selection: {initialSecondary.selectionPolicy}</small></dd></div>
+            <div><dt>Output</dt><dd data-compare-output="gemini"><span data-compare-taxonomy-primary>{initialSecondary.result.id}</span><small data-compare-taxonomy-secondary>Run: {initialSecondary.result.runId}</small></dd></div>
           </dl>
         </figcaption>
       </figure>
@@ -224,17 +224,32 @@ const compareData = JSON.stringify(compareRecords);
           image.alt = evidenceResult.result.alt;
         }
         if (!evidenceResult) return;
-        const taxonomy = {
-          provider: evidenceResult.provider.label,
-          model: evidenceResult.model.family,
-          "model-disclosure": `${evidenceResult.model.version} · ${evidenceResult.model.versionStatus} · ${evidenceResult.model.identityStatus}\n${evidenceResult.model.disclosure}`,
-          route: `${evidenceResult.pipeline.label}\n${evidenceResult.pipeline.interface} · ${evidenceResult.pipeline.id}`,
-          settings: `${settingsText(evidenceResult)}\nSelection: ${evidenceResult.selectionPolicy}`,
-          output: `${evidenceResult.result.id}\nRun: ${evidenceResult.result.runId}`,
+        const taxonomy: Record<string, { primary: string; secondary?: string }> = {
+          provider: { primary: evidenceResult.provider.label },
+          model: { primary: evidenceResult.model.family },
+          "model-disclosure": {
+            primary: `${evidenceResult.model.version} · ${evidenceResult.model.versionStatus} · ${evidenceResult.model.identityStatus}`,
+            secondary: evidenceResult.model.disclosure,
+          },
+          route: {
+            primary: evidenceResult.pipeline.label,
+            secondary: `${evidenceResult.pipeline.interface} · ${evidenceResult.pipeline.id}`,
+          },
+          settings: {
+            primary: settingsText(evidenceResult),
+            secondary: `Selection: ${evidenceResult.selectionPolicy}`,
+          },
+          output: {
+            primary: evidenceResult.result.id,
+            secondary: `Run: ${evidenceResult.result.runId}`,
+          },
         };
         Object.entries(taxonomy).forEach(([key, value]) => {
           const cell = document.querySelector<HTMLElement>(`[data-compare-${key}="${provider}"]`);
-          if (cell) cell.textContent = value;
+          const primary = cell?.querySelector<HTMLElement>("[data-compare-taxonomy-primary]");
+          const secondary = cell?.querySelector<HTMLElement>("[data-compare-taxonomy-secondary]");
+          if (primary) primary.textContent = value.primary;
+          if (secondary && value.secondary) secondary.textContent = value.secondary;
         });
       });
       document.querySelectorAll<HTMLElement>("[data-score-key]").forEach((row) => {

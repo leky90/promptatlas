@@ -116,6 +116,10 @@ test("compare workbench reads query state and navigates records", async ({ page 
   await expect(taxonomy).toContainText("Model disclosureKhông công khai");
   await expect(taxonomy).toContainText("Product routeChatGPT image generation (legacy atlas)");
   await expect(taxonomy).toContainText("Outputasset.sumi-e.chatgpt");
+  await expect(page.locator("[data-compare-taxonomy] dd small")).toHaveCount(8);
+  await expect(page.locator('[data-compare-route="chatgpt"] small')).toContainText("legacy-chatgpt-ui");
+  await expect(page.locator('[data-compare-settings="chatgpt"] small')).toContainText("Selection:");
+  await expect(page.locator('[data-compare-output="chatgpt"] small')).toContainText("Run:");
   await expect(page.locator("[data-compare-prompt]")).toContainText("Use case: stylized-concept");
   await expect(page.locator('[data-compare-settings="chatgpt"]')).toContainText("aspect-ratio");
   await expect(page.locator('[data-compare-settings="chatgpt"]')).toContainText("3:2");
@@ -136,6 +140,9 @@ test("compare workbench reads query state and navigates records", async ({ page 
   await page.locator("[data-compare-next]").click();
   await expect(page).toHaveURL(/style=splash-ink/);
   await expect(page.locator("[data-compare-name]")).toHaveText("Splash Ink");
+  await expect(page.locator("[data-compare-taxonomy] dd small")).toHaveCount(8);
+  await expect(page.locator('[data-compare-output="chatgpt"]')).toContainText("asset.splash-ink.chatgpt");
+  await expect(page.locator('[data-compare-output="chatgpt"] small')).toContainText("Run:");
 });
 
 test("detail teaches output, prompt anatomy and usage before evidence", async ({ context, page }) => {
