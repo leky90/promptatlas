@@ -50,7 +50,12 @@ type ComparativeStyle = Pick<StyleRecord, "observation" | "scores"> & Partial<Pi
   slug?: string;
 };
 
+export type ComparisonScoreKey = "chatgpt" | "gemini";
+export type ComparisonProviderScores = Omit<ProviderScores, "average">;
+export type ComparisonScores = Record<ComparisonScoreKey, ComparisonProviderScores>;
+
 export type EvidenceResult = {
+  scoreKey: ComparisonScoreKey | null;
   provider: { id: string; label: string };
   model: {
     family: string;
@@ -127,7 +132,8 @@ export type StyleEvidence = {
   comparison: {
     classification: "historical-product-route-diagnostic";
     rationale: string;
-    scores: StyleRecord["scores"];
+    scores: ComparisonScores;
+    results: Record<ComparisonScoreKey, EvidenceResult>;
     axes: typeof scoreAxes;
     uncertainty: string[];
   } | null;
@@ -138,6 +144,29 @@ const providerId = (provider: string) => provider
   .toLowerCase()
   .replace(/[^a-z0-9]+/gu, "-")
   .replace(/(^-|-$)/gu, "");
+
+const scoreKeyForRoute = (route: EvidenceRun["productRoute"], provider: string): ComparisonScoreKey | null => {
+  if (provider === "OpenAI" && route?.id === "legacy-chatgpt-ui") return "chatgpt";
+  if (provider === "Google" && route?.id === "legacy-gflow-cli") return "gemini";
+  return null;
+};
+
+const comparisonScores = (scores: StyleRecord["scores"]): ComparisonScores => ({
+  chatgpt: {
+    promptAdherence: scores.chatgpt.promptAdherence,
+    styleFidelity: scores.chatgpt.styleFidelity,
+    composition: scores.chatgpt.composition,
+    technicalQuality: scores.chatgpt.technicalQuality,
+    detailIntegrity: scores.chatgpt.detailIntegrity,
+  },
+  gemini: {
+    promptAdherence: scores.gemini.promptAdherence,
+    styleFidelity: scores.gemini.styleFidelity,
+    composition: scores.gemini.composition,
+    technicalQuality: scores.gemini.technicalQuality,
+    detailIntegrity: scores.gemini.detailIntegrity,
+  },
+});
 
 const modelVersionLabel = (version?: ModelVersion) => {
   if (version?.identifier) return version.identifier;
@@ -168,6 +197,7 @@ const toResult = (run: EvidenceRun, assetsById: Map<string, EvidenceAsset>): Evi
   if (!asset || !provider) return null;
 
   return {
+    scoreKey: scoreKeyForRoute(route, provider),
     provider: { id: providerId(provider), label: provider },
     model: {
       family: route?.modelFamily || "Không xác định",
@@ -200,6 +230,7 @@ const neutralStyleReference = (style: ComparativeStyle): EvidenceResult | null =
   if (!image) return null;
   const referenceId = `reference.${style.slug || "style"}`;
   return {
+    scoreKey: null,
     provider: { id: "neutral", label: "Chưa xác minh" },
     model: {
       family: "Chưa xác minh",
@@ -245,8 +276,15 @@ export function deriveStyleEvidence({
     && Boolean(run.exactPrompt?.text?.trim())
   ));
   const distinctProviders = new Set(candidates.map(({ result }) => result.provider.id));
+  const chatgptCandidates = candidates.filter(({ result }) => result.scoreKey === "chatgpt");
+  const geminiCandidates = candidates.filter(({ result }) => result.scoreKey === "gemini");
+  const hasUnambiguousRoutePair = (
+    candidates.length === 2
+    && chatgptCandidates.length === 1
+    && geminiCandidates.length === 1
+  );
   const comparisonEligible = (
-    candidates.length >= 2
+    hasUnambiguousRoutePair
     && distinctProviders.size >= 2
     && allHavePromptIdentity
     && promptIds.size === 1
@@ -261,8 +299,13 @@ export function deriveStyleEvidence({
     ? { ...promptIdentity, text: promptText }
     : null;
   const representative = candidates[0]?.result ?? neutralStyleReference(style);
-  const eligibleResults = comparisonEligible
-    ? [...new Map(candidates.map(({ result }) => [result.provider.id, result])).values()]
+  const chatgptResult = chatgptCandidates[0]?.result;
+  const geminiResult = geminiCandidates[0]?.result;
+  const comparisonResults: Record<ComparisonScoreKey, EvidenceResult> | null = comparisonEligible && chatgptResult && geminiResult
+    ? { chatgpt: chatgptResult, gemini: geminiResult }
+    : null;
+  const eligibleResults = comparisonResults
+    ? [comparisonResults.chatgpt, comparisonResults.gemini]
     : representative ? [representative] : [];
 
   return {
@@ -272,10 +315,11 @@ export function deriveStyleEvidence({
     prompt,
     representative,
     results: eligibleResults,
-    comparison: comparisonEligible ? {
+    comparison: comparisonResults ? {
       classification: "historical-product-route-diagnostic",
       rationale: style.observation,
-      scores: style.scores,
+      scores: comparisonScores(style.scores),
+      results: comparisonResults,
       axes: scoreAxes,
       uncertainty: comparisonUncertainty,
     } : null,

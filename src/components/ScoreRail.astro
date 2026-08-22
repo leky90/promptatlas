@@ -1,9 +1,8 @@
 ---
-import type { StyleRecord } from "../lib/styles";
-import { scoreAxes } from "../lib/evidence";
+import { scoreAxes, type ComparisonScores } from "../lib/evidence";
 
 type Props = {
-  scores: StyleRecord["scores"];
+  scores: ComparisonScores;
   compact?: boolean;
 };
 

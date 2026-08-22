@@ -125,6 +125,11 @@ test("compare workbench reads query state and navigates records", async ({ page 
   await expect(page.locator('[data-score-axis="artifacts"]')).toContainText("Artifact");
   await expect(page.locator("[data-compare-rationale]")).toContainText(/sumi-e/iu);
   await expect(page.locator("[data-compare-uncertainty]")).toContainText("một output");
+  const comparePayload = JSON.parse(await page.locator("#compare-data").textContent() ?? "[]");
+  expect(comparePayload.length).toBeGreaterThan(0);
+  expect(Object.hasOwn(comparePayload[0].style, "winner")).toBe(false);
+  expect(Object.hasOwn(comparePayload[0].evidence.scores.chatgpt, "average")).toBe(false);
+  expect(Object.hasOwn(comparePayload[0].evidence.scores.gemini, "average")).toBe(false);
   await expect(page.getByText("Điểm trung bình", { exact: true })).toHaveCount(0);
   await expect(page.locator("[data-compare-winner], .aggregate__score")).toHaveCount(0);
   await expect(page.getByText(/nhỉnh hơn/iu)).toHaveCount(0);

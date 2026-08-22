@@ -5,15 +5,29 @@ import { evidenceForStyle, scoreAxes, type EvidenceResult } from "../lib/evidenc
 import { styles } from "../lib/styles";
 
 const compareRecords = styles
-  .map((style) => ({ style, evidence: evidenceForStyle(style) }))
-  .filter((record) => record.evidence.comparisonEligible);
+  .map((style) => {
+    const evidence = evidenceForStyle(style);
+    if (!evidence.comparisonEligible || !evidence.prompt || !evidence.comparison) return null;
+    return {
+      style: { id: style.id, slug: style.slug, name: style.name, family: style.family },
+      evidence: {
+        prompt: evidence.prompt,
+        classification: evidence.comparison.classification,
+        scores: evidence.comparison.scores,
+        results: evidence.comparison.results,
+        rationale: evidence.comparison.rationale,
+        uncertainty: evidence.comparison.uncertainty,
+      },
+    };
+  })
+  .filter((record): record is NonNullable<typeof record> => Boolean(record));
 const initialRecord = compareRecords.find((record) => record.style.id === 88) ?? compareRecords[0];
 if (!initialRecord) throw new Error("Compare requires at least one eligible same-prompt provider pair.");
 const initial = initialRecord.style;
 const initialPrompt = initialRecord.evidence.prompt;
-const initialComparison = initialRecord.evidence.comparison;
-const [initialPrimary, initialSecondary] = initialRecord.evidence.results;
-if (!initialPrimary || !initialSecondary || !initialPrompt || !initialComparison) {
+const initialEvidence = initialRecord.evidence;
+const { chatgpt: initialPrimary, gemini: initialSecondary } = initialEvidence.results;
+if (!initialPrimary || !initialSecondary || !initialPrompt) {
   throw new Error("Eligible comparison requires two inspectable evidence results and one exact prompt.");
 }
 const settingsLabel = (result: EvidenceResult) => result.settings.length
@@ -114,7 +128,7 @@ const compareData = JSON.stringify(compareRecords);
       <div class="compare-reading__note">
         <p class="eyebrow">SCORING RATIONALE</p>
         <h3>Quan sát trên output đã chọn</h3>
-        <p data-compare-rationale>{initialComparison.rationale}</p>
+        <p data-compare-rationale>{initialEvidence.rationale}</p>
       </div>
       <div class="compare-score-table" data-compare-scores>
         <div class="compare-score-table__head"><span>Trục / tiêu chí</span><span>ChatGPT</span><span>Gemini</span></div>
@@ -126,7 +140,7 @@ const compareData = JSON.stringify(compareRecords);
             </header>
             {axis.metrics.map(([key, label]) => (
               <div class="compare-score-table__row" data-score-key={key}>
-                <span>{label}</span><strong data-score-provider="chatgpt">{initial.scores.chatgpt[key].toFixed(1)}</strong><strong data-score-provider="gemini">{initial.scores.gemini[key].toFixed(1)}</strong>
+                <span>{label}</span><strong data-score-provider="chatgpt">{initialEvidence.scores.chatgpt[key].toFixed(1)}</strong><strong data-score-provider="gemini">{initialEvidence.scores.gemini[key].toFixed(1)}</strong>
               </div>
             ))}
           </section>
@@ -136,7 +150,7 @@ const compareData = JSON.stringify(compareRecords);
 
     <aside class="shell compare-uncertainty" data-compare-uncertainty aria-labelledby="uncertainty-title">
       <div><p class="eyebrow">UNCERTAINTY</p><h3 id="uncertainty-title">Điều dữ liệu này chưa chứng minh</h3></div>
-      <ul>{initialComparison.uncertainty.map((item) => <li>{item}</li>)}</ul>
+      <ul>{initialEvidence.uncertainty.map((item) => <li>{item}</li>)}</ul>
     </aside>
   </section>
 
@@ -147,7 +161,14 @@ const compareData = JSON.stringify(compareRecords);
 
   <script is:inline id="compare-data" type="application/json" set:html={compareData}></script>
   <script>
-    type CompareStyle = (typeof import("../data/styles.json"))[number];
+    type CompareStyle = { id: number; slug: string; name: string; family: string };
+    type CompareProviderScores = {
+      promptAdherence: number;
+      styleFidelity: number;
+      composition: number;
+      technicalQuality: number;
+      detailIntegrity: number;
+    };
     type CompareEvidenceResult = {
       provider: { id: string; label: string };
       model: { family: string; version: string; identityStatus: string; versionStatus: string; disclosure: string };
@@ -160,8 +181,10 @@ const compareData = JSON.stringify(compareRecords);
       style: CompareStyle;
       evidence: {
         prompt: { id: string; hash: string; text: string };
-        results: CompareEvidenceResult[];
-        comparison: { rationale: string; uncertainty: string[] };
+        scores: Record<"chatgpt" | "gemini", CompareProviderScores>;
+        results: Record<"chatgpt" | "gemini", CompareEvidenceResult>;
+        rationale: string;
+        uncertainty: string[];
       };
     };
     const dataNode = document.querySelector<HTMLScriptElement>("#compare-data");
@@ -175,7 +198,7 @@ const compareData = JSON.stringify(compareRecords);
       const record = records.find((item) => item.style.slug === slug) ?? records[0];
       if (!record || !select) return;
       const { style, evidence } = record;
-      if (evidence.results.length < 2 || !evidence.prompt || !evidence.comparison) return;
+      if (!evidence.results.chatgpt || !evidence.results.gemini || !evidence.prompt) return;
       select.value = style.slug;
       const meta = document.querySelector<HTMLElement>("[data-compare-meta]");
       const name = document.querySelector<HTMLElement>("[data-compare-name]");
@@ -187,12 +210,12 @@ const compareData = JSON.stringify(compareRecords);
       if (meta) meta.textContent = `${style.family} / ${String(style.id).padStart(3, "0")}`;
       if (name) name.textContent = style.name;
       if (detail) detail.href = `/styles/${style.slug}/`;
-      if (rationale) rationale.textContent = evidence.comparison.rationale;
+      if (rationale) rationale.textContent = evidence.rationale;
       if (promptId) promptId.textContent = evidence.prompt.id;
       if (promptHash) promptHash.textContent = evidence.prompt.hash;
       if (promptText) promptText.textContent = evidence.prompt.text;
-      (["chatgpt", "gemini"] as const).forEach((provider, index) => {
-        const evidenceResult = evidence.results[index];
+      (["chatgpt", "gemini"] as const).forEach((provider) => {
+        const evidenceResult = evidence.results[provider];
         const image = document.querySelector<HTMLImageElement>(`[data-compare-image="${provider}"]`);
         if (image && evidenceResult) {
           image.src = evidenceResult.result.path;
@@ -215,10 +238,10 @@ const compareData = JSON.stringify(compareRecords);
         });
       });
       document.querySelectorAll<HTMLElement>("[data-score-key]").forEach((row) => {
-        const key = row.dataset.scoreKey as keyof Omit<CompareStyle["scores"]["chatgpt"], "average">;
+        const key = row.dataset.scoreKey as keyof CompareProviderScores;
         (["chatgpt", "gemini"] as const).forEach((provider) => {
           const cell = row.querySelector<HTMLElement>(`[data-score-provider="${provider}"]`);
-          if (cell) cell.textContent = style.scores[provider][key].toFixed(1);
+          if (cell) cell.textContent = evidence.scores[provider][key].toFixed(1);
         });
       });
       if (sync) history.replaceState(null, "", `${location.pathname}?style=${style.slug}`);
