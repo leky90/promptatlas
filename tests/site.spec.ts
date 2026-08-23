@@ -104,6 +104,19 @@ test("V2 gallery filters 105 accepted styles by the seven canonical facets", asy
   await expect(editorial.locator("[data-prompt-preview]")).toContainText("Style/medium: in a Editorial Illustration visual language, with editorial figure, controlled palette, painted marks.");
 });
 
+test("migrated style details publish accepted V2 concept relationships", async ({ page }) => {
+  await page.goto("/styles/glitch-art/");
+  const relatedSlugs = await page.locator(".related-section [data-style-card]").evaluateAll((cards) =>
+    cards.map((card) => (card as HTMLElement).dataset.slug),
+  );
+  expect(relatedSlugs).toEqual([
+    "pixel-art",
+    "cyberpunk",
+    "vaporwave",
+    "interlocking-toy-brick-diorama",
+  ]);
+});
+
 test("Image Anatomy exposes 7 categories, 116 dimensions and URL-backed filters", async ({ page }) => {
   await page.goto("/anatomy/");
   await expect(page.locator("[data-anatomy-category]")).toHaveCount(7);

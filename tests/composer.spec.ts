@@ -67,6 +67,11 @@ test("legacy alias primitive IDs remain readable in existing Composer drafts", a
     localStorage.setItem(key, JSON.stringify(draft));
   });
 
+  await page.reload();
+  await expect(canonical.locator("[data-composer-add]")).toHaveAttribute("aria-pressed", "true");
+  await addStyleCard(canonical);
+  await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
+
   await page.goto("/composer/");
   await expect(page.locator("[data-composer-error]")).toBeHidden();
   await expect(page.locator("[data-recipe-item]")).toHaveCount(1);

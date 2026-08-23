@@ -101,6 +101,9 @@ const styleAssets = rawStyleAssets as unknown as { referenceAssets: StyleAsset[]
 const conceptsById = new Map(styleV2.registry.canonicalConcepts.map((item) => [item.conceptId, item]));
 const recipesById = new Map(styleV2.registry.hybridRecipes.map((item) => [item.recipeId, item]));
 const assetsById = new Map(styleAssets.referenceAssets.map((item) => [item.assetId, item]));
+const relatedSlugsFor = (concept: Concept) => concept.relations.relatedConceptIds.map((id) =>
+  conceptsById.get(id)?.canonicalSlug ?? id.replace(/^style\./u, ""),
+);
 
 const facetFamily: Record<StyleFacet, StyleRecord["family"]> = {
   "movement-tradition": "Hội họa",
@@ -170,6 +173,7 @@ const enrichLegacy = (style: LegacyStyle, migration: Migration): StyleRecord => 
     enriched.cues = concept.visualCues;
     enriched.family = facetFamily[concept.primaryFacet];
     enriched.generationPrompt = withStyleFragment(style.generationPrompt, concept.promptReadyFragment);
+    enriched.related = relatedSlugsFor(concept);
   }
   return enriched;
 };
@@ -208,7 +212,7 @@ const newConcepts = styleV2.registry.canonicalConcepts
       scores: { chatgpt: { ...zeroScores }, gemini: { ...zeroScores } },
       winner: "Hòa",
       observation: asset.fidelityReview.knownLimitations.join(" ") || "Ảnh tham chiếu V2 đã qua content review; chưa phải benchmark provider.",
-      related: concept.relations.relatedConceptIds.map((id) => id.replace(/^style\./, "")),
+      related: relatedSlugsFor(concept),
       recordKind: "canonical-concept",
       canonicalId: concept.conceptId,
       primaryFacet: concept.primaryFacet,

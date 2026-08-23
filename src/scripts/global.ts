@@ -151,6 +151,11 @@ function initializeNavigation() {
 }
 
 function initializeComposerEntries() {
+  const primitiveKeys = (button: HTMLButtonElement) => [
+    button.dataset.primitiveId ?? "",
+    ...(button.dataset.primitiveAliases ?? "").split(/\s+/u),
+  ].filter(Boolean);
+
   const update = () => {
     let selected = new Set<string>();
     try {
@@ -164,7 +169,7 @@ function initializeComposerEntries() {
     const tray = document.querySelector<HTMLElement>("[data-composer-tray]");
     if (tray) tray.hidden = selected.size === 0 || document.body.classList.contains("composer-page");
     document.querySelectorAll<HTMLButtonElement>("[data-composer-add]").forEach((button) => {
-      const active = selected.has(button.dataset.primitiveId ?? "");
+      const active = primitiveKeys(button).some((id) => selected.has(id));
       button.setAttribute("aria-pressed", String(active));
       button.classList.toggle("is-active", active);
       const label = button.querySelector<HTMLElement>("[data-composer-add-label]");
@@ -177,6 +182,12 @@ function initializeComposerEntries() {
       const primitiveId = button.dataset.primitiveId;
       if (!primitiveId) return;
       try {
+        const selected = new Set((readActiveDraft(localStorage)?.items ?? []).map((item) => item.primitiveId));
+        if (primitiveKeys(button).some((id) => selected.has(id))) {
+          update();
+          showToast("Thành phần này đã có trong recipe.");
+          return;
+        }
         const result = addPrimitiveToActiveDraft(localStorage, {
           primitiveId,
           dimensionId: button.dataset.primitiveDimension ?? (primitiveId.startsWith("primitive.style.") ? "style.medium" : ""),
