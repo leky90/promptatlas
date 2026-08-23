@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prompt-atlas.ldktech.com/schemas/image-anatomy.v2.json",
+  "type": "object",
+  "required": ["schemaVersion", "hierarchy", "categories", "dimensions", "values", "examples", "comparisonSets", "legacyReferenceMigrations"],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "hierarchy": { "const": "Category → Dimension → optional Subdimension → Value → Example" },
+    "categories": { "type": "array", "minItems": 7, "maxItems": 7, "items": { "$ref": "#/$defs/category" } },
+    "dimensions": { "type": "array", "minItems": 116, "maxItems": 116, "items": { "$ref": "#/$defs/dimension" } },
+    "values": { "type": "array", "minItems": 360, "maxItems": 360, "items": { "$ref": "#/$defs/value" } },
+    "examples": { "type": "array", "minItems": 600, "maxItems": 600, "items": { "$ref": "#/$defs/example" } },
+    "comparisonSets": { "type": "array", "minItems": 119, "maxItems": 119, "items": { "$ref": "#/$defs/comparison" } },
+    "legacyReferenceMigrations": { "type": "array", "minItems": 187, "maxItems": 187, "items": { "$ref": "#/$defs/migration" } }
+  },
+  "$defs": {
+    "bilingual": { "type": "object", "required": ["vi", "en"], "properties": { "vi": { "type": "string", "minLength": 1 }, "en": { "type": "string", "minLength": 1 } } },
+    "category": { "type": "object", "required": ["categoryId", "label", "dimensionIds"], "properties": { "categoryId": { "type": "string" }, "label": { "$ref": "#/$defs/bilingual" }, "dimensionIds": { "type": "array", "items": { "type": "string" } } } },
+    "dimension": { "type": "object", "required": ["dimensionId", "categoryId", "label", "subdimensions", "valueIds", "reviewStatus"], "properties": { "dimensionId": { "type": "string" }, "categoryId": { "type": "string" }, "label": { "$ref": "#/$defs/bilingual" }, "subdimensions": { "type": "array" }, "valueIds": { "type": "array", "minItems": 1, "items": { "type": "string" } }, "reviewStatus": { "const": "accepted" } } },
+    "value": { "type": "object", "required": ["valueId", "dimensionId", "label", "promptFragment", "tier", "reviewStatus"], "properties": { "valueId": { "type": "string" }, "dimensionId": { "type": "string" }, "label": { "$ref": "#/$defs/bilingual" }, "promptFragment": { "type": "string", "minLength": 1 }, "tier": { "enum": ["core", "advanced"] }, "reviewStatus": { "const": "accepted" } } },
+    "example": { "type": "object", "required": ["exampleId", "role", "targetValueId", "exactPrompt", "exactPromptSha256", "assetId", "alt", "reviewStatus"], "properties": { "exampleId": { "type": "string" }, "role": { "enum": ["controlled-comparison", "application", "canonical-reference"] }, "targetValueId": { "type": "string" }, "exactPrompt": { "type": "string", "minLength": 1 }, "exactPromptSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "assetId": { "type": "string" }, "alt": { "$ref": "#/$defs/bilingual" }, "reviewStatus": { "const": "accepted" } } },
+    "comparison": { "type": "object", "required": ["comparisonSetId", "dimensionId", "coreValueIds", "reviewStatus"], "properties": { "comparisonSetId": { "type": "string" }, "dimensionId": { "type": "string" }, "coreValueIds": { "type": "array" }, "participantValueIds": { "type": "array" }, "reviewStatus": { "const": "accepted" } } },
+    "migration": { "type": "object", "required": ["legacyReferenceId", "dimensionId", "targetValueId", "route", "mappingStatus"], "properties": { "legacyReferenceId": { "type": "string" }, "dimensionId": { "type": "string" }, "targetValueId": { "type": "string" }, "route": { "type": "string" }, "mappingStatus": { "const": "accepted" } } }
+  }
+}

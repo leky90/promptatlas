@@ -128,3 +128,16 @@ test("mobile composer tray exposes the active recipe without covering controls",
   await expect(page.locator("[data-composer-live]")).toContainText("Đã đưa");
   await expect(page.getByText(/^Video$/u)).toHaveCount(0);
 });
+
+test("mobile Image Anatomy keeps filters and evidence within the viewport", async ({ page }) => {
+  await page.goto("/anatomy/");
+  await page.locator('[data-category-filter="camera"]').click();
+  await expect(page.locator('[data-anatomy-dimension="camera.angle"]')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  await page.goto("/anatomy/subject-person-role/");
+  await expect(page.locator('[data-value-tier="core"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-value-tier="advanced"]')).not.toHaveCount(0);
+  await expect(page.locator("main img[alt]").first()).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});

@@ -249,7 +249,7 @@ const neutralStyleReference = (style: ComparativeStyle): EvidenceResult | null =
       thumbnailPath: image.thumb,
       width: image.width,
       height: image.height,
-      alt: `${style.name || "Phong cách"} — ảnh tham chiếu trung tính.`,
+      alt: image.alt || `${style.name || "Phong cách"} — ảnh tham chiếu trung tính.`,
     },
   };
 };
@@ -342,7 +342,8 @@ type CanonicalEvidenceData = {
 const canonicalEvidence = rawEvidence as CanonicalEvidenceData;
 
 export function evidenceForStyle(style: StyleRecord): StyleEvidence {
-  const recipe = canonicalEvidence.recipes.find((candidate) => candidate.slug === style.slug);
+  const evidenceSlug = [style.slug, ...style.legacySlugs].find((slug) => canonicalEvidence.recipes.some((candidate) => candidate.slug === slug));
+  const recipe = canonicalEvidence.recipes.find((candidate) => candidate.slug === evidenceSlug);
   const runs = recipe
     ? canonicalEvidence.generationRuns.filter((run) => run.recipeId === recipe.id)
     : [];
@@ -350,7 +351,7 @@ export function evidenceForStyle(style: StyleRecord): StyleEvidence {
 }
 
 export function promptSourceForStyle(style: StyleRecord) {
-  const provenance = canonicalEvidence.recipes.find((candidate) => candidate.slug === style.slug)?.provenance;
+  const provenance = canonicalEvidence.recipes.find((candidate) => candidate.slug === style.slug || style.legacySlugs.includes(candidate.slug))?.provenance;
   const reference = provenance?.sourceReference?.trim();
   if (!reference) return null;
 

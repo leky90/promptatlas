@@ -1,0 +1,134 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Icon from "../../components/Icon.astro";
+import {
+  anatomyCategories,
+  anatomyDimensionSlug,
+  anatomyDimensions,
+  anatomyHierarchy,
+  anatomyValuesForDimension,
+} from "../../lib/anatomy";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Image Anatomy V2 — Prompt Atlas",
+  description: "116 thuộc tính hình ảnh có tên, giá trị Core và Advanced, cùng ví dụ trực quan.",
+  numberOfItems: anatomyDimensions.length,
+};
+---
+
+<BaseLayout title="Image Anatomy V2: 116 thuộc tính hình ảnh | Prompt Atlas" description="Tra cứu 116 thuộc tính hình ảnh, giá trị Core và Advanced bằng ví dụ trực quan đã kiểm định." bodyClass="anatomy-page" jsonLd={jsonLd}>
+  <header class="anatomy-hero shell">
+    <p class="eyebrow">IMAGE ANATOMY / V2</p>
+    <h1>Gọi đúng tên.<br /><em>Đổi đúng thuộc tính.</em></h1>
+    <p>Đi từ nhóm đến thuộc tính, giá trị và ví dụ. Mỗi thay đổi đều gắn với cụm prompt và dấu hiệu có thể quan sát.</p>
+    <dl class="anatomy-metrics" aria-label="Quy mô Image Anatomy">
+      <div><dt>Nhóm</dt><dd>{anatomyCategories.length}</dd></div>
+      <div><dt>Thuộc tính</dt><dd>{anatomyDimensions.length}</dd></div>
+      <div><dt>Giá trị</dt><dd>360</dd></div>
+      <div><dt>Ví dụ</dt><dd>600</dd></div>
+    </dl>
+    <p class="anatomy-hierarchy"><b>Cấu trúc</b> {anatomyHierarchy}</p>
+  </header>
+
+  <section class="anatomy-browser" aria-labelledby="anatomy-browser-title">
+    <div class="anatomy-toolbar-wrap">
+      <div class="anatomy-toolbar shell">
+        <div class="search-field">
+          <label for="anatomy-search">Tìm thuộc tính hoặc giá trị</label>
+          <span class="search-field__icon"><Icon name="search" size={18} /></span>
+          <input id="anatomy-search" type="search" autocomplete="off" placeholder="góc máy, da, ánh sáng, màu…" data-anatomy-search />
+        </div>
+        <div class="filter-row" role="group" aria-label="Lọc theo nhóm Image Anatomy">
+          <button class="filter-chip is-active" type="button" data-category-filter="all" aria-pressed="true">Tất cả</button>
+          {anatomyCategories.map((category) => (
+            <button class="filter-chip" type="button" data-category-filter={category.categoryId} aria-pressed="false">{category.label.vi}</button>
+          ))}
+        </div>
+        <p class="anatomy-result"><strong data-anatomy-count>{anatomyDimensions.length}</strong> / {anatomyDimensions.length} thuộc tính</p>
+      </div>
+    </div>
+
+    <div class="anatomy-category-strip shell">
+      {anatomyCategories.map((category) => (
+        <article data-anatomy-category>
+          <span>{String(category.dimensionIds.length).padStart(2, "0")}</span>
+          <h2>{category.label.vi}</h2>
+          <p>{category.label.en}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="anatomy-dimension-grid shell" data-anatomy-grid>
+      {anatomyDimensions.map((dimension) => {
+        const category = anatomyCategories.find((item) => item.categoryId === dimension.categoryId);
+        const values = anatomyValuesForDimension(dimension.dimensionId);
+        const search = [dimension.label.vi, dimension.label.en, category?.label.vi, ...values.flatMap((value) => [value.label.vi, value.label.en, ...value.aliases])].join(" ").toLocaleLowerCase("vi");
+        return (
+          <article data-anatomy-dimension={dimension.dimensionId} data-category={dimension.categoryId} data-search={search}>
+            <a href={`/anatomy/${anatomyDimensionSlug(dimension.dimensionId)}/`}>
+              <div><span>{category?.label.vi}</span><span>{values.length} giá trị</span></div>
+              <h2>{dimension.label.vi}</h2>
+              <p>{dimension.label.en}</p>
+              <small>{values.filter((value) => value.tier === "core").length} Core · {values.filter((value) => value.tier === "advanced").length} Advanced</small>
+              <b>Xem cấu trúc <Icon name="arrow-right" size={16} /></b>
+            </a>
+          </article>
+        );
+      })}
+    </div>
+    <div class="empty-state shell" data-anatomy-empty hidden>
+      <span class="empty-state__number">00</span>
+      <div><h2>Chưa có thuộc tính nào khớp.</h2><p>Thử từ ngắn hơn hoặc đổi nhóm.</p></div>
+    </div>
+  </section>
+
+  <script>
+    const input = document.querySelector<HTMLInputElement>("[data-anatomy-search]");
+    const cards = [...document.querySelectorAll<HTMLElement>("[data-anatomy-dimension]")];
+    const filters = [...document.querySelectorAll<HTMLButtonElement>("[data-category-filter]")];
+    const count = document.querySelector<HTMLElement>("[data-anatomy-count]");
+    const grid = document.querySelector<HTMLElement>("[data-anatomy-grid]");
+    const empty = document.querySelector<HTMLElement>("[data-anatomy-empty]");
+    let category = "all";
+    const normalize = (value: string) => value.toLocaleLowerCase("vi").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const setCategory = (value: string) => {
+      category = value;
+      filters.forEach((filter) => {
+        const active = filter.dataset.categoryFilter === value;
+        filter.classList.toggle("is-active", active);
+        filter.setAttribute("aria-pressed", String(active));
+      });
+    };
+    const apply = ({ updateUrl = true } = {}) => {
+      const query = normalize(input?.value.trim() ?? "");
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = (category === "all" || card.dataset.category === category) && (!query || normalize(card.dataset.search ?? "").includes(query));
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+      if (grid) grid.hidden = visible === 0;
+      if (empty) empty.hidden = visible !== 0;
+      if (updateUrl) {
+        const params = new URLSearchParams();
+        if (category !== "all") params.set("category", category);
+        if (input?.value.trim()) params.set("q", input.value.trim());
+        history.replaceState(null, "", `${location.pathname}${params.size ? `?${params}` : ""}`);
+      }
+    };
+    const params = new URLSearchParams(location.search);
+    const requestedCategory = params.get("category");
+    if (requestedCategory && filters.some((filter) => filter.dataset.categoryFilter === requestedCategory)) setCategory(requestedCategory);
+    if (input) input.value = params.get("q") ?? "";
+    apply({ updateUrl: false });
+    input?.addEventListener("input", () => apply());
+    filters.forEach((filter) => filter.addEventListener("click", () => {
+      setCategory(filter.dataset.categoryFilter ?? "all");
+      apply();
+    }));
+  </script>
+</BaseLayout>
+

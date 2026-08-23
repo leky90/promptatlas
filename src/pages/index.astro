@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PairCard from "../components/PairCard.astro";
 import Icon from "../components/Icon.astro";
-import { families, styles } from "../lib/styles";
+import { styleFacets, styles } from "../lib/styles";
 import { evidenceForStyle } from "../lib/evidence";
 
 const featured = styles.find((style) => style.id === 88) ?? styles[0];
@@ -16,10 +16,10 @@ const featuredOutput = featuredEvidence.representative?.result ?? {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  name: "Prompt Atlas — 90 phong cách tạo ảnh AI",
+  name: "Prompt Atlas — 105 phong cách tạo ảnh AI",
   description: "Kho prompt trực quan: nhìn output, hiểu cấu trúc prompt, rồi đưa thành phần vào Composer.",
   url: "https://prompt-atlas.ldktech.com/",
-  numberOfItems: 90,
+  numberOfItems: styles.length,
   isPartOf: { "@type": "WebSite", name: "Prompt Atlas by LDKTech", url: "https://prompt-atlas.ldktech.com/" },
 };
 ---
@@ -35,9 +35,9 @@ const jsonLd = {
         <a class="button button--ghost" href="/discover/">Học primitives <Icon name="arrow-right" /></a>
       </div>
       <dl class="hero__metrics" aria-label="Quy mô dữ liệu">
-        <div><dt>Output mẫu</dt><dd>90</dd></div>
-        <div><dt>Prompt recipe</dt><dd>90</dd></div>
-        <div><dt>Primitives</dt><dd>187</dd></div>
+        <div><dt>Phong cách</dt><dd>{styles.length}</dd></div>
+        <div><dt>Facet V2</dt><dd>{styleFacets.length}</dd></div>
+        <div><dt>Anatomy</dt><dd>116</dd></div>
       </dl>
     </div>
     <div class="hero__specimen" aria-label={`Output nổi bật ${featured.name}`}>
@@ -63,12 +63,12 @@ const jsonLd = {
           <input id="style-search" type="search" autocomplete="off" placeholder="mực tàu, retro, 3D, Sài Gòn…" data-style-search />
           <kbd>⌘ K</kbd>
         </div>
-        <div class="filter-row" role="group" aria-label="Lọc theo nhóm phong cách">
-          <button class="filter-chip is-active" type="button" data-family-filter="all" aria-pressed="true">Tất cả</button>
-          {families.map((family) => <button class="filter-chip" type="button" data-family-filter={family} aria-pressed="false">{family}</button>)}
+        <div class="filter-row" role="group" aria-label="Lọc theo facet phong cách V2">
+          <button class="filter-chip is-active" type="button" data-facet-filter="all" aria-pressed="true">Tất cả</button>
+          {styleFacets.map((facet) => <button class="filter-chip" type="button" data-facet-filter={facet.id} aria-pressed="false">{facet.label}</button>)}
         </div>
         <div class="toolbar-status">
-          <p><strong data-result-count>90</strong> / 90 phong cách</p>
+          <p><strong data-result-count>{styles.length}</strong> / {styles.length} phong cách</p>
           <button type="button" class="saved-filter" data-saved-filter aria-pressed="false">
             <Icon name="bookmark" size={18} />
             Chỉ xem đã lưu
@@ -102,14 +102,14 @@ const jsonLd = {
   <script>
     const search = document.querySelector<HTMLInputElement>("[data-style-search]");
     const cards = [...document.querySelectorAll<HTMLElement>("[data-style-card]")];
-    const filters = [...document.querySelectorAll<HTMLButtonElement>("[data-family-filter]")];
+    const filters = [...document.querySelectorAll<HTMLButtonElement>("[data-facet-filter]")];
     const savedFilter = document.querySelector<HTMLButtonElement>("[data-saved-filter]");
     const count = document.querySelector<HTMLElement>("[data-result-count]");
     const empty = document.querySelector<HTMLElement>("[data-empty-state]");
     const grid = document.querySelector<HTMLElement>("[data-style-grid]");
     const reset = document.querySelector<HTMLButtonElement>("[data-reset-filters]");
 
-    let activeFamily = "all";
+    let activeFacet = "all";
     let savedOnly = false;
 
     const normalize = (value: string) => value.toLocaleLowerCase("vi").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -118,7 +118,7 @@ const jsonLd = {
     function syncUrl() {
       const params = new URLSearchParams();
       if (search?.value.trim()) params.set("q", search.value.trim());
-      if (activeFamily !== "all") params.set("family", activeFamily);
+      if (activeFacet !== "all") params.set("facet", activeFacet);
       if (savedOnly) params.set("saved", "1");
       history.replaceState(null, "", `${location.pathname}${params.size ? `?${params}` : ""}${location.hash}`);
     }
@@ -129,9 +129,9 @@ const jsonLd = {
       let visible = 0;
       cards.forEach((card) => {
         const matchesQuery = !query || normalize(card.dataset.search ?? "").includes(query);
-        const matchesFamily = activeFamily === "all" || card.dataset.family === activeFamily;
+        const matchesFacet = activeFacet === "all" || card.dataset.facet === activeFacet;
         const matchesSaved = !savedOnly || saved.has(card.dataset.slug ?? "");
-        const show = matchesQuery && matchesFamily && matchesSaved;
+        const show = matchesQuery && matchesFacet && matchesSaved;
         card.hidden = !show;
         if (show) visible += 1;
       });
@@ -141,19 +141,19 @@ const jsonLd = {
       if (updateUrl) syncUrl();
     }
 
-    function setFamily(value: string) {
-      activeFamily = value;
+    function setFacet(value: string) {
+      activeFacet = value;
       filters.forEach((filter) => {
-        const active = filter.dataset.familyFilter === value;
+        const active = filter.dataset.facetFilter === value;
         filter.classList.toggle("is-active", active);
         filter.setAttribute("aria-pressed", String(active));
       });
     }
 
     const params = new URLSearchParams(location.search);
-    const requestedFamily = params.get("family");
+    const requestedFacet = params.get("facet");
     if (search) search.value = params.get("q") ?? "";
-    if (requestedFamily && filters.some((filter) => filter.dataset.familyFilter === requestedFamily)) setFamily(requestedFamily);
+    if (requestedFacet && filters.some((filter) => filter.dataset.facetFilter === requestedFacet)) setFacet(requestedFacet);
     savedOnly = params.get("saved") === "1";
     savedFilter?.setAttribute("aria-pressed", String(savedOnly));
     savedFilter?.classList.toggle("is-active", savedOnly);
@@ -161,7 +161,7 @@ const jsonLd = {
 
     search?.addEventListener("input", () => applyFilters());
     filters.forEach((filter) => filter.addEventListener("click", () => {
-      setFamily(filter.dataset.familyFilter ?? "all");
+      setFacet(filter.dataset.facetFilter ?? "all");
       applyFilters();
     }));
     savedFilter?.addEventListener("click", () => {
@@ -175,7 +175,7 @@ const jsonLd = {
       savedOnly = false;
       savedFilter?.setAttribute("aria-pressed", "false");
       savedFilter?.classList.remove("is-active");
-      setFamily("all");
+      setFacet("all");
       applyFilters();
       search?.focus();
     });

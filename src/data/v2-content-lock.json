@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "sources": {
+    "styleDataset": {
+      "issue": "LDK-615",
+      "path": "src/data/style-library.v2.json",
+      "sha256": "6ae009cc7098e4c787c86b946474118515955586e81e0ea22ba5ba5de27f375d"
+    },
+    "styleAssetManifest": {
+      "issue": "LDK-615",
+      "path": "src/data/style-library-v2-assets.json",
+      "sha256": "d9a3804952beda9df7249dfe4ed51b22b73bdd88294b9fa22afa773088df4781"
+    },
+    "anatomyDataset": {
+      "issue": "LDK-616",
+      "path": "src/data/image-anatomy.v2.json",
+      "sha256": "b032337d44517843372f2d9fd8e68c4729e0f87d8e092d1135b8f66bc45bc018"
+    },
+    "anatomyAssetManifest": {
+      "issue": "LDK-616",
+      "path": "src/data/image-anatomy-v2-assets.json",
+      "sha256": "4c1f6c354b4910c8afe08375e231c3d468070f1d919e1739985669bbec36fed6"
+    }
+  }
+}
+

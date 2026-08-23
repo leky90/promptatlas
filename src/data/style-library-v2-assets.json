@@ -1,0 +1,1007 @@
+{
+  "schemaVersion": "style-library-v2-assets.1",
+  "packageId": "content-package.ldk-615.style-library-v2",
+  "generatedAt": "2026-08-23T04:03:00Z",
+  "imagegenMode": "built-in",
+  "referenceAssets": [
+    {
+      "assetId": "asset.style-v2.surrealism",
+      "targetConceptId": "style.surrealism",
+      "relativePath": "assets/surrealism.png",
+      "mimeType": "image/png",
+      "bytes": 2207537,
+      "sha256": "18ba61c506a3db808d830eb2c2c1d4666a61a163e571b978cadaec83b9ed7322",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference replacement\nPrimary request: a surreal dream scene inside a silent marble gallery where a calm adult woman stands beside an unframed doorway opening directly onto a moonlit ocean; smooth blank stones and simple unmarked geometric blocks float with convincing shadows; include no books, papers, posters, signs, screens, labels, inscriptions, patterns resembling letters, or writing surfaces\nStyle/medium: Surrealism as an art movement; precise dream logic, impossible spatial relationships, crisp figurative detail, uncanny scale shifts; no living-artist or brand references\nComposition/framing: landscape 3:2, clear central subject, polished catalog-quality reference\nLighting/mood: soft museum-like light mixed with moonlit blue, contemplative and uncanny\nConstraints: the Surrealist visual language must be dominant and unmistakable; adult subject; absolutely no text, letters, numbers, glyphs, logos, watermark, signature, books or paper\nAvoid: pop-surrealist big eyes, generic fantasy illustration, horror gore, melting clocks, printed surfaces",
+        "promptSha256": "aae4548b7b9608022361b49f718b479920125bf6038bca6c91ba4664a1888add",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Surreal marble gallery where a doorway opens onto a moonlit ocean and blank stones and geometric blocks float around an adult woman.",
+        "altVi": "Không gian cẩm thạch siêu thực, nơi cánh cửa mở ra biển trăng và đá cùng khối hình học không chữ lơ lửng quanh một phụ nữ trưởng thành."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "impossible spatial relationship",
+          "uncanny scale shift",
+          "precise dream logic"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": [
+          "The reference leans photographic and architectural, while the movement also spans painted and collage practices."
+        ]
+      },
+      "replacementAudit": {
+        "reason": "Fresh CPO review rejected the first candidate because visible text-like glyphs contradicted the exact no-text constraint.",
+        "priorCandidateSha256": "737f1174703a119552a7a3135ca77b647358a5a15594508b4051d4e8ed0f92ed",
+        "disposition": "rejected-not-in-package",
+        "reReviewedAtOriginalResolution": true
+      }
+    },
+    {
+      "assetId": "asset.style-v2.rococo",
+      "targetConceptId": "style.rococo",
+      "relativePath": "assets/rococo.png",
+      "mimeType": "image/png",
+      "bytes": 2898090,
+      "sha256": "3a16a892c8e306cd19941cd9fb988b3763b42cd455fdc277e681dbc4ed1ae3f4",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: an elegant outdoor garden fête with adult figures in pastel silk garments, flowering bowers, a marble fountain, shell-shaped scroll ornament and asymmetrical gilded details\nStyle/medium: Rococo as an eighteenth-century art movement; airy brushwork, pastel pink blue and cream, playful curved forms, ornamental lightness; no living-artist or brand references\nComposition/framing: landscape 3:2, graceful diagonal grouping, polished museum-catalog reference\nLighting/mood: luminous soft daylight, charming and intimate\nConstraints: Rococo visual language must be dominant and unmistakable; adult subjects; no text; no logos; no watermark; no signature\nAvoid: dark Baroque tenebrism, severe Neoclassicism, generic fantasy illustration",
+        "promptSha256": "016b8c4a695e86d5be49f01fc969151260a43e1c00e99e120b481b437e8dd5c9",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Pastel Rococo garden gathering with silk garments, a fountain, flowers, and gilded shell ornament.",
+        "altVi": "Buổi tụ họp trong vườn Rococo màu pastel với trang phục lụa, đài phun nước, hoa và họa tiết vỏ sò mạ vàng."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "pastel silk palette",
+          "asymmetrical shell scrolls",
+          "airy garden leisure"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    },
+    {
+      "assetId": "asset.style-v2.constructivism",
+      "targetConceptId": "style.constructivism",
+      "relativePath": "assets/constructivism.png",
+      "mimeType": "image/png",
+      "bytes": 2749839,
+      "sha256": "8c4a6969bd6e5c4bfcaedb2fe1df9113e4a91af28b770f3d0ded1d771beb2d8d",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: a dynamic industrial city scene assembled from an adult worker silhouette, cranes, gears, circular forms and architectural fragments\nStyle/medium: Constructivism; red black and warm cream palette, forceful diagonals, geometric photomontage, industrial energy, poster-like visual organization without any words; no living-artist or brand references\nComposition/framing: landscape 3:2, bold diagonal axis, crisp catalog-quality reference\nLighting/mood: urgent, optimistic, machine-age\nConstraints: Constructivist visual language must be dominant and unmistakable; no text; no letters; no numbers; no logos; no watermark; no signature\nAvoid: calm Bauhaus grids, raw Brutalist blocks, contemporary corporate infographic",
+        "promptSha256": "6c6e3d5dfcb0dbecae633e6d769bae37bddd541685e17edc68730499c800d710",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Constructivist industrial montage with a worker, cranes, gears, and red-black diagonal geometry.",
+        "altVi": "Montage công nghiệp Kiến tạo với công nhân, cần cẩu, bánh răng và hình học chéo đỏ-đen."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "red-black-cream palette",
+          "forceful diagonal geometry",
+          "industrial photomontage"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    },
+    {
+      "assetId": "asset.style-v2.charcoal-drawing",
+      "targetConceptId": "style.charcoal-drawing",
+      "relativePath": "assets/charcoal-drawing.png",
+      "mimeType": "image/png",
+      "bytes": 3438757,
+      "sha256": "cd330279652b6ddb2d20f472c182a23b7edfa5abf90fc61cc6b0110720693b9a",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: a classical plaster bust beside folded drapery and a ceramic vessel as a studio still life\nStyle/medium: traditional charcoal drawing on warm off-white paper; vine-charcoal construction lines, compressed-charcoal darks, broad smudged tonal masses, kneaded-eraser highlights, visible paper tooth; no living-artist or brand references\nComposition/framing: landscape 3:2, three-quarter view, academically balanced, polished catalog reference\nLighting/mood: strong single-window chiaroscuro, quiet study\nConstraints: the charcoal medium must be physically obvious and dominant; monochrome; no text; no logos; no watermark; no signature\nAvoid: graphite pencil precision, ink hatching, oil-paint impasto, photorealistic grayscale photo",
+        "promptSha256": "deddf8fa030d0de2dcbe7995bb92c5ef7800ac6b8ae2f2d88a5ca54590189aa0",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Charcoal still life of a plaster bust, ceramic vessels, and folded drapery on textured paper.",
+        "altVi": "Tĩnh vật vẽ than gồm tượng thạch cao, bình gốm và vải xếp trên giấy có thớ."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "smudged tonal mass",
+          "compressed-charcoal black",
+          "erased paper highlight"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    },
+    {
+      "assetId": "asset.style-v2.screen-printing",
+      "targetConceptId": "style.screen-printing",
+      "relativePath": "assets/screen-printing.png",
+      "mimeType": "image/png",
+      "bytes": 3262589,
+      "sha256": "2831e3d767c423243c0e7e144e9031e0db1dc141cc8899d4d36bc4e44f82bb77",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: a bold botanical-and-urban poster image combining large tropical leaves, a bicycle wheel and simplified building shapes\nStyle/medium: hand-pulled screen print using four flat spot inks; opaque color fields, visible mesh texture, subtle ink overlap and slight registration offset, crisp stencil edges; no living-artist or brand references\nComposition/framing: landscape 3:2, graphic layered silhouette, polished catalog reference\nLighting/mood: energetic and tactile\nConstraints: screen-print process cues must be dominant and unmistakable; no text; no letters; no logos; no watermark; no signature\nAvoid: risograph dot grain, CMYK halftone photograph, digital gradient, letterpress typography",
+        "promptSha256": "efc6852f3c037220d7961ce5777bdf4a68765cf633e0923d8204fe4b278c9cbe",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Four-color screen print combining tropical leaves, city blocks, and a large bicycle wheel.",
+        "altVi": "Bản in lụa bốn màu kết hợp lá nhiệt đới, khối đô thị và một bánh xe đạp lớn."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "opaque spot inks",
+          "mesh impression texture",
+          "stencil edges with slight offset"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    },
+    {
+      "assetId": "asset.style-v2.embroidery",
+      "targetConceptId": "style.embroidery",
+      "relativePath": "assets/embroidery.png",
+      "mimeType": "image/png",
+      "bytes": 4636767,
+      "sha256": "4563d6195a7352d7dfc9c16fa761f1f648140955a809037108b6b7048e01e7ad",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: a red fox curled among woodland ferns, berries and small wildflowers stitched onto natural linen\nStyle/medium: hand embroidery; clearly visible satin stitch, chain stitch, stem stitch and French knots, varied thread sheen, raised thread relief, tactile linen weave; no living-artist or brand references\nComposition/framing: landscape 3:2, centered hoop-like motif but without showing a hoop, polished catalog reference\nLighting/mood: warm gentle craft-table light, intimate and tactile\nConstraints: embroidery material and stitch construction must be physically obvious and dominant; no text; no logos; no watermark; no signature\nAvoid: cross-stitch pixel grid, printed fabric, knitted texture, flat vector illustration",
+        "promptSha256": "f2b9bd529a88c959e958a7a1792fc68862d8f5625f3ccd5665db99bfed29d0c3",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Hand-embroidered red fox curled among ferns, berries, and wildflowers on natural linen.",
+        "altVi": "Cáo đỏ thêu tay cuộn mình giữa dương xỉ, quả mọng và hoa dại trên vải lanh tự nhiên."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "varied named stitches",
+          "raised thread relief",
+          "visible linen weave"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    },
+    {
+      "assetId": "asset.style-v2.encaustic-painting",
+      "targetConceptId": "style.encaustic-painting",
+      "relativePath": "assets/encaustic-painting.png",
+      "mimeType": "image/png",
+      "bytes": 2786803,
+      "sha256": "435e6fee39d8683ba1ecb7ea72fe27a8c220a76e108467785b0f04d5ccf4d2af",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: an atmospheric coastal landscape with distant cliffs, sea bands and a pale horizon built from layered color\nStyle/medium: encaustic painting with pigmented beeswax; translucent wax strata, luminous depth, matte wax bloom, fused edges, scraped and incised line marks revealing lower layers; no living-artist or brand references\nComposition/framing: landscape 3:2, broad horizontal bands, polished catalog-quality reference\nLighting/mood: hazy quiet dawn, tactile and contemplative\nConstraints: wax material behavior and incised encaustic process must be dominant and unmistakable; no text; no logos; no watermark; no signature\nAvoid: oil-paint impasto, watercolor wash, glossy resin pour, photorealistic seascape",
+        "promptSha256": "6edbe62fea98057ee7a82f0dec43751ea87577f83e92fceae6f58192e45bb5d0",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Layered encaustic coastal landscape with translucent wax bands, incised lines, sea, and pale cliffs.",
+        "altVi": "Phong cảnh bờ biển encaustic nhiều lớp với dải sáp trong, nét khắc, biển và vách đá nhạt."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "translucent wax strata",
+          "matte wax bloom",
+          "scraped and incised lines"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": [
+          "Some raised seams can resemble heavy paint; wax strata, bloom, and incision remain dominant."
+        ]
+      }
+    },
+    {
+      "assetId": "asset.style-v2.documentary-photojournalism",
+      "targetConceptId": "style.documentary-photojournalism",
+      "relativePath": "assets/documentary-photojournalism.png",
+      "mimeType": "image/png",
+      "bytes": 2694361,
+      "sha256": "db36b9912ac6d65fc440c507c49dd7336356d04f67e978071f8a8c85ecc805ae",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: photorealistic\nAsset type: Prompt Atlas Style Library V2 canonical reference replacement\nPrimary request: a candid adult street-market vendor wearing a plain solid dark-blue shirt and a plain white apron while arranging loose fresh vegetables on unmarked wooden tables; customers pass softly in the background; include no signs, screens, labels, price cards, printed packages, patterned clothing, tattoos, newspapers, or writing surfaces\nStyle/medium: documentary photojournalism; unposed observational moment, available light, truthful skin and material texture, natural imperfect timing, restrained color, credible 35mm field of view; no living-artist or brand references\nComposition/framing: landscape 3:2, eye-level environmental framing with layered foreground and background context\nLighting/mood: early morning ambient light, humane and unsentimental\nConstraints: clearly adult subjects; plain unpatterned clothing; no staged glamour; absolutely no text, letters, numbers, glyphs, logos, watermark or press badge anywhere\nAvoid: commercial lifestyle advertising, fashion posing, cinematic teal-orange grading, voyeuristic distress, decorative writing-like patterns",
+        "promptSha256": "d21781e6a3aff0b589c06f701c1baa109c26b44515d3ffe37da3328cb0ce86d2",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Candid adult market vendor arranging vegetables while shoppers move through the surrounding stalls.",
+        "altVi": "Người bán hàng trưởng thành đang tự nhiên sắp rau, trong khi khách đi qua các sạp xung quanh."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "unposed decisive moment",
+          "environmental context",
+          "restrained available light"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": [
+          "The scene is synthetic and must always carry synthetic-content disclosure; it is not evidence of a real event."
+        ]
+      },
+      "replacementAudit": {
+        "reason": "Fresh CPO review rejected the first candidate because visible text-like glyphs contradicted the exact no-text constraint.",
+        "priorCandidateSha256": "8d00c3f4634125faa0565e9657cac1b0ce4642f4cb8aacb0dae78c704666f00f",
+        "disposition": "rejected-not-in-package",
+        "reReviewedAtOriginalResolution": true
+      }
+    },
+    {
+      "assetId": "asset.style-v2.architectural-photography",
+      "targetConceptId": "style.architectural-photography",
+      "relativePath": "assets/architectural-photography.png",
+      "mimeType": "image/png",
+      "bytes": 2103683,
+      "sha256": "e9c5ea67269ad8d102f4441b900c1f959073085f0b616e8f01639e122635fe01",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: photorealistic\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: a contemporary exposed-concrete museum with deep colonnades, a reflective water court and one small adult visitor for scale\nStyle/medium: professional architectural photography; corrected verticals, exact rectilinear geometry, controlled wide-angle perspective, high microcontrast, natural material fidelity; no architect, living-artist or brand references\nComposition/framing: landscape 3:2, symmetrical but spatially deep, clean edges, catalog-quality reference\nLighting/mood: blue hour with warm interior glow, calm and monumental\nConstraints: architecture is the clear subject; no text; no signage; no logos; no watermark\nAvoid: extreme fisheye distortion, real-estate HDR halos, fantasy buildings, empty 3D render look",
+        "promptSha256": "cf93364116bf1d02b2ad673e7ace44c9074b6815869e7422a494269e85286acc",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Blue-hour photograph of a concrete museum courtyard with corrected verticals, reflections, and one adult figure for scale.",
+        "altVi": "Ảnh chạng vạng của sân bảo tàng bê tông với đường đứng được chỉnh thẳng, mặt nước phản chiếu và một người trưởng thành làm tỷ lệ."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "corrected vertical lines",
+          "controlled wide-angle geometry",
+          "material and spatial fidelity"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    },
+    {
+      "assetId": "asset.style-v2.fashion-editorial-photography",
+      "targetConceptId": "style.fashion-editorial-photography",
+      "relativePath": "assets/fashion-editorial-photography.png",
+      "mimeType": "image/png",
+      "bytes": 1866465,
+      "sha256": "a6b5282697a124e6d6e1c8a1041ceee439af08bb17f3c1b7bc7066b65f6034a6",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: photorealistic\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: an adult fashion model wearing an original sculptural ivory-and-cobalt garment, standing against a geometric studio set\nStyle/medium: fashion editorial photography; deliberate styling, confident non-sexual pose, controlled hard-and-soft studio light, elevated material detail, bold negative space; no designer, living-artist or brand references\nComposition/framing: landscape 3:2, full-to-three-quarter body, asymmetric editorial crop, polished magazine-quality reference without text\nLighting/mood: dramatic cobalt shadow and warm key light, poised and contemporary\nConstraints: adult subject; original unbranded garment; no text; no logos; no watermark\nAvoid: catalog e-commerce pose, celebrity likeness, lingerie, exploitative styling, generic beauty headshot",
+        "promptSha256": "9e04e92538adb33c5ab09793e0926d9b9db26a0361741e2fe1351a79a8560b9d",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Adult model in an original sculptural ivory-and-cobalt garment posed in a geometric blue studio set.",
+        "altVi": "Người mẫu trưởng thành mặc trang phục điêu khắc màu ngà và cobalt nguyên bản, tạo dáng trong bối cảnh studio hình học xanh."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "deliberate original styling",
+          "expressive editorial pose",
+          "designed light and negative space"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": [
+          "Synthetic adult likeness; not a real person or endorsement."
+        ]
+      }
+    },
+    {
+      "assetId": "asset.style-v2.infrared-photography",
+      "targetConceptId": "style.infrared-photography",
+      "relativePath": "assets/infrared-photography.png",
+      "mimeType": "image/png",
+      "bytes": 3395366,
+      "sha256": "71cbbd5fc272ebe5260d779f1e24f52952f0a8e7cb30c2f6885e7761b4ebae14",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: photorealistic\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: a riverside landscape with dense trees, a stone footbridge and high summer clouds\nStyle/medium: infrared photography; foliage rendered luminous white, water and sky nearly black, crisp spectral tonal separation, subtle silvery grain, realistic infrared optics; no living-artist or brand references\nComposition/framing: landscape 3:2, strong river leading line, catalog-quality reference\nLighting/mood: bright midday transformed into otherworldly calm\nConstraints: infrared photographic signature must be dominant and unmistakable; monochrome; no text; no logos; no watermark\nAvoid: cyanotype blue, ordinary black-and-white landscape, snow scene, fantasy painting, neon false-color gradient",
+        "promptSha256": "d129404466aeaf65ba00add46d91152b860de7dcf41633c8d9d12ba6e1b41f92",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Infrared riverside landscape with white foliage, a dark river and sky, a stone bridge, and bright clouds.",
+        "altVi": "Phong cảnh ven sông hồng ngoại với tán lá trắng, sông và trời tối, cầu đá và mây sáng."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "luminous white foliage",
+          "near-black sky and water",
+          "spectral tonal separation"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    },
+    {
+      "assetId": "asset.style-v2.solarpunk",
+      "targetConceptId": "style.solarpunk",
+      "relativePath": "assets/solarpunk.png",
+      "mimeType": "image/png",
+      "bytes": 3892210,
+      "sha256": "87640837cc5c881076c7d1f4d4ee655976902db61568581cc48d5fadb0af9c85",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: a walkable neighborhood where adults tend a community greenhouse beside a tree-lined bicycle-and-pedestrian greenway, rain gardens, solar canopies and passive-climate buildings; include no vehicles, displays, signs or writing surfaces\nStyle/medium: Solarpunk visual language; practical ecological technology integrated with abundant biodiversity, human-scale optimistic urbanism, warm illustrative realism; no living-artist or brand references\nComposition/framing: landscape 3:2, street-level layered vista, clear renewable infrastructure and community activity, polished catalog reference\nLighting/mood: bright warm morning, hopeful but credible\nConstraints: ecological reciprocity and visible renewable systems must be dominant; adult subjects; absolutely no text, letters, numbers, signage, displays, logos, watermark or signature\nAvoid: cyberpunk neon, dystopia, sterile corporate eco-render, impossible floating city, token rooftop plants, trains, buses, cars",
+        "promptSha256": "eeec79f8bc9eec9660979dc1ee6ce357eeb2c1e8b6c01454279a0fce975ed160",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Adults garden and cycle through a lush walkable neighborhood with greenhouses, rain gardens, and large solar canopies.",
+        "altVi": "Người lớn làm vườn và đạp xe trong khu phố xanh đi bộ được, có nhà kính, vườn mưa và mái che năng lượng mặt trời."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "visible renewable infrastructure",
+          "biodiverse human-scale urbanism",
+          "community repair and cultivation"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": [
+          "The reference demonstrates community cultivation and renewable infrastructure but not every social dimension of the aesthetic."
+        ]
+      }
+    },
+    {
+      "assetId": "asset.style-v2.brutalist-graphic-design",
+      "targetConceptId": "style.brutalist-graphic-design",
+      "relativePath": "assets/brutalist-graphic-design.png",
+      "mimeType": "image/png",
+      "bytes": 2425573,
+      "sha256": "e105fb4f3c322b98738f143b118f700480e005359c7997bd5323a849d016988b",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: an abstract no-text cultural poster made from monolithic black forms, an off-white field, one deep red slab and an oversized geometric bar\nStyle/medium: Brutalist graphic design; raw modular grid, intentionally abrupt hierarchy, heavy unpolished forms, rough photocopy and distressed print texture, severe negative space; no living-artist or brand references\nComposition/framing: landscape 3:2, flat frontal poster plane, asymmetric and confrontational, catalog-quality reference\nLighting/mood: stark, uncompromising, utilitarian\nConstraints: no text; no letters; no numbers; no logos; no watermark; no signature\nAvoid: Constructivist diagonal propaganda, photomontage workers, Swiss typographic cleanliness, polished corporate minimalism",
+        "promptSha256": "4f365e466a9ce2eee90c99fe4eff1b19c927415f3f0ca45315e038b4615a813c",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Textless Brutalist graphic composition of distressed black blocks, one red slab, and a large off-white void.",
+        "altVi": "Bố cục đồ họa Brutalist không chữ gồm các khối đen sần, một phiến đỏ và khoảng trống trắng ngà lớn."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "monolithic geometric blocks",
+          "abrupt raw hierarchy",
+          "distressed reproduction texture"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": [
+          "The no-text reference isolates structure and texture; typographic Brutalism remains a related application, not shown here."
+        ]
+      }
+    },
+    {
+      "assetId": "asset.style-v2.isometric-3d-illustration",
+      "targetConceptId": "style.isometric-3d-illustration",
+      "relativePath": "assets/isometric-3d-illustration.png",
+      "mimeType": "image/png",
+      "bytes": 2513324,
+      "sha256": "eec7c019da98d6412665ddd3995ed3a3414ad14ff944d28cc3d4ccba293f10ea",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: a modular sustainable design studio with worktables, plants, material shelves, skylights, a compact meeting corner and two tiny adult figures collaborating\nStyle/medium: isometric 3D illustration; precise parallel 30-degree axes, clean modeled materials, soft ambient occlusion, readable object hierarchy, subtly rounded geometry, restrained original palette; no living-artist or brand references\nComposition/framing: landscape 3:2, cutaway room shown from a consistent elevated isometric view, polished catalog-quality reference\nLighting/mood: diffuse daylight, calm and constructive\nConstraints: consistent isometric projection must be dominant and unmistakable; adult figures; no text; no logos; no watermark\nAvoid: voxel cubes, low-poly triangular facets, perspective vanishing points, game screenshot, flat axonometric vector",
+        "promptSha256": "8ecd97c5b22cae656b5f988cc31acb05901e0732e8d635ed5a9bd3f9d72ae947",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Isometric 3D cutaway of a sustainable design studio with worktables, storage, plants, and two adult collaborators.",
+        "altVi": "Mặt cắt 3D đẳng phối của studio thiết kế bền vững với bàn làm việc, kho vật liệu, cây xanh và hai người lớn cộng tác."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "consistent parallel isometric axes",
+          "modeled material depth",
+          "soft ambient occlusion"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    },
+    {
+      "assetId": "asset.style-v2.fractal-art",
+      "targetConceptId": "style.fractal-art",
+      "relativePath": "assets/fractal-art.png",
+      "mimeType": "image/png",
+      "bytes": 3665086,
+      "sha256": "9b487f34cc72f0b2ba1f8f9f6a627a0a3e352a009945d3016fa158b814ce208f",
+      "width": 1536,
+      "height": 1024,
+      "aspectRatio": "3:2",
+      "generation": {
+        "productRouteId": "codex-built-in-imagegen",
+        "mode": "built-in",
+        "modelIdentity": "not surfaced by tool",
+        "acquisitionDate": "2026-08-23",
+        "exactPrompt": "Use case: stylized-concept\nAsset type: Prompt Atlas Style Library V2 canonical reference\nPrimary request: an intricate organic structure where fern-like branches curl into nested spirals and every scale repeats the same branching law\nStyle/medium: mathematical fractal art; rigorous self-similarity, recursive branching and spiral geometry, extremely fine controlled detail, luminous teal amber and violet palette on deep black; no living-artist or brand references\nComposition/framing: landscape 3:2, one dominant recursive form with visible macro-to-micro repetition, polished gallery reference\nLighting/mood: luminous, precise and contemplative\nConstraints: true recursive self-similarity must be dominant and unmistakable; no text; no logos; no watermark; no signature\nAvoid: generic psychedelic swirl, random fluid-art marbling, kaleidoscope mandala, simple particle nebula",
+        "promptSha256": "be5dc727bcd0b65635863d428e574199d15caef9d57796aff29556f71ba0a368",
+        "promptProviderNeutral": true,
+        "livingCreatorOrBrandReference": false
+      },
+      "rights": {
+        "sourceClass": "synthetic-generated-for-project",
+        "generator": "OpenAI built-in image generation through Codex imagegen",
+        "generatorModelIdentity": "not surfaced by the built-in imagegen tool",
+        "generatedAt": "2026-08-23",
+        "termsSnapshotDate": "2026-08-23",
+        "termsUrl": "https://openai.com/policies/terms-of-use/",
+        "ownershipFinding": "As between the operator and OpenAI, and to the extent permitted by applicable law, the operator owns Output; OpenAI assigns its right, title, and interest, if any, in Output. Output may not be unique and the operator remains responsible for lawful use and human review.",
+        "permissions": {
+          "internalReview": "cleared",
+          "commercialDisplay": "cleared-subject-to-applicable-law-and-final-release-review",
+          "redistribution": "cleared-subject-to-applicable-law-and-final-release-review",
+          "derivatives": "cleared-subject-to-applicable-law-and-final-release-review"
+        },
+        "attributionRequired": false,
+        "consentReleaseStatus": "not-applicable-synthetic-adult-or-non-person-subject",
+        "restrictions": [
+          "Synthetic-content disclosure is mandatory.",
+          "Do not imply a real event, real person, endorsement, or documentary evidence.",
+          "Production publication remains outside LDK-615 and requires the later integration/release gates."
+        ],
+        "takedownStatus": "none"
+      },
+      "accessibility": {
+        "altEn": "Luminous teal, amber, and violet fern-like fractal branches repeating into a nested spiral on black.",
+        "altVi": "Các nhánh fractal như dương xỉ màu teal, hổ phách và tím phát sáng, lặp thành xoắn ốc lồng nhau trên nền đen."
+      },
+      "fidelityReview": {
+        "reviewerRole": "content-director",
+        "reviewDate": "2026-08-23",
+        "verdict": "passed",
+        "visibleTargetCues": [
+          "recursive self-similarity",
+          "nested branching spirals",
+          "macro-to-micro repetition"
+        ],
+        "forbiddenCueFindings": "No visible text, logo, watermark, signature, living-creator imitation, or conflicting nearest-neighbor cue found in manual visual inspection.",
+        "pixelInspection": {
+          "method": "manual-original-resolution-visual-review",
+          "noVisibleTextOrTextLikeGlyphs": true,
+          "noVisibleLogoWatermarkOrSignature": true
+        },
+        "knownLimitations": []
+      }
+    }
+  ]
+}

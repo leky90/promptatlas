@@ -8,14 +8,14 @@ import ComposerEntry from "../../components/ComposerEntry.astro";
 import PromptAnatomy from "../../components/PromptAnatomy.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
 import { evidenceForStyle, promptSourceForStyle } from "../../lib/evidence";
-import { paddedId, styleBySlug, styles, type StyleRecord } from "../../lib/styles";
+import { paddedId, styleBySlug, styleRoutes, styles, type StyleRecord } from "../../lib/styles";
 
 export function getStaticPaths() {
-  return styles.map((style) => ({ params: { slug: style.slug }, props: { style } }));
+  return styleRoutes.map(({ routeSlug, style }) => ({ params: { slug: routeSlug }, props: { style, routeSlug } }));
 }
 
-type Props = { style: StyleRecord };
-const { style } = Astro.props;
+type Props = { style: StyleRecord; routeSlug: string };
+const { style, routeSlug } = Astro.props;
 const related = style.related.map(styleBySlug).filter((item): item is StyleRecord => Boolean(item));
 const evidence = evidenceForStyle(style);
 const promptSource = promptSourceForStyle(style);
@@ -35,6 +35,7 @@ const jsonLd = {
   image: `https://prompt-atlas.ldktech.com${output.path}`,
   isPartOf: { "@type": "CollectionPage", name: "Prompt Atlas" },
 };
+const isLegacyAlias = routeSlug !== style.slug;
 ---
 
 <BaseLayout
@@ -64,6 +65,7 @@ const jsonLd = {
           <div class="detail-hero__actions"><FavoriteButton slug={style.slug} name={style.name} /></div>
         </div>
       </div>
+      {isLegacyAlias && <p class="legacy-alias-note">Route cũ <code>/styles/{routeSlug}/</code> được giữ để tương thích. Tên chuẩn V2 là <a href={`/styles/${style.slug}/`}>{style.name}</a>.</p>}
     </header>
 
     <section class="learning-output shell" data-learning-step="output" aria-labelledby={`output-${style.slug}`}>
@@ -123,7 +125,7 @@ const jsonLd = {
     <section class="related-section shell" aria-labelledby="related-title">
       <div class="section-heading">
         <div><p class="eyebrow">TIẾP TỤC KHÁM PHÁ</p><h2 id="related-title">Phong cách cùng mạch.</h2></div>
-        <a href="/#atlas">Xem đủ 90 phong cách <Icon name="arrow-right" /></a>
+        <a href="/#atlas">Xem đủ {styles.length} phong cách <Icon name="arrow-right" /></a>
       </div>
       <div class="style-grid style-grid--related">
         {related.map((item) => <PairCard style={item} />)}

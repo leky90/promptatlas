@@ -15,7 +15,7 @@ test("atlas previews one output and the prompt before reuse actions", async ({ c
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
 
-  await expect(page.locator("[data-style-card]")).toHaveCount(90);
+  await expect(page.locator("[data-style-card]")).toHaveCount(105);
   const firstCard = page.locator("[data-style-card]").first();
   await expect(firstCard.locator("[data-learning-output] img")).toHaveCount(1);
   await expect(firstCard.locator("[data-comparison-eligible]")).toHaveCount(0);
@@ -36,16 +36,16 @@ test("atlas previews one output and the prompt before reuse actions", async ({ c
   await page.locator("[data-style-search]").fill("không-có-phong-cách-này");
   await expect(page.locator("[data-empty-state]")).toBeVisible();
   await page.locator("[data-reset-filters]").click();
-  await expect(page.locator("[data-result-count]")).toHaveText("90");
+  await expect(page.locator("[data-result-count]")).toHaveText("105");
 
-  await page.locator('[data-family-filter="Nhiếp ảnh"]').click();
+  await page.locator('[data-facet-filter="photography-cinematic"]').click();
   const visible = page.locator("[data-style-card]:visible");
   expect(await visible.count()).toBeGreaterThan(0);
   for (let index = 0; index < await visible.count(); index += 1) {
-    await expect(visible.nth(index)).toHaveAttribute("data-family", "Nhiếp ảnh");
+    await expect(visible.nth(index)).toHaveAttribute("data-facet", "photography-cinematic");
   }
 
-  await page.locator('[data-family-filter="all"]').click();
+  await page.locator('[data-facet-filter="all"]').click();
   const firstFavorite = page.locator("[data-favorite]").first();
   const savedSlug = await firstFavorite.getAttribute("data-favorite");
   await firstFavorite.click();
@@ -54,6 +54,50 @@ test("atlas previews one output and the prompt before reuse actions", async ({ c
   await expect(page.locator("[data-result-count]")).toHaveText("01");
   await expect(page.locator(`[data-style-card][data-slug="${savedSlug}"]`)).toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test("V2 gallery filters 105 accepted styles by the seven canonical facets", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("[data-facet-filter]")).toHaveCount(8);
+  await page.locator('[data-facet-filter="digital-rendering"]').click();
+  const visible = page.locator("[data-style-card]:visible");
+  expect(await visible.count()).toBeGreaterThan(0);
+  for (let index = 0; index < await visible.count(); index += 1) {
+    await expect(visible.nth(index)).toHaveAttribute("data-facet", "digital-rendering");
+  }
+  await page.locator("[data-style-search]").fill("fractal");
+  await expect(page.locator('[data-style-card][data-slug="fractal-art"]')).toBeVisible();
+  await page.locator('[data-facet-filter="all"]').click();
+  await page.locator("[data-style-search]").fill("đồ chơi lắp ghép");
+  await expect(page.locator('[data-style-card][data-slug="interlocking-toy-brick-diorama"]')).toBeVisible();
+  await expect(page.locator('[data-style-card][data-slug="lego"]')).toHaveCount(0);
+  expect((await page.request.head("/styles/lego/")).ok()).toBe(true);
+  expect((await page.request.head("/styles/interlocking-toy-brick-diorama/")).ok()).toBe(true);
+});
+
+test("Image Anatomy exposes 7 categories, 116 dimensions and URL-backed filters", async ({ page }) => {
+  await page.goto("/anatomy/");
+  await expect(page.locator("[data-anatomy-category]")).toHaveCount(7);
+  await expect(page.locator("[data-anatomy-dimension]")).toHaveCount(116);
+  await page.locator('[data-category-filter="camera"]').click();
+  await expect(page).toHaveURL(/category=camera/);
+  const visible = page.locator("[data-anatomy-dimension]:visible");
+  expect(await visible.count()).toBeGreaterThan(0);
+  for (let index = 0; index < await visible.count(); index += 1) {
+    await expect(visible.nth(index)).toHaveAttribute("data-category", "camera");
+  }
+  await page.locator("[data-anatomy-search]").fill("góc máy");
+  await expect(page.locator('[data-anatomy-dimension="camera.angle"]')).toBeVisible();
+});
+
+test("Image Anatomy dimension teaches Core, Advanced, comparisons and applications", async ({ page }) => {
+  await page.goto("/anatomy/subject-person-role/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Vai trò");
+  await expect(page.locator('[data-value-tier="core"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-value-tier="advanced"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-example-role="controlled-comparison"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-example-role="application"]')).not.toHaveCount(0);
+  await expect(page.locator("main img[alt]").first()).toBeVisible();
 });
 
 test("gallery keeps an observable loading state until a thumbnail resolves", async ({ page }) => {
@@ -202,7 +246,7 @@ test("methodology keeps the three evidence axes independent and discloses legacy
   await expect(page.getByText(/điểm trung bình là trung bình cộng/iu)).toHaveCount(0);
 });
 
-for (const path of ["/", "/discover/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {
+for (const path of ["/", "/discover/", "/anatomy/", "/anatomy/camera-angle/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {
   test(`no serious accessibility violations on ${path}`, async ({ page }) => {
     await page.goto(path);
     const results = await new AxeBuilder({ page }).analyze();

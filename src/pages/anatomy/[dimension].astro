@@ -1,0 +1,92 @@
+---
+import AnatomyValueCard from "../../components/AnatomyValueCard.astro";
+import Icon from "../../components/Icon.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  anatomyCategoryById,
+  anatomyComparisonsForDimension,
+  anatomyDimensionSlug,
+  anatomyDimensions,
+  anatomyExamplesForValue,
+  anatomyValuesForDimension,
+  type AnatomyDimension,
+} from "../../lib/anatomy";
+
+export function getStaticPaths() {
+  return anatomyDimensions.map((dimension) => ({ params: { dimension: anatomyDimensionSlug(dimension.dimensionId) }, props: { dimension } }));
+}
+
+type Props = { dimension: AnatomyDimension };
+const { dimension } = Astro.props;
+const category = anatomyCategoryById(dimension.categoryId);
+const values = anatomyValuesForDimension(dimension.dimensionId);
+const coreValues = values.filter((value) => value.tier === "core");
+const advancedValues = values.filter((value) => value.tier === "advanced");
+const comparisons = anatomyComparisonsForDimension(dimension.dimensionId);
+const description = `${dimension.label.vi}: ${values.length} giá trị Core và Advanced với ví dụ trực quan trong Image Anatomy V2.`;
+---
+
+<BaseLayout title={`${dimension.label.vi} — Image Anatomy V2 | Prompt Atlas`} description={description} bodyClass="anatomy-detail-page">
+  <article>
+    <header class="anatomy-detail-hero shell">
+      <nav class="breadcrumb" aria-label="Đường dẫn"><a href="/anatomy/">Image Anatomy</a><span aria-hidden="true">/</span><span>{category?.label.vi}</span></nav>
+      <p class="eyebrow">{dimension.dimensionId} / {dimension.promptRole}</p>
+      <h1>{dimension.label.vi}</h1>
+      <p class="anatomy-detail-hero__en">{dimension.label.en}</p>
+      <div class="anatomy-detail-hero__meta">
+        <p>{description}</p>
+        <dl>
+          <div><dt>Core</dt><dd>{coreValues.length}</dd></div>
+          <div><dt>Advanced</dt><dd>{advancedValues.length}</dd></div>
+          <div><dt>So sánh</dt><dd>{comparisons.length}</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    {dimension.subdimensions.length > 0 && (
+      <section class="anatomy-subdimensions shell" aria-labelledby="subdimension-title">
+        <p class="step-number">CẤU TRÚC TRỤC</p>
+        <h2 id="subdimension-title">Các trục có thể thay đổi độc lập.</h2>
+        <div>
+          {dimension.subdimensions.map((subdimension) => (
+            <article>
+              <span>{subdimension.axis}</span>
+              <h3>{subdimension.subdimensionId}</h3>
+              <p>{subdimension.definition.vi}</p>
+              <small>{subdimension.valueIds.length} mốc giá trị</small>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="anatomy-tier shell" aria-labelledby="core-title">
+      <div class="section-heading"><div><p class="eyebrow">CORE / NỀN TẢNG</p><h2 id="core-title">Những giá trị nên học trước.</h2></div><p>Mỗi giá trị gắn với cụm prompt và evidence trực quan đã được chấp nhận.</p></div>
+      <div class="anatomy-value-grid">
+        {coreValues.map((value) => <AnatomyValueCard value={value} examples={anatomyExamplesForValue(value.valueId)} />)}
+      </div>
+    </section>
+
+    <section class="anatomy-tier anatomy-tier--advanced shell" aria-labelledby="advanced-title">
+      <div class="section-heading"><div><p class="eyebrow">ADVANCED / MỞ RỘNG</p><h2 id="advanced-title">Mở rộng sau khi đã có mốc Core.</h2></div><p>Advanced là mốc dạy học có ranh giới rõ, không phải từ điển đóng.</p></div>
+      <div class="anatomy-value-grid">
+        {advancedValues.map((value) => <AnatomyValueCard value={value} examples={anatomyExamplesForValue(value.valueId)} />)}
+      </div>
+    </section>
+
+    {comparisons.length > 0 && (
+      <section class="anatomy-comparisons shell" aria-labelledby="comparison-title">
+        <p class="step-number">SO SÁNH CÓ KIỂM SOÁT</p>
+        <h2 id="comparison-title">Đổi một thuộc tính, giữ phần còn lại.</h2>
+        {comparisons.map((comparison) => (
+          <details>
+            <summary>{comparison.comparisonSetId} <Icon name="arrow-down" size={16} /></summary>
+            <p>{comparison.necessaryAdaptation}</p>
+            <ul>{comparison.fixedVariables.map((item) => <li>{item}</li>)}</ul>
+          </details>
+        ))}
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
