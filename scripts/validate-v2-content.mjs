@@ -62,6 +62,8 @@ export async function validateV2Content({ verifyAssets = true, verifySourceLocks
   const recipes = style.registry.hybridRecipes;
   const conceptIds = new Set(concepts.map((item) => item.conceptId));
   const recipeIds = new Set(recipes.map((item) => item.recipeId));
+  const styleAssetIds = new Set(styleAssets.referenceAssets.map((item) => item.assetId));
+  const styleAssetsById = new Map(styleAssets.referenceAssets.map((item) => [item.assetId, item]));
   const targets = new Set([...conceptIds, ...recipeIds]);
   unique(errors, "style.registry.canonicalConcepts", concepts.map((item) => item.conceptId));
   unique(errors, "style.registry.canonicalConcepts", concepts.map((item) => item.canonicalSlug));
@@ -69,6 +71,22 @@ export async function validateV2Content({ verifyAssets = true, verifySourceLocks
   unique(errors, "style.migrationManifest", style.migrationManifest.map((item) => item.legacyId));
   unique(errors, "styleAssets.referenceAssets", styleAssets.referenceAssets.map((item) => item.assetId));
   if (new Set(concepts.map((item) => item.primaryFacet)).size !== 7) add(errors, "style.registry.canonicalConcepts", "must expose exactly seven primary facets");
+  concepts.forEach((item) => {
+    ensureRefs(errors, `${item.conceptId}.relations.relatedConceptIds`, item.relations.relatedConceptIds, conceptIds);
+    if (!item.referenceAssetId) return;
+    ensureRefs(errors, `${item.conceptId}.referenceAssetId`, [item.referenceAssetId], styleAssetIds);
+    const asset = styleAssetsById.get(item.referenceAssetId);
+    if (asset && asset.targetConceptId !== item.conceptId) {
+      add(errors, `${item.conceptId}.referenceAssetId`, `${item.referenceAssetId} targetConceptId does not match ${item.conceptId}`);
+    }
+  });
+  styleAssets.referenceAssets.forEach((item) => {
+    ensureRefs(errors, `${item.assetId}.targetConceptId`, [item.targetConceptId], conceptIds);
+    const concept = concepts.find((candidate) => candidate.conceptId === item.targetConceptId);
+    if (concept && concept.referenceAssetId !== item.assetId) {
+      add(errors, `${item.assetId}.targetConceptId`, `targetConceptId does not match the concept referenceAssetId`);
+    }
+  });
   recipes.forEach((item) => ensureRefs(errors, item.recipeId, item.componentConceptIds, conceptIds));
   style.migrationManifest.forEach((item, index) => {
     const source = legacy[index];

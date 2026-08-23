@@ -6,8 +6,9 @@ import { validateV2Content } from "../scripts/validate-v2-content.mjs";
 
 const readJson = async (path) => JSON.parse(await readFile(new URL(path, import.meta.url), "utf8"));
 
-const [styleV2, anatomyV2, legacyStyles] = await Promise.all([
+const [styleV2, styleAssetsV2, anatomyV2, legacyStyles] = await Promise.all([
   readJson("../src/data/style-library.v2.json"),
+  readJson("../src/data/style-library-v2-assets.json"),
   readJson("../src/data/image-anatomy.v2.json"),
   readJson("../src/data/styles.json"),
 ]);
@@ -26,6 +27,17 @@ test("accepted V2 packages satisfy schema, relationships and asset integrity", a
   const result = await validateV2Content();
   assert.equal(result.valid, true, JSON.stringify(result.errors, null, 2));
 });
+
+const validateStyleMutation = async (mutate) => {
+  const style = structuredClone(styleV2);
+  const styleAssets = structuredClone(styleAssetsV2);
+  mutate(style, styleAssets);
+  return validateV2Content({
+    verifyAssets: false,
+    verifySourceLocks: false,
+    overrides: { style, styleAssets },
+  });
+};
 
 test("Style Library V2 exposes 102 canonical concepts and 3 hybrid recipes", () => {
   assert.equal(styleV2.registry.canonicalConcepts.length, 102);
@@ -103,4 +115,23 @@ test("validator rejects cross-dimension comparison and migration targets", async
     item.dimensionId = anatomy.dimensions.find((dimension) => dimension.dimensionId !== item.dimensionId).dimensionId;
   });
   assert.ok(migration.errors.some((error) => error.path === anatomyV2.legacyReferenceMigrations[0].legacyReferenceId && error.message.includes("belongs to dimension")));
+});
+
+test("validator rejects broken Style V2 concept and reference-asset links", async () => {
+  const unknownRelation = await validateStyleMutation((style) => {
+    style.registry.canonicalConcepts[0].relations.relatedConceptIds[0] = "style.does-not-exist";
+  });
+  assert.ok(unknownRelation.errors.some((error) => error.message.includes("references unknown ID style.does-not-exist")));
+
+  const unknownAsset = await validateStyleMutation((style) => {
+    const concept = style.registry.canonicalConcepts.find((item) => item.referenceAssetId);
+    concept.referenceAssetId = "asset.style.does-not-exist";
+  });
+  assert.ok(unknownAsset.errors.some((error) => error.message.includes("references unknown ID asset.style.does-not-exist")));
+
+  const wrongTarget = await validateStyleMutation((style, styleAssets) => {
+    const asset = styleAssets.referenceAssets[0];
+    asset.targetConceptId = style.registry.canonicalConcepts.find((item) => item.conceptId !== asset.targetConceptId).conceptId;
+  });
+  assert.ok(wrongTarget.errors.some((error) => error.message.includes("targetConceptId does not match")));
 });
