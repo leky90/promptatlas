@@ -21,11 +21,15 @@ function writeFavorites(favorites: string[]) {
   }
 }
 
+function favoriteKeys(button: HTMLButtonElement) {
+  return [button.dataset.favorite ?? "", ...(button.dataset.favoriteAliases ?? "").split(/\s+/u)].filter(Boolean);
+}
+
 function updateFavoriteButtons() {
   const favorites = new Set(readFavorites());
   document.querySelectorAll<HTMLButtonElement>("[data-favorite]").forEach((button) => {
     const slug = button.dataset.favorite ?? "";
-    const active = favorites.has(slug);
+    const active = favoriteKeys(button).some((key) => favorites.has(key));
     button.setAttribute("aria-pressed", String(active));
     button.classList.toggle("is-active", active);
     const text = button.querySelector<HTMLElement>("[data-favorite-label]");
@@ -49,16 +53,20 @@ function showToast(message: string, tone: "default" | "error" = "default") {
 
 function initializeFavorites() {
   updateFavoriteButtons();
+  window.dispatchEvent(new CustomEvent("prompt-atlas:favorites-change", { detail: readFavorites() }));
   document.querySelectorAll<HTMLButtonElement>("[data-favorite]").forEach((button) => {
     button.addEventListener("click", () => {
       const slug = button.dataset.favorite;
       if (!slug) return;
       const favorites = new Set(readFavorites());
-      favorites.has(slug) ? favorites.delete(slug) : favorites.add(slug);
+      const keys = favoriteKeys(button);
+      const active = keys.some((key) => favorites.has(key));
+      if (active) keys.forEach((key) => favorites.delete(key));
+      else favorites.add(slug);
       if (writeFavorites([...favorites])) {
         updateFavoriteButtons();
         window.dispatchEvent(new CustomEvent("prompt-atlas:favorites-change", { detail: [...favorites] }));
-        showToast(favorites.has(slug) ? "Đã lưu vào bộ sưu tập." : "Đã bỏ khỏi bộ sưu tập.");
+        showToast(active ? "Đã bỏ khỏi bộ sưu tập." : "Đã lưu vào bộ sưu tập.");
       }
     });
   });
@@ -197,12 +205,12 @@ function initializeComposerEntries() {
   update();
 }
 
+window.promptAtlas = { readFavorites, showToast, readActiveComposerDraft: () => readActiveDraft(localStorage) };
+
 initializeNavigation();
 initializeFavorites();
 initializeCopy();
 initializeImageStates();
 initializeComposerEntries();
-
-window.promptAtlas = { readFavorites, showToast, readActiveComposerDraft: () => readActiveDraft(localStorage) };
 
 export {};

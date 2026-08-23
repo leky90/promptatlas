@@ -130,7 +130,8 @@ const jsonLd = {
       cards.forEach((card) => {
         const matchesQuery = !query || normalize(card.dataset.search ?? "").includes(query);
         const matchesFacet = activeFacet === "all" || card.dataset.facet === activeFacet;
-        const matchesSaved = !savedOnly || saved.has(card.dataset.slug ?? "");
+        const favoriteKeys = [card.dataset.slug ?? "", ...(card.dataset.legacySlugs ?? "").split(/\s+/u)].filter(Boolean);
+        const matchesSaved = !savedOnly || favoriteKeys.some((key) => saved.has(key));
         const show = matchesQuery && matchesFacet && matchesSaved;
         card.hidden = !show;
         if (show) visible += 1;

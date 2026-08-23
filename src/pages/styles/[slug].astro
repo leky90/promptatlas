@@ -62,7 +62,7 @@ const isLegacyAlias = routeSlug !== style.slug;
           <ul aria-label="Dấu hiệu nhận biết">
             {style.cues.map((cue) => <li>{cue}</li>)}
           </ul>
-          <div class="detail-hero__actions"><FavoriteButton slug={style.slug} name={style.name} /></div>
+          <div class="detail-hero__actions"><FavoriteButton slug={style.slug} name={style.name} aliases={style.legacySlugs} /></div>
         </div>
       </div>
       {isLegacyAlias && <p class="legacy-alias-note">Route cũ <code>/styles/{routeSlug}/</code> được giữ để tương thích. Tên chuẩn V2 là <a href={`/styles/${style.slug}/`}>{style.name}</a>.</p>}

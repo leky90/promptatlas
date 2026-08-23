@@ -56,6 +56,26 @@ test("atlas previews one output and the prompt before reuse actions", async ({ c
   expect(errors).toEqual([]);
 });
 
+test("legacy favorite aliases remain selected and visible after canonical migration", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("prompt-atlas:favorites:v1", JSON.stringify(["lego", "studio-ghibli"]));
+  });
+  await page.goto("/?saved=1");
+
+  const lego = page.locator('[data-style-card][data-slug="interlocking-toy-brick-diorama"]');
+  const ghibli = page.locator('[data-style-card][data-slug="gentle-hand-painted-fantasy-animation"]');
+  await expect(page.locator("[data-result-count]")).toHaveText("02");
+  await expect(lego).toBeVisible();
+  await expect(ghibli).toBeVisible();
+  await expect(lego.locator("[data-favorite]")).toHaveAttribute("aria-pressed", "true");
+  await expect(ghibli.locator("[data-favorite]")).toHaveAttribute("aria-pressed", "true");
+
+  await lego.locator("[data-favorite]").click();
+  await expect(page.locator("[data-result-count]")).toHaveText("01");
+  await expect(lego).toBeHidden();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("prompt-atlas:favorites:v1") ?? "[]"))).toEqual(["studio-ghibli"]);
+});
+
 test("V2 gallery filters 105 accepted styles by the seven canonical facets", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("[data-facet-filter]")).toHaveCount(8);

@@ -25,6 +25,7 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
   class="style-card"
   data-style-card
   data-slug={style.slug}
+  data-legacy-slugs={style.legacySlugs.join(" ")}
   data-family={style.family}
   data-facet={style.primaryFacet}
   data-search={searchText}
@@ -72,5 +73,5 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
       </div>
     </div>
   </details>
-  <div class="style-card__save"><FavoriteButton slug={style.slug} name={style.name} /></div>
+  <div class="style-card__save"><FavoriteButton slug={style.slug} name={style.name} aliases={style.legacySlugs} /></div>
 </article>
