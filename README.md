@@ -1,16 +1,25 @@
 # Prompt Atlas by LDKTech
 
-A Vietnamese-first visual reference for 90 image-generation styles. Every style pairs the same structured prompt across ChatGPT and Gemini, publishes both real outputs, and scores them on five consistent criteria.
+## V2 content integration
+
+The site consumes the immutable Style Library V2 and Image Anatomy V2 packages accepted in LDK-615 and LDK-616.
+
+- `/` exposes 102 canonical style concepts plus 3 accepted hybrid recipes across seven facets while preserving every V1 style URL and exact source prompt.
+- `/anatomy/` exposes 7 categories, 116 dimensions, 360 named values and 600 reviewed examples. Each dimension has a static detail route such as `/anatomy/camera-angle/`.
+- `npm run validate:v2-data` verifies both JSON Schemas, source-package hashes, cross-record references, all 90 migrations and all 615 accepted asset hashes.
+- Production publication remains owned by LDK-618.
+
+A Vietnamese-first visual reference for 105 accepted image-generation styles and 116 Image Anatomy dimensions. The 90 legacy records retain their provider evidence; 15 new canonical concepts use reviewed V2 references without presenting them as provider benchmarks.
 
 Live site: [prompt-atlas.ldktech.com](https://prompt-atlas.ldktech.com)
 
 ## What is included
 
-- 90 searchable and filterable style entries with one-click prompt copying on every card.
+- 105 searchable and filterable style entries across seven V2 facets, with one-click prompt copying on every card.
 - 180 full comparison images and 180 optimized thumbnails.
 - A client-side ChatGPT/Gemini comparison workbench.
-- 90 static, indexable detail pages with copyable prompts.
-- Per-style scores for prompt adherence, style fidelity, composition, technical quality, and detail integrity.
+- 105 static, indexable style detail pages and 116 Image Anatomy detail pages.
+- Provider scores for the 90 legacy evidence records; new V2 references remain neutral until comparable run evidence exists.
 - Browser-local favorites, responsive layouts, metadata, sitemap, and structured data.
 - A browser-local Prompt Composer with ordered recipes, explicit blend warnings, immutable share snapshots, and checksummed JSON import/export.
 - A versioned Prompt Atlas taxonomy and JSON data contract for expanding the library from image styles into composable image/video prompt primitives.

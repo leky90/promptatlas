@@ -4,7 +4,10 @@ import { styles } from "../lib/styles";
 import { primitiveEntries, primitiveSlug } from "../lib/primitives";
 
 const primitiveIdentityPairs = [
-  ...styles.map((style) => [`primitive.style.${style.slug}`, { slug: style.slug, dimensionId: "style.medium" }]),
+  ...styles.flatMap((style) => [
+    [`primitive.style.${style.slug}`, { slug: style.slug, dimensionId: "style.medium" }],
+    ...style.legacySlugs.map((slug) => [`primitive.style.${slug}`, { slug, dimensionId: "style.medium" }]),
+  ]),
   ...primitiveEntries.map((primitive) => [primitive.id, { slug: primitiveSlug(primitive), dimensionId: primitive.dimensionId }]),
 ];
 ---

@@ -1,6 +1,6 @@
 ---
 import type { StyleRecord } from "../lib/styles";
-import { paddedId } from "../lib/styles";
+import { paddedId, styleFacetLabel } from "../lib/styles";
 import { evidenceForStyle } from "../lib/evidence";
 import FavoriteButton from "./FavoriteButton.astro";
 import ComposerEntry from "./ComposerEntry.astro";
@@ -16,7 +16,7 @@ const output = evidence.representative?.result ?? {
   height: style.images.chatgpt.height,
   alt: `${style.name} — ảnh tham chiếu.`,
 };
-const searchText = [style.name, style.title, style.subtitle, style.family, style.summary, style.sourcePrompt, ...style.cues]
+const searchText = [style.name, style.title, style.subtitle, style.family, style.primaryFacet, style.summary, style.sourcePrompt, ...style.aliases, ...style.cues]
   .join(" ")
   .toLocaleLowerCase("vi");
 ---
@@ -25,7 +25,9 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
   class="style-card"
   data-style-card
   data-slug={style.slug}
+  data-legacy-slugs={style.legacySlugs.join(" ")}
   data-family={style.family}
+  data-facet={style.primaryFacet}
   data-search={searchText}
 >
   <a class="style-card__link" href={`/styles/${style.slug}/`} aria-label={`Xem phong cách ${style.name}`}>
@@ -45,7 +47,7 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
     <div class="style-card__body">
       <div class="style-card__meta">
         <span>{paddedId(style.id)}</span>
-        <span>{style.family}</span>
+        <span>{style.family} · {styleFacetLabel(style.primaryFacet)}</span>
       </div>
       <h2>{style.name}</h2>
       <p>{style.subtitle}</p>
@@ -71,5 +73,5 @@ const searchText = [style.name, style.title, style.subtitle, style.family, style
       </div>
     </div>
   </details>
-  <div class="style-card__save"><FavoriteButton slug={style.slug} name={style.name} /></div>
+  <div class="style-card__save"><FavoriteButton slug={style.slug} name={style.name} aliases={style.legacySlugs} /></div>
 </article>

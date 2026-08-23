@@ -38,7 +38,7 @@ test("mobile navigation and core layouts remain usable", async ({ page }) => {
 
   await page.goto("/compare/?style=watercolor");
   await expect(page.locator("[data-compare-select]")).toBeVisible();
-  await expect(page.locator("[data-compare-name]")).toHaveText("Watercolor");
+  await expect(page.locator("[data-compare-name]")).toHaveText("Màu nước");
   await expect(page.locator("[data-compare-image]")).toHaveCount(2);
   await expect(page.locator("[data-score-axis]")).toHaveCount(3);
   const compareViewport = await page.evaluate(() => ({
@@ -127,4 +127,17 @@ test("mobile composer tray exposes the active recipe without covering controls",
   await page.keyboard.press("Enter");
   await expect(page.locator("[data-composer-live]")).toContainText("Đã đưa");
   await expect(page.getByText(/^Video$/u)).toHaveCount(0);
+});
+
+test("mobile Image Anatomy keeps filters and evidence within the viewport", async ({ page }) => {
+  await page.goto("/anatomy/");
+  await page.locator('[data-category-filter="camera"]').click();
+  await expect(page.locator('[data-anatomy-dimension="camera.angle"]')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  await page.goto("/anatomy/subject-person-role/");
+  await expect(page.locator('[data-value-tier="core"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-value-tier="advanced"]')).not.toHaveCount(0);
+  await expect(page.locator("main img[alt]").first()).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });

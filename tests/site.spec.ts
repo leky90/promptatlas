@@ -15,7 +15,7 @@ test("atlas previews one output and the prompt before reuse actions", async ({ c
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
 
-  await expect(page.locator("[data-style-card]")).toHaveCount(90);
+  await expect(page.locator("[data-style-card]")).toHaveCount(105);
   const firstCard = page.locator("[data-style-card]").first();
   await expect(firstCard.locator("[data-learning-output] img")).toHaveCount(1);
   await expect(firstCard.locator("[data-comparison-eligible]")).toHaveCount(0);
@@ -36,16 +36,16 @@ test("atlas previews one output and the prompt before reuse actions", async ({ c
   await page.locator("[data-style-search]").fill("không-có-phong-cách-này");
   await expect(page.locator("[data-empty-state]")).toBeVisible();
   await page.locator("[data-reset-filters]").click();
-  await expect(page.locator("[data-result-count]")).toHaveText("90");
+  await expect(page.locator("[data-result-count]")).toHaveText("105");
 
-  await page.locator('[data-family-filter="Nhiếp ảnh"]').click();
+  await page.locator('[data-facet-filter="photography-cinematic"]').click();
   const visible = page.locator("[data-style-card]:visible");
   expect(await visible.count()).toBeGreaterThan(0);
   for (let index = 0; index < await visible.count(); index += 1) {
-    await expect(visible.nth(index)).toHaveAttribute("data-family", "Nhiếp ảnh");
+    await expect(visible.nth(index)).toHaveAttribute("data-facet", "photography-cinematic");
   }
 
-  await page.locator('[data-family-filter="all"]').click();
+  await page.locator('[data-facet-filter="all"]').click();
   const firstFavorite = page.locator("[data-favorite]").first();
   const savedSlug = await firstFavorite.getAttribute("data-favorite");
   await firstFavorite.click();
@@ -54,6 +54,100 @@ test("atlas previews one output and the prompt before reuse actions", async ({ c
   await expect(page.locator("[data-result-count]")).toHaveText("01");
   await expect(page.locator(`[data-style-card][data-slug="${savedSlug}"]`)).toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test("legacy favorite aliases remain selected and visible after canonical migration", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("prompt-atlas:favorites:v1", JSON.stringify(["lego", "studio-ghibli"]));
+  });
+  await page.goto("/?saved=1");
+
+  const lego = page.locator('[data-style-card][data-slug="interlocking-toy-brick-diorama"]');
+  const ghibli = page.locator('[data-style-card][data-slug="gentle-hand-painted-fantasy-animation"]');
+  await expect(page.locator("[data-result-count]")).toHaveText("02");
+  await expect(lego).toBeVisible();
+  await expect(ghibli).toBeVisible();
+  await expect(lego.locator("[data-favorite]")).toHaveAttribute("aria-pressed", "true");
+  await expect(ghibli.locator("[data-favorite]")).toHaveAttribute("aria-pressed", "true");
+
+  await lego.locator("[data-favorite]").click();
+  await expect(page.locator("[data-result-count]")).toHaveText("01");
+  await expect(lego).toBeHidden();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("prompt-atlas:favorites:v1") ?? "[]"))).toEqual(["studio-ghibli"]);
+});
+
+test("V2 gallery filters 105 accepted styles by the seven canonical facets", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("[data-facet-filter]")).toHaveCount(8);
+  await page.locator('[data-facet-filter="digital-rendering"]').click();
+  const visible = page.locator("[data-style-card]:visible");
+  expect(await visible.count()).toBeGreaterThan(0);
+  for (let index = 0; index < await visible.count(); index += 1) {
+    await expect(visible.nth(index)).toHaveAttribute("data-facet", "digital-rendering");
+  }
+  await page.locator("[data-style-search]").fill("fractal");
+  await expect(page.locator('[data-style-card][data-slug="fractal-art"]')).toBeVisible();
+  await expect(page.locator('[data-style-card][data-slug="fractal-art"] img')).toHaveAttribute("src", /\/media\/style-v2\/thumbs\/fractal-art\.webp$/u);
+  await page.locator('[data-facet-filter="all"]').click();
+  await page.locator("[data-style-search]").fill("đồ chơi lắp ghép");
+  await expect(page.locator('[data-style-card][data-slug="interlocking-toy-brick-diorama"]')).toBeVisible();
+  await expect(page.locator('[data-style-card][data-slug="lego"]')).toHaveCount(0);
+  expect((await page.request.head("/styles/lego/")).ok()).toBe(true);
+  expect((await page.request.head("/styles/interlocking-toy-brick-diorama/")).ok()).toBe(true);
+
+  await page.locator("[data-style-search]").fill("editorial illustration");
+  const editorial = page.locator('[data-style-card][data-slug="illustration"]');
+  await expect(editorial.getByRole("heading", { level: 2 })).toHaveText("Minh họa biên tập");
+  await expect(editorial).toContainText("Use when a prompt should visibly emphasize editorial figure");
+  await editorial.locator("[data-prompt-disclosure] summary").click();
+  await expect(editorial.locator("[data-prompt-preview]")).toContainText("Primary request: A portrait of A young adult woman with yellow hair.");
+  await expect(editorial.locator("[data-prompt-preview]")).toContainText("Style/medium: in a Editorial Illustration visual language, with editorial figure, controlled palette, painted marks.");
+});
+
+test("migrated style details publish accepted V2 concept relationships", async ({ page }) => {
+  await page.goto("/styles/glitch-art/");
+  const relatedSlugs = await page.locator(".related-section [data-style-card]").evaluateAll((cards) =>
+    cards.map((card) => (card as HTMLElement).dataset.slug),
+  );
+  expect(relatedSlugs).toEqual([
+    "pixel-art",
+    "cyberpunk",
+    "vaporwave",
+    "interlocking-toy-brick-diorama",
+  ]);
+});
+
+test("Image Anatomy exposes 7 categories, 116 dimensions and URL-backed filters", async ({ page }) => {
+  await page.goto("/anatomy/");
+  await expect(page.locator("[data-anatomy-category]")).toHaveCount(7);
+  await expect(page.locator("[data-anatomy-dimension]")).toHaveCount(116);
+  await page.locator('[data-category-filter="camera"]').click();
+  await expect(page).toHaveURL(/category=camera/);
+  const visible = page.locator("[data-anatomy-dimension]:visible");
+  expect(await visible.count()).toBeGreaterThan(0);
+  for (let index = 0; index < await visible.count(); index += 1) {
+    await expect(visible.nth(index)).toHaveAttribute("data-category", "camera");
+  }
+  await page.locator("[data-anatomy-search]").fill("góc máy");
+  await expect(page.locator('[data-anatomy-dimension="camera.angle"]')).toBeVisible();
+});
+
+test("Image Anatomy dimension teaches Core, Advanced, comparisons and applications", async ({ page }) => {
+  await page.goto("/anatomy/subject-person-role/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Vai trò");
+  await expect(page.locator('[data-value-tier="core"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-value-tier="advanced"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-example-role="controlled-comparison"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-example-role="application"]')).not.toHaveCount(0);
+  await expect(page.locator("main img[alt]").first()).toBeVisible();
+});
+
+test("Image Anatomy omits an empty Advanced tier without overstating coverage", async ({ page }) => {
+  await page.goto("/anatomy/camera-angle/");
+  await expect(page.locator('[data-anatomy-tier="core"]')).toBeVisible();
+  await expect(page.locator('[data-anatomy-tier="advanced"]')).toHaveCount(0);
+  await expect(page.locator(".anatomy-detail-hero__meta")).not.toContainText("Core và Advanced");
+  await expect(page.locator(".anatomy-detail-hero__meta dt", { hasText: "Advanced" })).toHaveCount(0);
 });
 
 test("gallery keeps an observable loading state until a thumbnail resolves", async ({ page }) => {
@@ -107,7 +201,7 @@ test("gallery keeps thumbnails visible when JavaScript is unavailable", async ({
 test("compare workbench reads query state and navigates records", async ({ page }) => {
   await page.goto("/compare/?style=sumi-e");
   await expect(page.locator("[data-comparison-classification]")).toContainText("Chẩn đoán product route lịch sử");
-  await expect(page.locator("[data-compare-name]")).toHaveText("Sumi-e");
+  await expect(page.locator("[data-compare-name]")).toHaveText("Tranh mực tàu");
   await expect(page.locator("[data-compare-select]")).toHaveValue("sumi-e");
   await expect(page.locator('[data-compare-image="chatgpt"]')).toHaveAttribute("src", /sumi-e-chatgpt/);
   const taxonomy = page.locator('[data-compare-taxonomy="chatgpt"]');
@@ -139,7 +233,7 @@ test("compare workbench reads query state and navigates records", async ({ page 
   await expect(page.getByText(/nhỉnh hơn/iu)).toHaveCount(0);
   await page.locator("[data-compare-next]").click();
   await expect(page).toHaveURL(/style=splash-ink/);
-  await expect(page.locator("[data-compare-name]")).toHaveText("Splash Ink");
+  await expect(page.locator("[data-compare-name]")).toHaveText("Mực vẩy");
   await expect(page.locator("[data-compare-taxonomy] dd small")).toHaveCount(8);
   await expect(page.locator('[data-compare-output="chatgpt"]')).toContainText("asset.splash-ink.chatgpt");
   await expect(page.locator('[data-compare-output="chatgpt"] small')).toContainText("Run:");
@@ -148,7 +242,7 @@ test("compare workbench reads query state and navigates records", async ({ page 
 test("detail teaches output, prompt anatomy and usage before evidence", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/styles/sumi-e/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sumi-e");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Tranh mực tàu");
   await expect(page.locator('[data-learning-step="output"] [data-learning-output] img')).toHaveCount(1);
   await expect(page.locator("[data-prompt-anchor]")).toBeVisible();
   await expect(page.locator("[data-prompt-anatomy]")).toBeVisible();
@@ -158,7 +252,7 @@ test("detail teaches output, prompt anatomy and usage before evidence", async ({
     nodes.map((node) => node.getAttribute("data-learning-step")),
   );
   expect(order).toEqual(["output", "prompt-anatomy", "how-to-use", "compose", "evidence"]);
-  await page.getByRole("button", { name: "Thêm Sumi-e vào prompt" }).click();
+  await page.getByRole("button", { name: "Thêm Tranh mực tàu vào prompt" }).click();
   await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
   const copy = page.locator("[data-copy-target]");
   await copy.click();
@@ -202,7 +296,7 @@ test("methodology keeps the three evidence axes independent and discloses legacy
   await expect(page.getByText(/điểm trung bình là trung bình cộng/iu)).toHaveCount(0);
 });
 
-for (const path of ["/", "/discover/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {
+for (const path of ["/", "/discover/", "/anatomy/", "/anatomy/camera-angle/", "/compare/", "/styles/sumi-e/", "/methodology/"]) {
   test(`no serious accessibility violations on ${path}`, async ({ page }) => {
     await page.goto(path);
     const results = await new AxeBuilder({ page }).analyze();

@@ -12,6 +12,7 @@ test("catalog additions become an ordered, persistent and conflict-aware recipe"
   await page.goto("/");
 
   const cards = page.locator("[data-style-card]");
+  const secondFragment = await cards.nth(1).locator("[data-composer-add]").getAttribute("data-primitive-fragment");
   await addStyleCard(cards.nth(0));
   await addStyleCard(cards.nth(1));
   await expect(page.locator("[data-composer-count]").first()).toHaveText("2");
@@ -27,11 +28,11 @@ test("catalog additions become an ordered, persistent and conflict-aware recipe"
   await page.locator("[data-recipe-item]").nth(1).getByRole("button", { name: "Đưa lên" }).click();
   await expect(page.locator("[data-recipe-item]").first().locator("[data-recipe-label]")).toHaveText(secondLabel ?? "");
   const preview = page.locator("[data-composer-preview]");
-  await expect(preview).toContainText(secondLabel ?? "");
+  await expect(preview).toContainText(secondFragment ?? "");
 
   await page.getByRole("button", { name: "Sao chép prompt" }).click();
   await expect(page.locator("[data-composer-live]")).toContainText("Đã sao chép");
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(secondLabel ?? "");
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(secondFragment ?? "");
 
   await page.reload();
   await expect(page.locator("[data-recipe-item]")).toHaveCount(2);
@@ -39,6 +40,42 @@ test("catalog additions become an ordered, persistent and conflict-aware recipe"
 
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((item) => item.impact === "serious" || item.impact === "critical")).toEqual([]);
+});
+
+test("a V2-only style keeps its reference scene separate from its accepted style fragment", async ({ page }) => {
+  await page.goto("/");
+  const fractal = page.locator('[data-style-card][data-slug="fractal-art"]');
+  await addStyleCard(fractal);
+  await page.goto("/composer/");
+
+  const preview = page.locator("[data-composer-preview]");
+  await expect(preview).toContainText("Primary request: an intricate organic structure where fern-like branches curl into nested spirals");
+  await expect(preview).toContainText("1. Style/medium: in a Fractal Art visual language, with recursive self-similarity, nested branching spirals, macro-to-micro repetition.");
+  await expect(preview).not.toContainText("Primary request: in a Fractal Art visual language");
+});
+
+test("legacy alias primitive IDs remain readable in existing Composer drafts", async ({ page }) => {
+  await page.goto("/");
+  const canonical = page.locator('[data-style-card][data-slug="interlocking-toy-brick-diorama"]');
+  await addStyleCard(canonical);
+  await page.evaluate(() => {
+    const draftId = localStorage.getItem("pa:drafts:active:v1");
+    const key = `pa:drafts:v1:${draftId}`;
+    const draft = JSON.parse(localStorage.getItem(key) ?? "null");
+    draft.items[0].primitiveId = "primitive.style.lego";
+    draft.items[0].slug = "lego";
+    localStorage.setItem(key, JSON.stringify(draft));
+  });
+
+  await page.reload();
+  await expect(canonical.locator("[data-composer-add]")).toHaveAttribute("aria-pressed", "true");
+  await addStyleCard(canonical);
+  await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
+
+  await page.goto("/composer/");
+  await expect(page.locator("[data-composer-error]")).toBeHidden();
+  await expect(page.locator("[data-recipe-item]")).toHaveCount(1);
+  await expect(page.locator("[data-composer-preview]")).toContainText("interlocking toy-brick");
 });
 
 test("share opens read-only and continue editing forks without replacing the active draft", async ({ context, page }) => {

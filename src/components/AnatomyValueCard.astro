@@ -1,0 +1,39 @@
+---
+import type { AnatomyExampleView, AnatomyValue } from "../lib/anatomy";
+
+type Props = { value: AnatomyValue; examples: AnatomyExampleView[] };
+const { value, examples } = Astro.props;
+const roleLabels = {
+  "controlled-comparison": "So sánh có kiểm soát",
+  application: "Ứng dụng",
+  "canonical-reference": "Tham chiếu chuẩn",
+} as const;
+---
+
+<article class="anatomy-value" data-value-tier={value.tier} id={value.valueId}>
+  <header class="anatomy-value__head">
+    <span>{value.tier === "core" ? "CORE" : "ADVANCED"}</span>
+    <div>
+      <h3>{value.label.vi}</h3>
+      <p>{value.label.en}</p>
+    </div>
+  </header>
+  <p>{value.definition.vi}</p>
+  <dl class="anatomy-value__prompt">
+    <dt>Cụm prompt</dt>
+    <dd><code>{value.promptFragment}</code></dd>
+  </dl>
+  <ul class="anatomy-value__cues" aria-label={`Dấu hiệu quan sát cho ${value.label.vi}`}>
+    {value.observableCues.map((cue) => <li>{cue}</li>)}
+  </ul>
+  {examples.length > 0 && (
+    <div class="anatomy-example-grid">
+      {examples.map((example) => (
+        <figure data-example-role={example.role}>
+          <img src={example.publicPath} width={example.asset.width} height={example.asset.height} alt={example.alt.vi} loading="lazy" decoding="async" />
+          <figcaption><b>{roleLabels[example.role]}</b><span>{example.knownLimitations[0] ?? "Ví dụ đã qua content review."}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+  )}
+</article>

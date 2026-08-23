@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prompt-atlas.ldktech.com/schemas/style-library.v2.json",
+  "type": "object",
+  "required": ["schemaVersion", "registry", "migrationManifest", "referenceAssetManifest"],
+  "properties": {
+    "schemaVersion": { "const": "style-library-v2.0" },
+    "registry": {
+      "type": "object",
+      "required": ["canonicalConcepts", "hybridRecipes"],
+      "properties": {
+        "canonicalConcepts": {
+          "type": "array",
+          "minItems": 102,
+          "maxItems": 102,
+          "items": {
+            "type": "object",
+            "required": ["recordKind", "conceptId", "canonicalSlug", "name", "primaryFacet", "promptReadyFragment", "relations", "provenance"],
+            "properties": {
+              "recordKind": { "const": "canonical-concept" },
+              "conceptId": { "type": "string", "pattern": "^style\\." },
+              "canonicalSlug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+              "name": { "$ref": "#/$defs/bilingual" },
+              "aliases": { "type": "array", "items": { "type": "string" } },
+              "primaryFacet": { "type": "string" },
+              "secondaryFacets": { "type": "array", "items": { "type": "string" } },
+              "promptReadyFragment": { "type": "string", "minLength": 1 },
+              "relations": { "type": "object" },
+              "provenance": { "type": "object" }
+            }
+          }
+        },
+        "hybridRecipes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["recordKind", "recipeId", "canonicalSlug", "name", "componentConceptIds", "generationPrompt", "exactSourcePrompt"],
+            "properties": {
+              "recordKind": { "const": "hybrid-recipe" },
+              "recipeId": { "type": "string", "pattern": "^recipe\\.style\\." },
+              "canonicalSlug": { "type": "string" },
+              "name": { "$ref": "#/$defs/bilingual" },
+              "componentConceptIds": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+              "generationPrompt": { "type": "string", "minLength": 1 },
+              "exactSourcePrompt": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "migrationManifest": {
+      "type": "array",
+      "minItems": 90,
+      "maxItems": 90,
+      "items": {
+        "type": "object",
+        "required": ["legacyId", "legacySlug", "classification", "targetId", "routeBehavior", "exactSourcePrompt"],
+        "properties": {
+          "legacyId": { "type": "integer", "minimum": 1, "maximum": 90 },
+          "legacySlug": { "type": "string" },
+          "classification": { "enum": ["canonical-concept", "hybrid-recipe", "alias"] },
+          "targetId": { "type": "string" },
+          "routeBehavior": { "enum": ["canonical", "legacy-render", "alias-route"] },
+          "exactSourcePrompt": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "referenceAssetManifest": { "type": "string" }
+  },
+  "$defs": {
+    "bilingual": {
+      "type": "object",
+      "required": ["vi", "en"],
+      "properties": { "vi": { "type": "string", "minLength": 1 }, "en": { "type": "string", "minLength": 1 } }
+    }
+  }
+}
