@@ -14,7 +14,7 @@ const { style, variant = "card" } = Astro.props;
   data-primitive-dimension="style.medium"
   data-primitive-slug={style.slug}
   data-primitive-label={style.name}
-  data-primitive-fragment={`Style/medium: ${style.name}. The defining visual language, medium, materials, and mark-making must be unmistakable and dominant.`}
+  data-primitive-fragment={`Style/medium: ${style.promptReadyFragment.replace(/\.+$/u, "")}.`}
   data-source-prompt={style.sourcePrompt}
   aria-pressed="false"
   aria-label={`Thêm ${style.name} vào prompt`}

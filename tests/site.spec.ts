@@ -73,6 +73,14 @@ test("V2 gallery filters 105 accepted styles by the seven canonical facets", asy
   await expect(page.locator('[data-style-card][data-slug="lego"]')).toHaveCount(0);
   expect((await page.request.head("/styles/lego/")).ok()).toBe(true);
   expect((await page.request.head("/styles/interlocking-toy-brick-diorama/")).ok()).toBe(true);
+
+  await page.locator("[data-style-search]").fill("editorial illustration");
+  const editorial = page.locator('[data-style-card][data-slug="illustration"]');
+  await expect(editorial.getByRole("heading", { level: 2 })).toHaveText("Minh họa biên tập");
+  await expect(editorial).toContainText("Use when a prompt should visibly emphasize editorial figure");
+  await editorial.locator("[data-prompt-disclosure] summary").click();
+  await expect(editorial.locator("[data-prompt-preview]")).toContainText("Primary request: A portrait of A young adult woman with yellow hair.");
+  await expect(editorial.locator("[data-prompt-preview]")).toContainText("Style/medium: in a Editorial Illustration visual language, with editorial figure, controlled palette, painted marks.");
 });
 
 test("Image Anatomy exposes 7 categories, 116 dimensions and URL-backed filters", async ({ page }) => {
@@ -151,7 +159,7 @@ test("gallery keeps thumbnails visible when JavaScript is unavailable", async ({
 test("compare workbench reads query state and navigates records", async ({ page }) => {
   await page.goto("/compare/?style=sumi-e");
   await expect(page.locator("[data-comparison-classification]")).toContainText("Chẩn đoán product route lịch sử");
-  await expect(page.locator("[data-compare-name]")).toHaveText("Sumi-e");
+  await expect(page.locator("[data-compare-name]")).toHaveText("Tranh mực tàu");
   await expect(page.locator("[data-compare-select]")).toHaveValue("sumi-e");
   await expect(page.locator('[data-compare-image="chatgpt"]')).toHaveAttribute("src", /sumi-e-chatgpt/);
   const taxonomy = page.locator('[data-compare-taxonomy="chatgpt"]');
@@ -183,7 +191,7 @@ test("compare workbench reads query state and navigates records", async ({ page 
   await expect(page.getByText(/nhỉnh hơn/iu)).toHaveCount(0);
   await page.locator("[data-compare-next]").click();
   await expect(page).toHaveURL(/style=splash-ink/);
-  await expect(page.locator("[data-compare-name]")).toHaveText("Splash Ink");
+  await expect(page.locator("[data-compare-name]")).toHaveText("Mực vẩy");
   await expect(page.locator("[data-compare-taxonomy] dd small")).toHaveCount(8);
   await expect(page.locator('[data-compare-output="chatgpt"]')).toContainText("asset.splash-ink.chatgpt");
   await expect(page.locator('[data-compare-output="chatgpt"] small')).toContainText("Run:");
@@ -192,7 +200,7 @@ test("compare workbench reads query state and navigates records", async ({ page 
 test("detail teaches output, prompt anatomy and usage before evidence", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/styles/sumi-e/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sumi-e");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Tranh mực tàu");
   await expect(page.locator('[data-learning-step="output"] [data-learning-output] img')).toHaveCount(1);
   await expect(page.locator("[data-prompt-anchor]")).toBeVisible();
   await expect(page.locator("[data-prompt-anatomy]")).toBeVisible();
@@ -202,7 +210,7 @@ test("detail teaches output, prompt anatomy and usage before evidence", async ({
     nodes.map((node) => node.getAttribute("data-learning-step")),
   );
   expect(order).toEqual(["output", "prompt-anatomy", "how-to-use", "compose", "evidence"]);
-  await page.getByRole("button", { name: "Thêm Sumi-e vào prompt" }).click();
+  await page.getByRole("button", { name: "Thêm Tranh mực tàu vào prompt" }).click();
   await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
   const copy = page.locator("[data-copy-target]");
   await copy.click();

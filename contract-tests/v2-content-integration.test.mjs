@@ -12,6 +12,16 @@ const [styleV2, anatomyV2, legacyStyles] = await Promise.all([
   readJson("../src/data/styles.json"),
 ]);
 
+const validateAnatomyMutation = async (mutate) => {
+  const anatomy = structuredClone(anatomyV2);
+  mutate(anatomy);
+  return validateV2Content({
+    verifyAssets: false,
+    verifySourceLocks: false,
+    overrides: { anatomy },
+  });
+};
+
 test("accepted V2 packages satisfy schema, relationships and asset integrity", async () => {
   const result = await validateV2Content();
   assert.equal(result.valid, true, JSON.stringify(result.errors, null, 2));
@@ -53,3 +63,44 @@ test("Image Anatomy V2 exposes the accepted hierarchy and teaching roles", () =>
   assert.ok(anatomyV2.examples.some((example) => example.role === "canonical-reference"));
 });
 
+test("validator rejects duplicate raw hierarchy IDs before building lookup Sets", async () => {
+  const result = await validateAnatomyMutation((anatomy) => {
+    anatomy.categories.push(structuredClone(anatomy.categories[0]));
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.path === "anatomy.categories" && error.message === "must contain unique IDs"));
+});
+
+test("validator rejects missing category, dimension and subdimension back-links", async () => {
+  const missingCategoryBacklink = await validateAnatomyMutation((anatomy) => {
+    const dimension = anatomy.dimensions[0];
+    const category = anatomy.categories.find((item) => item.categoryId === dimension.categoryId);
+    category.dimensionIds = category.dimensionIds.filter((id) => id !== dimension.dimensionId);
+  });
+  assert.ok(missingCategoryBacklink.errors.some((error) => error.message.includes("missing category backlink")));
+
+  const missingDimensionBacklink = await validateAnatomyMutation((anatomy) => {
+    anatomy.dimensions[0].valueIds = anatomy.dimensions[0].valueIds.slice(1);
+  });
+  assert.ok(missingDimensionBacklink.errors.some((error) => error.message.includes("missing dimension backlink")));
+
+  const missingSubdimensionBacklink = await validateAnatomyMutation((anatomy) => {
+    const dimension = anatomy.dimensions.find((item) => item.subdimensions.length > 0);
+    dimension.subdimensions[0].valueIds = dimension.subdimensions[0].valueIds.slice(1);
+  });
+  assert.ok(missingSubdimensionBacklink.errors.some((error) => error.message.includes("missing subdimension backlink")));
+});
+
+test("validator rejects cross-dimension comparison and migration targets", async () => {
+  const comparison = await validateAnatomyMutation((anatomy) => {
+    const item = anatomy.comparisonSets[0];
+    item.dimensionId = anatomy.dimensions.find((dimension) => dimension.dimensionId !== item.dimensionId).dimensionId;
+  });
+  assert.ok(comparison.errors.some((error) => error.path === anatomyV2.comparisonSets[0].comparisonSetId && error.message.includes("belongs to dimension")));
+
+  const migration = await validateAnatomyMutation((anatomy) => {
+    const item = anatomy.legacyReferenceMigrations[0];
+    item.dimensionId = anatomy.dimensions.find((dimension) => dimension.dimensionId !== item.dimensionId).dimensionId;
+  });
+  assert.ok(migration.errors.some((error) => error.path === anatomyV2.legacyReferenceMigrations[0].legacyReferenceId && error.message.includes("belongs to dimension")));
+});
