@@ -54,6 +54,25 @@ test("a V2-only style keeps its reference scene separate from its accepted style
   await expect(preview).not.toContainText("Primary request: in a Fractal Art visual language");
 });
 
+test("legacy alias primitive IDs remain readable in existing Composer drafts", async ({ page }) => {
+  await page.goto("/");
+  const canonical = page.locator('[data-style-card][data-slug="interlocking-toy-brick-diorama"]');
+  await addStyleCard(canonical);
+  await page.evaluate(() => {
+    const draftId = localStorage.getItem("pa:drafts:active:v1");
+    const key = `pa:drafts:v1:${draftId}`;
+    const draft = JSON.parse(localStorage.getItem(key) ?? "null");
+    draft.items[0].primitiveId = "primitive.style.lego";
+    draft.items[0].slug = "lego";
+    localStorage.setItem(key, JSON.stringify(draft));
+  });
+
+  await page.goto("/composer/");
+  await expect(page.locator("[data-composer-error]")).toBeHidden();
+  await expect(page.locator("[data-recipe-item]")).toHaveCount(1);
+  await expect(page.locator("[data-composer-preview]")).toContainText("interlocking toy-brick");
+});
+
 test("share opens read-only and continue editing forks without replacing the active draft", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: testOrigin });
   await page.goto("/");

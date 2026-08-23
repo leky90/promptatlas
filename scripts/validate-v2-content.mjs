@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 import Ajv2020 from "ajv/dist/2020.js";
@@ -25,6 +25,8 @@ const ensureRefs = (errors, path, values, known) => {
     if (!known.has(value)) add(errors, path, `references unknown ID ${value}`);
   });
 };
+const styleThumbnailPath = (relativePath) =>
+  `public/media/style-v2/thumbs/${relativePath.replace(/^assets\//u, "").replace(/\.[^.]+$/u, ".webp")}`;
 
 export async function validateV2Content({ verifyAssets = true, verifySourceLocks = true, overrides = {} } = {}) {
   const [styleSchema, anatomySchema, diskStyle, diskStyleAssets, diskAnatomy, diskAnatomyAssets, diskLegacy, lock] = await Promise.all([
@@ -187,6 +189,13 @@ export async function validateV2Content({ verifyAssets = true, verifySourceLocks
         if (await shaFile(path) !== item.sha256) add(errors, item.assetId, "asset sha256 mismatch");
       } catch {
         add(errors, item.assetId, "asset file is missing");
+      }
+      const thumbnail = fromRoot(styleThumbnailPath(item.relativePath));
+      try {
+        const metadata = await stat(thumbnail);
+        if (metadata.size > 250_000) add(errors, item.assetId, "derived thumbnail exceeds 250 KB");
+      } catch {
+        add(errors, item.assetId, "derived thumbnail is missing");
       }
     }
     for (const item of anatomyAssets.assets) {

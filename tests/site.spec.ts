@@ -67,6 +67,7 @@ test("V2 gallery filters 105 accepted styles by the seven canonical facets", asy
   }
   await page.locator("[data-style-search]").fill("fractal");
   await expect(page.locator('[data-style-card][data-slug="fractal-art"]')).toBeVisible();
+  await expect(page.locator('[data-style-card][data-slug="fractal-art"] img')).toHaveAttribute("src", /\/media\/style-v2\/thumbs\/fractal-art\.webp$/u);
   await page.locator('[data-facet-filter="all"]').click();
   await page.locator("[data-style-search]").fill("đồ chơi lắp ghép");
   await expect(page.locator('[data-style-card][data-slug="interlocking-toy-brick-diorama"]')).toBeVisible();
@@ -106,6 +107,14 @@ test("Image Anatomy dimension teaches Core, Advanced, comparisons and applicatio
   await expect(page.locator('[data-example-role="controlled-comparison"]')).not.toHaveCount(0);
   await expect(page.locator('[data-example-role="application"]')).not.toHaveCount(0);
   await expect(page.locator("main img[alt]").first()).toBeVisible();
+});
+
+test("Image Anatomy omits an empty Advanced tier without overstating coverage", async ({ page }) => {
+  await page.goto("/anatomy/camera-angle/");
+  await expect(page.locator('[data-anatomy-tier="core"]')).toBeVisible();
+  await expect(page.locator('[data-anatomy-tier="advanced"]')).toHaveCount(0);
+  await expect(page.locator(".anatomy-detail-hero__meta")).not.toContainText("Core và Advanced");
+  await expect(page.locator(".anatomy-detail-hero__meta dt", { hasText: "Advanced" })).toHaveCount(0);
 });
 
 test("gallery keeps an observable loading state until a thumbnail resolves", async ({ page }) => {

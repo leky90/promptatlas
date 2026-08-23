@@ -139,6 +139,9 @@ const promptField = (prompt: string, field: string) =>
 
 const styleFragmentFromPrompt = (prompt: string) => promptField(prompt, "Style/medium");
 
+const thumbnailPathFor = (relativePath: string) =>
+  `/media/style-v2/thumbs/${relativePath.replace(/^assets\//u, "").replace(/\.[^.]+$/u, ".webp")}`;
+
 const withStyleFragment = (prompt: string, fragment: string) => {
   const normalized = fragment.trim().replace(/\.+$/u, "");
   return prompt.replace(/^Style\/medium:.*$/mu, `Style/medium: ${normalized}.`);
@@ -184,7 +187,7 @@ const newConcepts = styleV2.registry.canonicalConcepts
     if (!asset) throw new Error(`Missing accepted V2 reference asset for ${concept.conceptId}`);
     const image = {
       full: `/media/style-v2/${asset.relativePath}`,
-      thumb: `/media/style-v2/${asset.relativePath}`,
+      thumb: thumbnailPathFor(asset.relativePath),
       width: asset.width,
       height: asset.height,
       alt: asset.accessibility.altVi,

@@ -23,7 +23,10 @@ const values = anatomyValuesForDimension(dimension.dimensionId);
 const coreValues = values.filter((value) => value.tier === "core");
 const advancedValues = values.filter((value) => value.tier === "advanced");
 const comparisons = anatomyComparisonsForDimension(dimension.dimensionId);
-const description = `${dimension.label.vi}: ${values.length} giá trị Core và Advanced với ví dụ trực quan trong Image Anatomy V2.`;
+const tierSummary = advancedValues.length > 0
+  ? `${coreValues.length} giá trị Core và ${advancedValues.length} giá trị Advanced`
+  : `${coreValues.length} giá trị Core`;
+const description = `${dimension.label.vi}: ${tierSummary} với ví dụ trực quan trong Image Anatomy V2.`;
 ---
 
 <BaseLayout title={`${dimension.label.vi} — Image Anatomy V2 | Prompt Atlas`} description={description} bodyClass="anatomy-detail-page">
@@ -37,7 +40,7 @@ const description = `${dimension.label.vi}: ${values.length} giá trị Core và
         <p>{description}</p>
         <dl>
           <div><dt>Core</dt><dd>{coreValues.length}</dd></div>
-          <div><dt>Advanced</dt><dd>{advancedValues.length}</dd></div>
+          {advancedValues.length > 0 && <div><dt>Advanced</dt><dd>{advancedValues.length}</dd></div>}
           <div><dt>So sánh</dt><dd>{comparisons.length}</dd></div>
         </dl>
       </div>
@@ -60,19 +63,21 @@ const description = `${dimension.label.vi}: ${values.length} giá trị Core và
       </section>
     )}
 
-    <section class="anatomy-tier shell" aria-labelledby="core-title">
+    <section class="anatomy-tier shell" aria-labelledby="core-title" data-anatomy-tier="core">
       <div class="section-heading"><div><p class="eyebrow">CORE / NỀN TẢNG</p><h2 id="core-title">Những giá trị nên học trước.</h2></div><p>Mỗi giá trị gắn với cụm prompt và evidence trực quan đã được chấp nhận.</p></div>
       <div class="anatomy-value-grid">
         {coreValues.map((value) => <AnatomyValueCard value={value} examples={anatomyExamplesForValue(value.valueId)} />)}
       </div>
     </section>
 
-    <section class="anatomy-tier anatomy-tier--advanced shell" aria-labelledby="advanced-title">
-      <div class="section-heading"><div><p class="eyebrow">ADVANCED / MỞ RỘNG</p><h2 id="advanced-title">Mở rộng sau khi đã có mốc Core.</h2></div><p>Advanced là mốc dạy học có ranh giới rõ, không phải từ điển đóng.</p></div>
-      <div class="anatomy-value-grid">
-        {advancedValues.map((value) => <AnatomyValueCard value={value} examples={anatomyExamplesForValue(value.valueId)} />)}
-      </div>
-    </section>
+    {advancedValues.length > 0 && (
+      <section class="anatomy-tier anatomy-tier--advanced shell" aria-labelledby="advanced-title" data-anatomy-tier="advanced">
+        <div class="section-heading"><div><p class="eyebrow">ADVANCED / MỞ RỘNG</p><h2 id="advanced-title">Mở rộng sau khi đã có mốc Core.</h2></div><p>Advanced là mốc dạy học có ranh giới rõ, không phải từ điển đóng.</p></div>
+        <div class="anatomy-value-grid">
+          {advancedValues.map((value) => <AnatomyValueCard value={value} examples={anatomyExamplesForValue(value.valueId)} />)}
+        </div>
+      </section>
+    )}
 
     {comparisons.length > 0 && (
       <section class="anatomy-comparisons shell" aria-labelledby="comparison-title">
@@ -89,4 +94,3 @@ const description = `${dimension.label.vi}: ${values.length} giá trị Core và
     )}
   </article>
 </BaseLayout>
-

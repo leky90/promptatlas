@@ -29,4 +29,3 @@ This issue is delivered as one atomic integration PR because schema, migrations,
 3. **Style UI:** expose 105 accepted entries and seven V2 facets while retaining favorites, Composer and evidence behavior.
 4. **Anatomy UI:** expose category → dimension → optional subdimension → value → example navigation.
 5. **Validation and evidence:** validate schemas, cross-record references, counts, prompts and every asset hash; run unit, contract, build and Playwright gates.
-
