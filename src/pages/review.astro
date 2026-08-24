@@ -1,0 +1,250 @@
+---
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { evidenceForStyle } from "../lib/evidence";
+import { styles } from "../lib/styles";
+
+const dimensions = [
+  { id: "attribute", label: "Thuộc tính", help: "Chủ thể, vật thể và thuộc tính được yêu cầu." },
+  { id: "spatial", label: "Không gian", help: "Vị trí, quan hệ và hướng tương đối." },
+  { id: "composition-camera", label: "Bố cục & camera", help: "Khung hình, góc máy và phân cấp thị giác." },
+  { id: "light-material-style", label: "Ánh sáng, chất liệu & style", help: "Các tín hiệu thị giác được mô tả trong prompt." },
+  { id: "instruction-completeness", label: "Độ đầy đủ", help: "Tỷ lệ yêu cầu quan trọng được thực hiện." },
+  { id: "contradiction", label: "Xử lý mâu thuẫn", help: "Không tự thêm chi tiết xung đột với chỉ dẫn." },
+] as const;
+
+const reviewCandidate = styles
+  .map((style) => ({ style, evidence: evidenceForStyle(style) }))
+  .find(({ evidence }) => evidence.comparisonEligible && evidence.prompt && evidence.comparison);
+
+if (!reviewCandidate?.evidence.comparison || !reviewCandidate.evidence.prompt) {
+  throw new Error("Blind review requires one eligible same-prompt image pair.");
+}
+
+const sourceOutputs = Object.values(reviewCandidate.evidence.comparison.results);
+const toDataUri = async (publicPath: string) => {
+  const relativePath = publicPath.replace(/^\//u, "");
+  const bytes = await readFile(path.join(process.cwd(), "public", relativePath));
+  const extension = path.extname(relativePath).toLowerCase();
+  const mime = extension === ".png" ? "image/png" : extension === ".jpg" || extension === ".jpeg" ? "image/jpeg" : "image/webp";
+  return `data:${mime};base64,${bytes.toString("base64")}`;
+};
+
+const outputs = await Promise.all(sourceOutputs.map(async (output, index) => ({
+  outputId: output.result.id,
+  provider: output.provider,
+  routeId: output.pipeline.id,
+  reviewCopy: {
+    id: `review-copy-${String(index + 1).padStart(2, "0")}`,
+    path: await toDataUri(output.result.thumbnailPath),
+    width: output.result.width,
+    height: output.result.height,
+  },
+})));
+
+const reviewData = JSON.stringify({
+  caseId: reviewCandidate.evidence.prompt.id,
+  prompt: reviewCandidate.evidence.prompt.text,
+  protocolVersion: "0.2",
+  calibrationVersion: "image-8-v1",
+  outputs,
+  dimensions,
+});
+---
+
+<BaseLayout
+  title="Không gian blind review ảnh | Prompt Atlas"
+  description="Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only."
+  canonicalPath="/review/"
+  bodyClass="blind-review-page"
+>
+  <section class="review-hero shell" aria-labelledby="review-title">
+    <div>
+      <p class="eyebrow">IMAGE-ONLY / PROTOCOL 0.2</p>
+      <h1 id="review-title">Blind review, không nhìn nhãn.</h1>
+      <p>Chấm output bằng evidence quan sát được. Danh tính route chỉ mở sau khi mọi output trong session đã được khóa.</p>
+    </div>
+    <div class="review-status" data-review-status role="status" aria-live="polite">
+      <span>Trạng thái session</span>
+      <strong>Đang mù</strong>
+      <small>0 / {outputs.length} output đã khóa</small>
+    </div>
+  </section>
+
+  <section class="blind-review shell" data-blind-review>
+    <aside class="review-brief" aria-labelledby="review-brief-title">
+      <p class="eyebrow">CASE / EXACT PROMPT</p>
+      <h2 id="review-brief-title">Một prompt, thứ tự riêng cho từng reviewer</h2>
+      <p class="review-prompt">{reviewCandidate.evidence.prompt.text}</p>
+      <dl>
+        <div><dt>Reviewer</dt><dd data-reviewer-id>Đang khởi tạo…</dd></div>
+        <div><dt>Order</dt><dd data-review-order>A / B</dd></div>
+        <div><dt>History</dt><dd>Append-only · local-first</dd></div>
+      </dl>
+      <p class="review-note">Ảnh gốc không bị sửa. Workspace dùng review copy trung tính; annotation là artifact riêng.</p>
+    </aside>
+
+    <div class="review-workspace">
+      <div class="output-tabs" role="tablist" aria-label="Output review mù">
+        {outputs.map((_, index) => (
+          <button
+            type="button"
+            role="tab"
+            data-output-tab
+            data-output-index={index}
+            aria-selected={index === 0 ? "true" : "false"}
+          >Output {index === 0 ? "A" : index === 1 ? "B" : "N"}</button>
+        ))}
+      </div>
+
+      <section class="evidence-stage" aria-labelledby="evidence-title">
+        <header>
+          <div><p class="eyebrow">LOCALIZED EVIDENCE</p><h2 id="evidence-title" data-active-output>Output A</h2></div>
+          <p>Click để đặt vùng; dùng Enter để đặt giữa ảnh và phím mũi tên để tinh chỉnh.</p>
+        </header>
+        <button class="evidence-canvas" type="button" data-evidence-canvas aria-label="Đặt vùng evidence trên Output A">
+          <img data-review-image alt="Output A — ảnh review mù" />
+          <span class="evidence-region" data-evidence-region data-region-x="0.4" hidden aria-hidden="true"></span>
+        </button>
+        <p class="evidence-coordinates" data-evidence-coordinates>Chưa đặt vùng evidence.</p>
+      </section>
+
+      <form class="review-form" data-review-form>
+        <fieldset>
+          <legend>Score từng dimension</legend>
+          <p class="form-help">0 = không thực hiện; 4 = thực hiện rõ. N/A chỉ dùng khi dimension không áp dụng.</p>
+          <div class="review-dimensions">
+            {dimensions.map((dimension) => (
+              <section class="review-dimension" data-review-dimension data-dimension-id={dimension.id}>
+                <header><h3>{dimension.label}</h3><p>{dimension.help}</p></header>
+                <fieldset class="score-options">
+                  <legend>Score — {dimension.label}</legend>
+                  {[0, 1, 2, 3, 4].map((score) => (
+                    <label><input type="radio" name={`score-${dimension.id}`} value={score} aria-label={String(score)} required />{score}</label>
+                  ))}
+                  <label><input type="radio" name={`score-${dimension.id}`} value="na" aria-label="N/A" required />N/A</label>
+                </fieldset>
+                <label class="confidence">Confidence
+                  <select data-confidence required>
+                    <option value="">Chọn…</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </label>
+                <button type="button" class="attach-evidence" data-attach-evidence disabled>Gắn vùng hiện tại</button>
+                <small data-attached-evidence>Chưa có evidence.</small>
+              </section>
+            ))}
+          </div>
+        </fieldset>
+        <label class="review-rationale">Rationale
+          <textarea data-review-rationale rows="3" required placeholder="Ghi điều quan sát được, không suy đoán provider."></textarea>
+        </label>
+        <div class="review-actions">
+          <p data-form-message role="alert"></p>
+          <button class="button" type="submit">Lưu đánh giá bất biến</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="review-disclosure shell" data-review-disclosure hidden>
+    <div><p class="eyebrow">POST-COMPLETION DISCLOSURE</p><h2>Danh tính chỉ xuất hiện sau khi khóa session</h2></div>
+    <div data-disclosure-list></div>
+    <button class="button button--ghost" type="button" data-new-independent-review>Bắt đầu review độc lập mới</button>
+  </section>
+
+  <section class="adjudication-queue shell" data-adjudication-queue aria-labelledby="adjudication-title">
+    <div>
+      <p class="eyebrow">DISAGREEMENT / ADJUDICATION</p>
+      <h2 id="adjudication-title">Original ratings không bị ghi đè</h2>
+      <p>Score gap, N/A mismatch hoặc low confidence tạo một item adjudication mới; hai review độc lập vẫn giữ nguyên.</p>
+    </div>
+    <div data-disagreement-list><p>Chưa có disagreement giữa hai reviewer độc lập.</p></div>
+  </section>
+
+  <script is:inline id="blind-review-data" type="application/json" set:html={reviewData}></script>
+  <script src="../scripts/blind-review-ui.ts"></script>
+</BaseLayout>
+
+<style>
+  :global(.blind-review-page) { background: #e9e5dc; color: #151613; }
+  .review-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .34fr); gap: 32px; padding-block: clamp(48px, 7vw, 92px) 32px; }
+  .review-hero h1 { max-width: 900px; margin: 8px 0 12px; font-size: clamp(42px, 7vw, 92px); line-height: .92; letter-spacing: -.06em; }
+  .review-hero > div > p:last-child { max-width: 680px; font-size: 18px; }
+  .review-status { align-self: end; border: 1px solid #151613; background: #151613; color: #f4f0e7; padding: 20px; }
+  .review-status span, .review-status small { display: block; color: #b9b5ac; font: 12px/1.4 "IBM Plex Mono", monospace; text-transform: uppercase; }
+  .review-status strong { display: block; margin: 6px 0; color: #cbff35; font-size: 24px; }
+  .blind-review { display: grid; grid-template-columns: minmax(240px, .33fr) minmax(0, 1fr); border: 1px solid #151613; background: #f4f0e7; }
+  .review-brief { padding: 24px; border-right: 1px solid #151613; }
+  .review-brief h2 { margin: 8px 0 16px; font-size: 26px; line-height: 1.05; }
+  .review-prompt { padding: 16px 0; border-block: 1px solid #bbb6ab; line-height: 1.55; }
+  .review-brief dl div { display: grid; grid-template-columns: 80px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid #d0cbc1; }
+  .review-brief dt, .review-note { color: #625f58; font: 12px/1.5 "IBM Plex Mono", monospace; text-transform: uppercase; }
+  .review-brief dd { margin: 0; font-weight: 700; }
+  .review-workspace { min-width: 0; }
+  .output-tabs { display: flex; border-bottom: 1px solid #151613; }
+  .output-tabs button { min-height: 48px; flex: 1; border: 0; border-right: 1px solid #151613; background: transparent; font: 700 13px "IBM Plex Mono", monospace; }
+  .output-tabs button[aria-selected="true"] { background: #151613; color: #cbff35; }
+  .output-tabs button[data-complete="true"]::after { content: " · LOCKED"; }
+  .evidence-stage { padding: 24px; border-bottom: 1px solid #151613; }
+  .evidence-stage > header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 16px; }
+  .evidence-stage h2 { margin: 4px 0 0; font-size: 30px; }
+  .evidence-stage header > p { max-width: 430px; margin: 0; color: #625f58; font-size: 14px; }
+  .evidence-canvas { position: relative; display: grid; width: 100%; min-height: 320px; overflow: hidden; place-items: center; padding: 0; border: 2px solid #151613; background: #c9c5bc; cursor: crosshair; }
+  .evidence-canvas:focus-visible { outline: 4px solid #cbff35; outline-offset: 3px; }
+  .evidence-canvas img { display: block; width: 100%; max-height: 620px; object-fit: contain; }
+  .evidence-region { position: absolute; width: 20%; aspect-ratio: 1; border: 3px solid #cbff35; background: rgb(203 255 53 / 18%); box-shadow: 0 0 0 9999px rgb(21 22 19 / 22%); pointer-events: none; transform: translate(-50%, -50%); }
+  .evidence-coordinates { margin: 10px 0 0; font: 12px "IBM Plex Mono", monospace; }
+  .review-form { padding: 24px; }
+  .review-form > fieldset { margin: 0; padding: 0; border: 0; }
+  .review-form > fieldset > legend { font-size: 24px; font-weight: 800; }
+  .form-help { color: #625f58; }
+  .review-dimensions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #151613; }
+  .review-dimension { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 16px; padding: 16px; border-right: 1px solid #151613; border-bottom: 1px solid #151613; }
+  .review-dimension:nth-child(even) { border-right: 0; }
+  .review-dimension h3 { margin: 0 0 4px; }
+  .review-dimension p { margin: 0; color: #625f58; font-size: 13px; }
+  .score-options { grid-column: 1 / -1; display: flex; gap: 6px; margin: 0; padding: 0; border: 0; }
+  .score-options legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .score-options label { display: grid; min-width: 42px; min-height: 42px; place-items: center; border: 1px solid #8c887f; cursor: pointer; }
+  .score-options input { position: absolute; opacity: 0; }
+  .score-options label:has(input:checked) { border-color: #151613; background: #151613; color: #cbff35; }
+  .confidence { display: grid; gap: 4px; font: 12px "IBM Plex Mono", monospace; }
+  .confidence select { min-height: 42px; border: 1px solid #151613; background: #fff; }
+  .attach-evidence { min-height: 42px; align-self: end; border: 1px solid #151613; background: transparent; font-weight: 700; }
+  .attach-evidence:not(:disabled):hover { background: #cbff35; }
+  [data-attached-evidence] { grid-column: 1 / -1; color: #625f58; }
+  .review-rationale { display: grid; gap: 8px; margin-top: 20px; font-weight: 800; }
+  .review-rationale textarea { border: 1px solid #151613; background: #fff; padding: 12px; font: inherit; }
+  .review-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
+  .review-actions p { margin: 0; color: #9b2c20; }
+  .review-disclosure, .adjudication-queue { display: grid; grid-template-columns: .7fr 1fr auto; gap: 24px; margin-top: 24px; padding: 24px; border: 1px solid #151613; background: #f4f0e7; }
+  .review-disclosure[hidden] { display: none; }
+  .review-disclosure h2, .adjudication-queue h2 { margin: 4px 0 0; }
+  [data-disclosure-list] { display: grid; gap: 8px; }
+  .disclosure-item, .disagreement-item { padding: 12px; border: 1px solid #151613; }
+  .adjudication-queue { grid-template-columns: .7fr 1.3fr; margin-bottom: 64px; }
+  .disagreement-item { margin-bottom: 8px; }
+  .disagreement-item ul { margin: 8px 0; padding-left: 20px; }
+  .eyebrow { margin: 0; font: 600 12px "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  @media (max-width: 900px) {
+    .review-hero, .blind-review, .review-disclosure, .adjudication-queue { grid-template-columns: 1fr; }
+    .review-brief { border-right: 0; border-bottom: 1px solid #151613; }
+    .review-dimensions { grid-template-columns: 1fr; }
+    .review-dimension, .review-dimension:nth-child(even) { border-right: 0; }
+  }
+  @media (max-width: 560px) {
+    .review-hero { padding-top: 32px; }
+    .evidence-stage, .review-form, .review-brief { padding: 16px; }
+    .evidence-stage > header { align-items: start; flex-direction: column; }
+    .evidence-canvas { min-height: 220px; }
+    .review-dimension { grid-template-columns: 1fr; }
+    .score-options { overflow-x: auto; }
+    .attach-evidence, [data-attached-evidence] { grid-column: 1; }
+    .review-actions { align-items: stretch; flex-direction: column; }
+  }
+</style>
