@@ -33,9 +33,7 @@ const toDataUri = async (publicPath: string) => {
 };
 
 const outputs = await Promise.all(sourceOutputs.map(async (output, index) => ({
-  outputId: output.result.id,
-  provider: output.provider,
-  routeId: output.pipeline.id,
+  outputId: `${reviewCandidate.evidence.prompt!.id}:candidate-${index + 1}`,
   reviewCopy: {
     id: `review-copy-${String(index + 1).padStart(2, "0")}`,
     path: await toDataUri(output.result.thumbnailPath),
@@ -64,7 +62,7 @@ const reviewData = JSON.stringify({
     <div>
       <p class="eyebrow">IMAGE-ONLY / PROTOCOL 0.2</p>
       <h1 id="review-title">Blind review, không nhìn nhãn.</h1>
-      <p>Chấm output bằng evidence quan sát được. Danh tính route chỉ mở sau khi mọi output trong session đã được khóa.</p>
+      <p>Chấm output bằng evidence quan sát được. Mapping danh tính được niêm phong ngoài payload trình duyệt trong suốt review.</p>
     </div>
     <div class="review-status" data-review-status role="status" aria-live="polite">
       <span>Trạng thái session</span>
@@ -152,7 +150,7 @@ const reviewData = JSON.stringify({
   </section>
 
   <section class="review-disclosure shell" data-review-disclosure hidden>
-    <div><p class="eyebrow">POST-COMPLETION DISCLOSURE</p><h2>Danh tính chỉ xuất hiện sau khi khóa session</h2></div>
+    <div><p class="eyebrow">POST-COMPLETION STATUS</p><h2>Session đã khóa; mapping vẫn ở ngoài browser</h2></div>
     <div data-disclosure-list></div>
     <button class="button button--ghost" type="button" data-new-independent-review>Bắt đầu review độc lập mới</button>
   </section>

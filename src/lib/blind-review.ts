@@ -29,13 +29,12 @@ export type BlindReviewRecord = {
 
 export type ReviewOutput = {
   outputId: string;
-  provider: { id: string; label: string };
-  routeId: string;
   reviewCopy: { id: string; path: string; width: number; height: number };
 };
 
 export type BlindOutput = {
   blindId: string;
+  outputId: string;
   reviewCopyId: string;
   image: { path: string; width: number; height: number; alt: string };
 };
@@ -94,6 +93,7 @@ export function createBlindSession({
   const ordered = reviewerOrder(outputs, seed);
   const neutralOutputs: BlindOutput[] = ordered.map((output, index) => ({
     blindId: blindIds[index],
+    outputId: output.outputId,
     reviewCopyId: output.reviewCopy.id,
     image: {
       path: output.reviewCopy.path,
@@ -102,18 +102,11 @@ export function createBlindSession({
       alt: `Output ${blindIds[index]} — ảnh review mù`,
     },
   }));
-  const disclosures = ordered.map((output, index) => ({
-    blindId: blindIds[index],
-    outputId: output.outputId,
-    provider: { ...output.provider },
-    routeId: output.routeId,
-  }));
   return deepFreeze({
     caseId,
     reviewerId,
     status: "in-progress" as const,
     outputs: neutralOutputs,
-    disclosures,
   });
 }
 

@@ -71,8 +71,7 @@ if (data) {
   }
 
   function originalOutputId(index = activeIndex) {
-    const blindId = session.outputs[index]?.blindId;
-    return session.disclosures.find((item) => item.blindId === blindId)?.outputId;
+    return session.outputs[index]?.outputId;
   }
 
   function setStatus(completed: boolean) {
@@ -232,6 +231,7 @@ if (data) {
   function renderDisagreements(showDetails: boolean) {
     if (!disagreementList) return;
     const disagreements = findDisagreements(history);
+    const adjudications = readJson<Array<{ id: string; status: "resolved" }>>(ADJUDICATION_KEY, []);
     disagreementList.replaceChildren();
     if (!disagreements.length) {
       const empty = document.createElement("p");
@@ -257,11 +257,23 @@ if (data) {
         list.append(entry);
       });
       item.append(title, list);
+      const existingResolution = adjudications.find((candidate) => candidate.id === disagreement.id && candidate.status === "resolved");
+      if (existingResolution) {
+        item.dataset.status = "resolved";
+        title.textContent = `${disagreement.dimensionId} · resolved · originals preserved`;
+        disagreementList.append(item);
+        continue;
+      }
       disagreement.originalRatings.forEach((original) => {
         const button = document.createElement("button");
         button.type = "button";
         button.textContent = `Giữ score ${original.score ?? "N/A"}`;
         button.addEventListener("click", () => {
+          const currentAdjudications = readJson<Array<{ id: string }>>(ADJUDICATION_KEY, []);
+          if (currentAdjudications.some((candidate) => candidate.id === disagreement.id)) {
+            renderDisagreements(true);
+            return;
+          }
           const resolved = adjudicateDisagreement(disagreement, {
             adjudicationId: `adjudication-${crypto.randomUUID()}`,
             adjudicatorId: `adjudicator-${reviewerId}`,
@@ -271,8 +283,7 @@ if (data) {
             evidence: original.evidence,
             submittedAt: new Date().toISOString(),
           });
-          const adjudications = readJson<unknown[]>(ADJUDICATION_KEY, []);
-          localStorage.setItem(ADJUDICATION_KEY, JSON.stringify([...adjudications, resolved]));
+          localStorage.setItem(ADJUDICATION_KEY, JSON.stringify([...currentAdjudications, resolved]));
           item.dataset.status = "resolved";
           title.textContent = `${disagreement.dimensionId} · resolved · originals preserved`;
           item.querySelectorAll("button").forEach((candidate) => { candidate.disabled = true; });
@@ -288,12 +299,10 @@ if (data) {
     if (form) form.hidden = true;
     if (disclosure && disclosureList) {
       disclosure.hidden = false;
-      disclosureList.replaceChildren(...session.disclosures.map((item) => {
-        const line = document.createElement("p");
-        line.className = "disclosure-item";
-        line.textContent = `Output ${item.blindId} — ${item.provider.label} · ${item.routeId}`;
-        return line;
-      }));
+      const line = document.createElement("p");
+      line.className = "disclosure-item";
+      line.textContent = "Session complete. Provider-route mapping is sealed outside this browser review copy.";
+      disclosureList.replaceChildren(line);
     }
     renderDisagreements(true);
   }

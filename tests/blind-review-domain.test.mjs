@@ -10,21 +10,15 @@ import {
 
 const outputs = [
   {
-    outputId: "asset.openai",
-    provider: { id: "openai", label: "OpenAI" },
-    routeId: "legacy-chatgpt-ui",
+    outputId: "case.watercolor:candidate-1",
     reviewCopy: { id: "review-copy-01", path: "data:image/webp;base64,bmV1dHJhbC0x", width: 1200, height: 800 },
   },
   {
-    outputId: "asset.google",
-    provider: { id: "google", label: "Google" },
-    routeId: "legacy-gflow-cli",
+    outputId: "case.watercolor:candidate-2",
     reviewCopy: { id: "review-copy-02", path: "data:image/webp;base64,bmV1dHJhbC0y", width: 1200, height: 800 },
   },
   {
-    outputId: "asset.third",
-    provider: { id: "third", label: "Third provider" },
-    routeId: "third-route",
+    outputId: "case.watercolor:candidate-3",
     reviewCopy: { id: "review-copy-03", path: "data:image/webp;base64,bmV1dHJhbC0z", width: 1200, height: 800 },
   },
 ];
@@ -57,8 +51,12 @@ test("blind sessions randomize neutral A/B/N outputs without leaking provider id
   assert.deepEqual(first.outputs.map((output) => output.blindId), ["A", "B", "N"]);
   assert.deepEqual(first.outputs.map((output) => output.reviewCopyId), ["review-copy-02", "review-copy-03", "review-copy-01"]);
   assert.deepEqual(secondReviewer.outputs.map((output) => output.reviewCopyId), ["review-copy-03", "review-copy-01", "review-copy-02"]);
-  assert.doesNotMatch(JSON.stringify(first.outputs), /OpenAI|Google|provider|route/iu);
-  assert.deepEqual(first.disclosures.map((item) => item.outputId), ["asset.google", "asset.third", "asset.openai"]);
+  assert.doesNotMatch(JSON.stringify(first), /OpenAI|Google|provider|route|disclosure/iu);
+  assert.deepEqual(first.outputs.map((item) => item.outputId), [
+    "case.watercolor:candidate-2",
+    "case.watercolor:candidate-3",
+    "case.watercolor:candidate-1",
+  ]);
 
   const pairA = createBlindSession({ caseId: "case.watercolor", reviewerId: "reviewer-a", seed: "a", outputs: outputs.slice(0, 2) });
   const pairB = createBlindSession({ caseId: "case.watercolor", reviewerId: "reviewer-b", seed: "b", outputs: outputs.slice(0, 2) });
