@@ -145,8 +145,8 @@ if (data) {
     if (!region || !regionNode || !canvas || !imageBounds) return;
     const canvasBounds = canvas.getBoundingClientRect();
     regionNode.hidden = false;
-    regionNode.style.left = `${imageBounds.left - canvasBounds.left + region.x * imageBounds.width}px`;
-    regionNode.style.top = `${imageBounds.top - canvasBounds.top + region.y * imageBounds.height}px`;
+    regionNode.style.left = `${imageBounds.left - canvasBounds.left - canvas.clientLeft + region.x * imageBounds.width}px`;
+    regionNode.style.top = `${imageBounds.top - canvasBounds.top - canvas.clientTop + region.y * imageBounds.height}px`;
     regionNode.style.width = `${region.width * imageBounds.width}px`;
     regionNode.style.height = `${region.height * imageBounds.height}px`;
     regionNode.dataset.regionX = region.x.toFixed(2);

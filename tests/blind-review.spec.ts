@@ -129,4 +129,10 @@ test("responsive evidence regions stay inside the painted image instead of lette
   expect(region!.y).toBeGreaterThanOrEqual(geometry.image.top - 1);
   expect(region!.x + region!.width).toBeLessThanOrEqual(geometry.image.left + geometry.image.width + 1);
   expect(region!.y + region!.height).toBeLessThanOrEqual(geometry.image.top + geometry.image.height + 1);
+
+  await page.mouse.click(geometry.image.left + geometry.image.width * .9, geometry.image.top + geometry.image.height * .9);
+  const edgeRegion = await page.locator("[data-evidence-region]").boundingBox();
+  expect(edgeRegion).not.toBeNull();
+  expect(edgeRegion!.x + edgeRegion!.width).toBeLessThanOrEqual(geometry.image.left + geometry.image.width + 1);
+  expect(edgeRegion!.y + edgeRegion!.height).toBeLessThanOrEqual(geometry.image.top + geometry.image.height + 1);
 });
