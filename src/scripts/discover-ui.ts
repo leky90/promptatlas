@@ -24,6 +24,8 @@ if (workspace) {
   const scrim = workspace.querySelector<HTMLElement>("[data-facet-scrim]")!;
   const activeFilterCount = workspace.querySelector<HTMLElement>("[data-active-filter-count]")!;
   const mobileFacets = window.matchMedia("(max-width: 959px)");
+  const skipToResults = workspace.querySelector<HTMLAnchorElement>("[data-skip-to-results]");
+  const resultsRegion = workspace.querySelector<HTMLElement>("#discover-results");
 
   const normalize = (value: string) => value.toLocaleLowerCase("vi").normalize("NFD").replace(/[\u0300-\u036f]/gu, "");
   const readPositiveInt = (value: string | null) => Math.max(1, Number.parseInt(value ?? "1", 10) || 1);
@@ -214,6 +216,7 @@ if (workspace) {
   });
   window.addEventListener("popstate", () => { readUrl(); render({ updateUrl: false }); });
   mobileFacets.addEventListener("change", syncPanelMode);
+  skipToResults?.addEventListener("click", () => window.requestAnimationFrame(() => resultsRegion?.focus()));
 
   readUrl();
   syncPanelMode();
