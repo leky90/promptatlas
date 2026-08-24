@@ -8,15 +8,15 @@ const completeOutput = async (page: import("@playwright/test").Page) => {
     await row.getByRole("radio", { name: "4" }).check();
     await row.getByLabel("Confidence").selectOption("high");
     await row.getByRole("button", { name: "Gắn vùng hiện tại" }).click();
+    await row.getByLabel("Rationale").fill(`Rationale riêng cho dimension ${index + 1}.`);
   }
-  await page.getByLabel("Rationale").fill("Vùng đã chọn cho thấy output thực hiện rõ yêu cầu quan sát được.");
   await page.getByRole("button", { name: "Lưu đánh giá bất biến" }).click();
 };
 
 test("blind review stays neutral until completion and supports keyboard-localized evidence", async ({ page }) => {
-  await page.goto("/review/");
+  await page.goto("/review");
   await expect(page.locator("[data-blind-review]")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Review mù" })).toHaveAttribute("href", "/review/");
+  await expect(page.getByRole("link", { name: "Review mù" })).toHaveAttribute("href", "/review");
   await expect(page.locator("[data-review-status]")).toContainText("Đang mù");
   expect(await page.locator("main").innerText()).not.toMatch(/OpenAI|Google|ChatGPT|Gemini/iu);
   expect(await page.locator("#blind-review-data").textContent()).not.toMatch(/OpenAI|Google|legacy-chatgpt-ui|legacy-gflow-cli/iu);
@@ -45,6 +45,7 @@ test("blind review stays neutral until completion and supports keyboard-localize
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("pa:blind-review:v1") ?? "[]"));
   expect(stored).toHaveLength(2);
   expect(new Set(stored.map((item: { id: string }) => item.id)).size).toBe(2);
+  expect(new Set(stored[0].ratings.map((rating: { rationale: string }) => rating.rationale)).size).toBe(6);
 
   await page.getByRole("button", { name: "Bắt đầu review độc lập mới" }).click();
   await expect(page.locator("[data-review-status]")).toContainText("Đang mù");
@@ -52,7 +53,7 @@ test("blind review stays neutral until completion and supports keyboard-localize
 });
 
 test("resolved adjudication stays resolved after reload and originals remain intact", async ({ page }) => {
-  await page.goto("/review/");
+  await page.goto("/review");
   const reviewData = JSON.parse(await page.locator("#blind-review-data").textContent() || "null");
   const ratings = (score: number) => [{
     dimensionId: "attribute",
@@ -103,7 +104,7 @@ test("resolved adjudication stays resolved after reload and originals remain int
 
 test("responsive evidence regions stay inside the painted image instead of letterbox space", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/review/");
+  await page.goto("/review");
   await page.locator("[data-evidence-canvas]").scrollIntoViewIfNeeded();
   const geometry = await page.evaluate(() => {
     const canvas = document.querySelector<HTMLElement>("[data-evidence-canvas]")!.getBoundingClientRect();

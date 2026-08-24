@@ -37,7 +37,6 @@ if (data) {
   const regionNode = document.querySelector<HTMLElement>("[data-evidence-region]");
   const coordinates = document.querySelector<HTMLElement>("[data-evidence-coordinates]");
   const form = document.querySelector<HTMLFormElement>("[data-review-form]");
-  const rationale = document.querySelector<HTMLTextAreaElement>("[data-review-rationale]");
   const message = document.querySelector<HTMLElement>("[data-form-message]");
   const disclosure = document.querySelector<HTMLElement>("[data-review-disclosure]");
   const disclosureList = document.querySelector<HTMLElement>("[data-disclosure-list]");
@@ -209,13 +208,14 @@ if (data) {
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
     const outputId = originalOutputId();
-    if (!outputId || !rationale?.value.trim()) return;
+    if (!outputId) return;
     const ratings = [];
     for (const row of rows) {
       const score = row.querySelector<HTMLInputElement>('input[type="radio"]:checked');
       const confidence = row.querySelector<HTMLSelectElement>("[data-confidence]");
-      if (!score || !confidence?.value || !row.dataset.evidence) {
-        if (message) message.textContent = "Hoàn tất score, confidence và evidence cho mọi dimension.";
+      const rationale = row.querySelector<HTMLTextAreaElement>("[data-dimension-rationale]");
+      if (!score || !confidence?.value || !rationale?.value.trim() || !row.dataset.evidence) {
+        if (message) message.textContent = "Hoàn tất score, confidence, rationale và evidence cho mọi dimension.";
         return;
       }
       ratings.push({

@@ -55,7 +55,7 @@ const reviewData = JSON.stringify({
 <BaseLayout
   title="Không gian blind review ảnh | Prompt Atlas"
   description="Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only."
-  canonicalPath="/review/"
+  canonicalPath="/review"
   bodyClass="blind-review-page"
 >
   <section class="review-hero shell" aria-labelledby="review-title">
@@ -134,13 +134,13 @@ const reviewData = JSON.stringify({
                 </label>
                 <button type="button" class="attach-evidence" data-attach-evidence disabled>Gắn vùng hiện tại</button>
                 <small data-attached-evidence>Chưa có evidence.</small>
+                <label class="dimension-rationale">Rationale
+                  <textarea data-dimension-rationale rows="2" required placeholder="Ghi evidence riêng cho dimension này; không suy đoán provider."></textarea>
+                </label>
               </section>
             ))}
           </div>
         </fieldset>
-        <label class="review-rationale">Rationale
-          <textarea data-review-rationale rows="3" required placeholder="Ghi điều quan sát được, không suy đoán provider."></textarea>
-        </label>
         <div class="review-actions">
           <p data-form-message role="alert"></p>
           <button class="button" type="submit">Lưu đánh giá bất biến</button>
@@ -216,8 +216,8 @@ const reviewData = JSON.stringify({
   .attach-evidence { min-height: 42px; align-self: end; border: 1px solid #151613; background: transparent; font-weight: 700; }
   .attach-evidence:not(:disabled):hover { background: #cbff35; }
   [data-attached-evidence] { grid-column: 1 / -1; color: #625f58; }
-  .review-rationale { display: grid; gap: 8px; margin-top: 20px; font-weight: 800; }
-  .review-rationale textarea { border: 1px solid #151613; background: #fff; padding: 12px; font: inherit; }
+  .dimension-rationale { grid-column: 1 / -1; display: grid; gap: 6px; font-weight: 800; }
+  .dimension-rationale textarea { min-height: 72px; resize: vertical; border: 1px solid #151613; background: #fff; padding: 10px; font: inherit; }
   .review-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
   .review-actions p { margin: 0; color: #9b2c20; }
   .review-disclosure, .adjudication-queue { display: grid; grid-template-columns: .7fr 1fr auto; gap: 24px; margin-top: 24px; padding: 24px; border: 1px solid #151613; background: #f4f0e7; }
