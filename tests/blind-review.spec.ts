@@ -1,15 +1,22 @@
 import { expect, test } from "@playwright/test";
 
-const completeOutput = async (page: import("@playwright/test").Page) => {
+const fillOutput = async (
+  page: import("@playwright/test").Page,
+  { score = "4", rationale = (index: number) => `Rationale riêng cho dimension ${index + 1}.` } = {},
+) => {
   const rows = page.locator("[data-review-dimension]");
   const count = await rows.count();
   for (let index = 0; index < count; index += 1) {
     const row = rows.nth(index);
-    await row.getByRole("radio", { name: "4" }).check();
+    await row.getByRole("radio", { name: score, exact: true }).check();
     await row.getByLabel("Confidence").selectOption("high");
     await row.getByRole("button", { name: "Gắn vùng hiện tại" }).click();
-    await row.getByLabel("Rationale").fill(`Rationale riêng cho dimension ${index + 1}.`);
+    await row.getByLabel("Rationale").fill(rationale(index));
   }
+};
+
+const completeOutput = async (page: import("@playwright/test").Page) => {
+  await fillOutput(page);
   await page.getByRole("button", { name: "Lưu đánh giá bất biến" }).click();
 };
 
@@ -18,8 +25,15 @@ test("blind review stays neutral until completion and supports keyboard-localize
   await expect(page.locator("[data-blind-review]")).toBeVisible();
   await expect(page.getByRole("link", { name: "Review mù" })).toHaveAttribute("href", "/review");
   await expect(page.locator("[data-review-status]")).toContainText("Đang mù");
-  expect(await page.locator("main").innerText()).not.toMatch(/OpenAI|Google|ChatGPT|Gemini/iu);
+  expect(await page.locator("html").innerText()).not.toMatch(/OpenAI|Google|ChatGPT|Gemini/iu);
   expect(await page.locator("#blind-review-data").textContent()).not.toMatch(/OpenAI|Google|legacy-chatgpt-ui|legacy-gflow-cli/iu);
+  const downloadedStyles = await page.evaluate(async () => {
+    const urls = performance.getEntriesByType("resource")
+      .map((entry) => entry.name)
+      .filter((url) => url.endsWith(".css"));
+    return (await Promise.all(urls.map((url) => fetch(url).then((response) => response.text())))).join("\n");
+  });
+  expect(downloadedStyles).not.toMatch(/OpenAI|Google|ChatGPT|Gemini|--chatgpt|--gemini/iu);
   await expect(page.locator("[data-output-tab]")).toHaveCount(2);
 
   const evidenceCanvas = page.locator("[data-evidence-canvas]");
@@ -50,6 +64,45 @@ test("blind review stays neutral until completion and supports keyboard-localize
   await page.getByRole("button", { name: "Bắt đầu review độc lập mới" }).click();
   await expect(page.locator("[data-review-status]")).toContainText("Đang mù");
   expect(await page.locator("main").innerText()).not.toMatch(/OpenAI|Google|ChatGPT|Gemini/iu);
+});
+
+test("dimension rationale must remain independently attributable", async ({ page }) => {
+  await page.goto("/review");
+  await page.locator("[data-evidence-canvas]").focus();
+  await page.keyboard.press("Enter");
+  await fillOutput(page, { rationale: () => "Cùng một rationale cho mọi dimension." });
+  await page.getByRole("button", { name: "Lưu đánh giá bất biến" }).click();
+
+  await expect(page.locator("[data-form-message]")).toContainText(/rationale.*riêng|khác nhau/iu);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("pa:blind-review:v1") ?? "[]"))).toHaveLength(0);
+});
+
+test("stale reviewer tabs cannot replace an immutable stored review", async ({ page }) => {
+  await page.goto("/review");
+  await page.evaluate(() => {
+    localStorage.clear();
+    sessionStorage.setItem("pa:blind-review:active-reviewer", "reviewer-stale-tab");
+  });
+  await page.reload();
+
+  const stalePage = await page.context().newPage();
+  await stalePage.addInitScript(() => sessionStorage.setItem("pa:blind-review:active-reviewer", "reviewer-stale-tab"));
+  await stalePage.goto("/review");
+
+  for (const [candidate, score] of [[page, "4"], [stalePage, "1"]] as const) {
+    await candidate.locator("[data-evidence-canvas]").focus();
+    await candidate.keyboard.press("Enter");
+    await fillOutput(candidate, { score, rationale: (index) => `Tab score ${score}, dimension ${index + 1}.` });
+  }
+
+  await page.getByRole("button", { name: "Lưu đánh giá bất biến" }).click();
+  await stalePage.getByRole("button", { name: "Lưu đánh giá bất biến" }).click();
+  await expect(stalePage.locator("[data-form-message]")).toContainText(/already exists|immutable|đã tồn tại|bất biến/iu);
+
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("pa:blind-review:v1") ?? "[]"));
+  expect(stored).toHaveLength(1);
+  expect(stored[0].ratings[0].score).toBe(4);
+  await stalePage.close();
 });
 
 test("resolved adjudication stays resolved after reload and originals remain intact", async ({ page }) => {

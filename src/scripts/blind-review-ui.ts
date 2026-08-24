@@ -210,6 +210,7 @@ if (data) {
     const outputId = originalOutputId();
     if (!outputId) return;
     const ratings = [];
+    const rationales = new Set<string>();
     for (const row of rows) {
       const score = row.querySelector<HTMLInputElement>('input[type="radio"]:checked');
       const confidence = row.querySelector<HTMLSelectElement>("[data-confidence]");
@@ -218,6 +219,12 @@ if (data) {
         if (message) message.textContent = "Hoàn tất score, confidence, rationale và evidence cho mọi dimension.";
         return;
       }
+      const normalizedRationale = rationale.value.trim().replace(/\s+/gu, " ").toLocaleLowerCase("vi");
+      if (rationales.has(normalizedRationale)) {
+        if (message) message.textContent = "Mỗi dimension cần rationale riêng, không trùng nhau.";
+        return;
+      }
+      rationales.add(normalizedRationale);
       ratings.push({
         dimensionId: row.dataset.dimensionId || "unknown",
         score: score.value === "na" ? null : Number(score.value),
@@ -237,7 +244,8 @@ if (data) {
       ratings,
     };
     try {
-      history = [...appendReviewRecord(history, nextRecord)];
+      const currentHistory = readJson<BlindReviewRecord[]>(STORAGE_KEY, []);
+      history = [...appendReviewRecord(currentHistory, nextRecord)];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
     } catch (error) {
       if (message) message.textContent = error instanceof Error ? error.message : "Không thể khóa review.";

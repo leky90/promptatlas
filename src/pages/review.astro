@@ -2,7 +2,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import BaseLayout from "../layouts/BaseLayout.astro";
 import { evidenceForStyle } from "../lib/evidence";
 import { styles } from "../lib/styles";
 
@@ -50,14 +49,29 @@ const reviewData = JSON.stringify({
   outputs,
   dimensions,
 });
+const canonical = new URL("/review", Astro.site);
 ---
 
-<BaseLayout
-  title="Không gian blind review ảnh | Prompt Atlas"
-  description="Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only."
-  canonicalPath="/review"
-  bodyClass="blind-review-page"
->
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#151613" />
+  <meta name="description" content="Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only." />
+  <link rel="canonical" href={canonical} />
+  <title>Không gian blind review ảnh | Prompt Atlas</title>
+</head>
+<body class="blind-review-page">
+  <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
+  <header class="neutral-header">
+    <a class="neutral-brand" href="/">Prompt Atlas</a>
+    <nav aria-label="Blind review">
+      <a href="/review" aria-current="page">Review mù</a>
+      <a href="/">Atlas</a>
+    </nav>
+  </header>
+  <main id="main-content">
   <section class="review-hero shell" aria-labelledby="review-title">
     <div>
       <p class="eyebrow">IMAGE-ONLY / PROTOCOL 0.2</p>
@@ -166,10 +180,27 @@ const reviewData = JSON.stringify({
 
   <script is:inline id="blind-review-data" type="application/json" set:html={reviewData}></script>
   <script src="../scripts/blind-review-ui.ts"></script>
-</BaseLayout>
+  </main>
+</body>
+</html>
 
 <style>
-  :global(.blind-review-page) { background: #e9e5dc; color: #151613; }
+  :global(*) { box-sizing: border-box; }
+  :global(html) { background: #e9e5dc; color: #151613; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+  :global(body) { margin: 0; }
+  :global(button), :global(select), :global(textarea), :global(input) { font: inherit; }
+  :global(a) { color: inherit; }
+  :global(.blind-review-page) { min-width: 320px; background: #e9e5dc; color: #151613; }
+  .skip-link { position: fixed; z-index: 100; top: 8px; left: 8px; padding: 10px 14px; background: #151613; color: #fff; transform: translateY(-160%); }
+  .skip-link:focus { transform: translateY(0); }
+  .neutral-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px; padding: 12px clamp(16px, 4vw, 48px); border-bottom: 1px solid #151613; background: #f4f0e7; }
+  .neutral-brand { font-weight: 900; letter-spacing: -.03em; text-decoration: none; }
+  .neutral-header nav { display: flex; align-items: center; gap: 18px; }
+  .neutral-header nav a { font: 700 12px ui-monospace, monospace; text-transform: uppercase; }
+  .neutral-header nav a[aria-current="page"] { text-decoration-thickness: 3px; text-underline-offset: 6px; }
+  .shell { width: min(1440px, calc(100% - clamp(32px, 7vw, 96px))); margin-inline: auto; }
+  .button { min-height: 44px; padding: 10px 16px; border: 1px solid #151613; background: #151613; color: #f4f0e7; font-weight: 800; cursor: pointer; }
+  .button--ghost { background: transparent; color: #151613; }
   .review-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .34fr); gap: 32px; padding-block: clamp(48px, 7vw, 92px) 32px; }
   .review-hero h1 { max-width: 900px; margin: 8px 0 12px; font-size: clamp(42px, 7vw, 92px); line-height: .92; letter-spacing: -.06em; }
   .review-hero > div > p:last-child { max-width: 680px; font-size: 18px; }
