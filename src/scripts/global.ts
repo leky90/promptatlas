@@ -279,8 +279,11 @@ function initializeSharedDiscovery() {
     active.scrollIntoView({ block: "nearest" });
   };
 
-  const createComposerButton = (item: DiscoveryIndexItem) => {
+  const createComposerButton = (item: DiscoveryIndexItem, selectedIds: Set<string>) => {
     if (!item.composer) return null;
+    const active = [item.composer.primitiveId, ...item.composer.primitiveAliases.split(/\s+/u)]
+      .filter(Boolean)
+      .some((id) => selectedIds.has(id));
     const button = document.createElement("button");
     button.type = "button";
     button.className = "spotlight-add";
@@ -292,11 +295,12 @@ function initializeSharedDiscovery() {
     button.dataset.primitiveLabel = item.composer.label;
     button.dataset.primitiveFragment = item.composer.fragment;
     button.dataset.sourcePrompt = item.composer.sourcePrompt;
-    button.setAttribute("aria-pressed", "false");
+    button.setAttribute("aria-pressed", String(active));
+    button.classList.toggle("is-active", active);
     button.setAttribute("aria-label", `Thêm ${item.label} vào prompt`);
     const label = document.createElement("span");
     label.dataset.composerAddLabel = "";
-    label.textContent = "Thêm";
+    label.textContent = active ? "Đã thêm" : "Thêm";
     button.append(label);
     return button;
   };
@@ -311,6 +315,12 @@ function initializeSharedDiscovery() {
     const limited = tokens.length === 0
       ? typeOrder.flatMap((type) => matches.filter((item) => item.type === type).slice(0, 3))
       : typeOrder.flatMap((type) => matches.filter((item) => item.type === type).slice(0, 8));
+    let selectedIds = new Set<string>();
+    try {
+      selectedIds = new Set((readActiveDraft(localStorage)?.items ?? []).map((item) => item.primitiveId));
+    } catch {
+      selectedIds = new Set();
+    }
 
     resultList.replaceChildren();
     activeIndex = -1;
@@ -359,7 +369,7 @@ function initializeSharedDiscovery() {
         openCell.append(option);
         const actionCell = document.createElement("div");
         actionCell.setAttribute("role", "gridcell");
-        const composer = createComposerButton(item);
+        const composer = createComposerButton(item, selectedIds);
         if (composer) actionCell.append(composer);
         row.append(openCell, actionCell);
         section.append(row);

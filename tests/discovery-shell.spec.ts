@@ -50,6 +50,27 @@ test("slash search, shortcut help and grouped góc máy results expose valid act
   await expect(page.getByRole("dialog", { name: "Phím tắt Prompt Atlas" })).toBeVisible();
 });
 
+test("Spotlight preserves selected Composer actions after reopen and re-filter", async ({ page }) => {
+  await page.goto("/");
+  await page.keyboard.press("Control+K");
+
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  const search = dialog.getByRole("combobox");
+  await search.fill("góc máy");
+  await dialog.locator('[data-spotlight-type="primitive"]:visible').first().getByRole("button").click();
+  await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
+
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Control+K");
+  await search.fill("góc");
+  await search.fill("góc máy");
+
+  const selectedAction = dialog.locator('[data-spotlight-type="primitive"]:visible').first().getByRole("button");
+  await expect(selectedAction).toHaveAttribute("aria-pressed", "true");
+  await expect(selectedAction.locator("[data-composer-add-label]")).toHaveText("Đã thêm");
+  await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
+});
+
 test("Spotlight supports Arrow, Enter and accessible combobox state", async ({ page }) => {
   await page.goto("/");
   await page.keyboard.press("Control+K");
