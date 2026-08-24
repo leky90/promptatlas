@@ -123,11 +123,32 @@ if (data) {
     return Math.min(.9, Math.max(.1, value));
   }
 
+  function paintedImageBounds() {
+    if (!image) return null;
+    const box = image.getBoundingClientRect();
+    const naturalWidth = image.naturalWidth || image.width;
+    const naturalHeight = image.naturalHeight || image.height;
+    if (!box.width || !box.height || !naturalWidth || !naturalHeight) return null;
+    const scale = Math.min(box.width / naturalWidth, box.height / naturalHeight);
+    const width = naturalWidth * scale;
+    const height = naturalHeight * scale;
+    return {
+      left: box.left + (box.width - width) / 2,
+      top: box.top + (box.height - height) / 2,
+      width,
+      height,
+    };
+  }
+
   function renderRegion() {
-    if (!region || !regionNode) return;
+    const imageBounds = paintedImageBounds();
+    if (!region || !regionNode || !canvas || !imageBounds) return;
+    const canvasBounds = canvas.getBoundingClientRect();
     regionNode.hidden = false;
-    regionNode.style.left = `${region.x * 100}%`;
-    regionNode.style.top = `${region.y * 100}%`;
+    regionNode.style.left = `${imageBounds.left - canvasBounds.left + region.x * imageBounds.width}px`;
+    regionNode.style.top = `${imageBounds.top - canvasBounds.top + region.y * imageBounds.height}px`;
+    regionNode.style.width = `${region.width * imageBounds.width}px`;
+    regionNode.style.height = `${region.height * imageBounds.height}px`;
     regionNode.dataset.regionX = region.x.toFixed(2);
     if (coordinates) coordinates.textContent = `Region x ${region.x.toFixed(2)} · y ${region.y.toFixed(2)} · w ${region.width.toFixed(2)} · h ${region.height.toFixed(2)}`;
     rows.forEach((row) => {
@@ -142,7 +163,8 @@ if (data) {
   }
 
   canvas?.addEventListener("click", (event) => {
-    const bounds = canvas.getBoundingClientRect();
+    const bounds = paintedImageBounds();
+    if (!bounds || event.clientX < bounds.left || event.clientX > bounds.left + bounds.width || event.clientY < bounds.top || event.clientY > bounds.top + bounds.height) return;
     placeRegion((event.clientX - bounds.left) / bounds.width, (event.clientY - bounds.top) / bounds.height);
   });
 
@@ -160,6 +182,8 @@ if (data) {
     event.preventDefault();
     placeRegion(region.x + delta[0], region.y + delta[1]);
   });
+  image?.addEventListener("load", renderRegion);
+  window.addEventListener("resize", renderRegion);
 
   rows.forEach((row) => {
     row.querySelector<HTMLButtonElement>("[data-attach-evidence]")?.addEventListener("click", () => {

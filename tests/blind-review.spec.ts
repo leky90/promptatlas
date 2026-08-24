@@ -100,3 +100,33 @@ test("resolved adjudication stays resolved after reload and originals remain int
   await expect(page.locator('[data-disagreement-list] .disagreement-item[data-status="resolved"] button')).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem("pa:blind-review:v1"))).toBe(immutableHistory);
 });
+
+test("responsive evidence regions stay inside the painted image instead of letterbox space", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/review/");
+  await page.locator("[data-evidence-canvas]").scrollIntoViewIfNeeded();
+  const geometry = await page.evaluate(() => {
+    const canvas = document.querySelector<HTMLElement>("[data-evidence-canvas]")!.getBoundingClientRect();
+    const image = document.querySelector<HTMLImageElement>("[data-review-image]")!;
+    const box = image.getBoundingClientRect();
+    const scale = Math.min(box.width / image.naturalWidth, box.height / image.naturalHeight);
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+    return {
+      canvas: { left: canvas.left, top: canvas.top, width: canvas.width, height: canvas.height },
+      image: { left: box.left + (box.width - width) / 2, top: box.top + (box.height - height) / 2, width, height },
+    };
+  });
+  expect(geometry.image.top).toBeGreaterThan(geometry.canvas.top + 20);
+
+  await page.mouse.click(geometry.canvas.left + geometry.canvas.width / 2, geometry.canvas.top + 8);
+  await expect(page.locator("[data-evidence-region]")).toBeHidden();
+
+  await page.mouse.click(geometry.image.left + geometry.image.width / 2, geometry.image.top + geometry.image.height / 2);
+  const region = await page.locator("[data-evidence-region]").boundingBox();
+  expect(region).not.toBeNull();
+  expect(region!.x).toBeGreaterThanOrEqual(geometry.image.left - 1);
+  expect(region!.y).toBeGreaterThanOrEqual(geometry.image.top - 1);
+  expect(region!.x + region!.width).toBeLessThanOrEqual(geometry.image.left + geometry.image.width + 1);
+  expect(region!.y + region!.height).toBeLessThanOrEqual(geometry.image.top + geometry.image.height + 1);
+});
