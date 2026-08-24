@@ -263,18 +263,18 @@ function initializeSharedDiscovery() {
   let activeIndex = -1;
   let previousFocus: HTMLElement | null = null;
   let shortcutPreviousFocus: HTMLElement | null = null;
-  let options: HTMLElement[] = [];
+  let resultRows: HTMLElement[] = [];
   const typeOrder: DiscoveryIndexItem["type"][] = ["style", "primitive", "anatomy"];
 
   const setActive = (next: number) => {
-    if (options.length === 0) {
+    if (resultRows.length === 0) {
       activeIndex = -1;
       input.removeAttribute("aria-activedescendant");
       return;
     }
-    activeIndex = (next + options.length) % options.length;
-    options.forEach((option, optionIndex) => option.setAttribute("aria-selected", String(optionIndex === activeIndex)));
-    const active = options[activeIndex];
+    activeIndex = (next + resultRows.length) % resultRows.length;
+    resultRows.forEach((row, rowIndex) => row.setAttribute("aria-selected", String(rowIndex === activeIndex)));
+    const active = resultRows[activeIndex];
     input.setAttribute("aria-activedescendant", active.id);
     active.scrollIntoView({ block: "nearest" });
   };
@@ -318,25 +318,33 @@ function initializeSharedDiscovery() {
     for (const type of typeOrder) {
       const groupItems = limited.filter((item) => item.type === type);
       if (groupItems.length === 0) continue;
-      const section = document.createElement("section");
+      const section = document.createElement("div");
       const typeLabel = groupItems[0].typeLabel;
       section.className = "spotlight-group";
-      section.setAttribute("role", "group");
+      section.setAttribute("role", "rowgroup");
       section.setAttribute("aria-label", typeLabel);
-      const heading = document.createElement("h3");
+      const headingRow = document.createElement("div");
+      headingRow.setAttribute("role", "row");
+      const heading = document.createElement("div");
+      heading.setAttribute("role", "columnheader");
+      heading.setAttribute("aria-colspan", "2");
       heading.textContent = typeLabel;
-      section.append(heading);
+      headingRow.append(heading);
+      section.append(headingRow);
 
       for (const item of groupItems) {
         const row = document.createElement("div");
         row.className = "spotlight-result";
         row.dataset.spotlightType = item.type;
+        row.dataset.spotlightResultRow = "";
+        row.id = `spotlight-row-${item.id.replace(/[^a-z0-9-]/giu, "-")}`;
+        row.setAttribute("role", "row");
+        row.setAttribute("aria-selected", "false");
+        const openCell = document.createElement("div");
+        openCell.setAttribute("role", "gridcell");
         const option = document.createElement("a");
-        option.id = `spotlight-option-${item.id.replace(/[^a-z0-9-]/giu, "-")}`;
         option.href = item.href;
         option.className = "spotlight-option";
-        option.setAttribute("role", "option");
-        option.setAttribute("aria-selected", "false");
         option.setAttribute("aria-label", item.openLabel);
         option.tabIndex = -1;
         const copy = document.createElement("span");
@@ -348,23 +356,31 @@ function initializeSharedDiscovery() {
         const action = document.createElement("span");
         action.textContent = "Mở";
         option.append(copy, action);
-        row.append(option);
+        openCell.append(option);
+        const actionCell = document.createElement("div");
+        actionCell.setAttribute("role", "gridcell");
         const composer = createComposerButton(item);
-        if (composer) row.append(composer);
+        if (composer) actionCell.append(composer);
+        row.append(openCell, actionCell);
         section.append(row);
       }
       resultList.append(section);
     }
 
-    options = [...resultList.querySelectorAll<HTMLElement>("[role=option]")];
+    resultRows = [...resultList.querySelectorAll<HTMLElement>("[data-spotlight-result-row]")];
     count.textContent = tokens.length === 0
       ? "Gợi ý từ ba thư viện."
       : `${matches.length} kết quả trong ${new Set(matches.map((item) => item.type)).size} nhóm`;
     if (matches.length === 0) {
-      const empty = document.createElement("p");
+      const emptyRow = document.createElement("div");
+      emptyRow.setAttribute("role", "row");
+      const empty = document.createElement("div");
+      empty.setAttribute("role", "gridcell");
+      empty.setAttribute("aria-colspan", "2");
       empty.className = "spotlight-empty";
       empty.textContent = "Không có kết quả. Thử một từ khóa hoặc tên gọi khác.";
-      resultList.append(empty);
+      emptyRow.append(empty);
+      resultList.append(emptyRow);
     }
   };
 
@@ -389,17 +405,17 @@ function initializeSharedDiscovery() {
       setActive(activeIndex + 1);
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      setActive(activeIndex <= 0 ? options.length - 1 : activeIndex - 1);
+      setActive(activeIndex <= 0 ? resultRows.length - 1 : activeIndex - 1);
     } else if (event.key === "Enter" && activeIndex >= 0) {
       event.preventDefault();
-      options[activeIndex]?.click();
+      resultRows[activeIndex]?.querySelector<HTMLAnchorElement>("a")?.click();
     }
   });
   resultList.addEventListener("pointermove", (event) => {
-    const option = event.target instanceof Element ? event.target.closest<HTMLElement>("[role=option]") : null;
-    if (!option) return;
-    const optionIndex = options.indexOf(option);
-    if (optionIndex >= 0 && optionIndex !== activeIndex) setActive(optionIndex);
+    const row = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-spotlight-result-row]") : null;
+    if (!row) return;
+    const rowIndex = resultRows.indexOf(row);
+    if (rowIndex >= 0 && rowIndex !== activeIndex) setActive(rowIndex);
   });
 
   dialog.addEventListener("close", () => {

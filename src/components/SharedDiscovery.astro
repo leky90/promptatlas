@@ -86,6 +86,7 @@ const serializedIndex = JSON.stringify(index).replace(/</gu, "\\u003c");
         aria-label="Tìm phong cách, prompt primitive hoặc Image Anatomy"
         aria-controls="spotlight-results"
         aria-autocomplete="list"
+        aria-haspopup="grid"
         aria-expanded="false"
         autocomplete="off"
         placeholder="Thử “góc máy”, “màu nước”, “ánh sáng”…"
@@ -94,7 +95,7 @@ const serializedIndex = JSON.stringify(index).replace(/</gu, "\\u003c");
       <kbd>ESC</kbd>
     </label>
     <p class="spotlight-summary" data-spotlight-count role="status" aria-live="polite">Nhập từ khóa để bắt đầu.</p>
-    <div class="spotlight-results" id="spotlight-results" role="listbox" aria-label="Kết quả tìm kiếm" data-spotlight-results></div>
+    <div class="spotlight-results" id="spotlight-results" role="grid" aria-label="Kết quả tìm kiếm" data-spotlight-results></div>
     <footer class="spotlight-foot"><span>↑↓ Chọn</span><span>Enter Mở</span><span>Esc Đóng</span></footer>
   </div>
 </dialog>

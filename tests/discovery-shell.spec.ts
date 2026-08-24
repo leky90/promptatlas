@@ -27,13 +27,16 @@ test("slash search, shortcut help and grouped góc máy results expose valid act
   const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
   const search = dialog.getByRole("combobox", { name: "Tìm phong cách, prompt primitive hoặc Image Anatomy" });
   await search.fill("góc máy");
-  await expect(dialog.getByRole("group", { name: "Prompt primitives" })).toBeVisible();
-  await expect(dialog.getByRole("group", { name: "Image Anatomy" })).toBeVisible();
+  await expect(dialog.getByRole("rowgroup", { name: "Prompt primitives" })).toBeVisible();
+  await expect(dialog.getByRole("rowgroup", { name: "Image Anatomy" })).toBeVisible();
   await expect(dialog.locator("[data-spotlight-count]" )).not.toHaveText("0 kết quả");
 
   const primitive = dialog.locator('[data-spotlight-type="primitive"]:visible').first();
-  await expect(primitive.getByRole("option", { name: /Mở trong Học prompt/u })).toHaveAttribute("href", /\/discover\/\?q=/u);
-  await primitive.getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await expect(primitive.getByRole("link", { name: /Mở trong Học prompt/u })).toHaveAttribute("href", /\/discover\/\?q=/u);
+  const add = primitive.getByRole("button", { name: /Thêm .* vào prompt/u });
+  await search.press("Tab");
+  await expect(add).toBeFocused();
+  await page.keyboard.press("Enter");
   await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
 
   await page.goto("/composer/");
@@ -54,10 +57,22 @@ test("Spotlight supports Arrow, Enter and accessible combobox state", async ({ p
   const search = dialog.getByRole("combobox");
   await search.fill("sumi-e");
   await page.keyboard.press("ArrowDown");
-  await expect(search).toHaveAttribute("aria-activedescendant", /spotlight-option-/u);
-  await expect(dialog.getByRole("option").first()).toHaveAttribute("aria-selected", "true");
+  await expect(search).toHaveAttribute("aria-activedescendant", /spotlight-row-/u);
+  await expect(dialog.locator("[data-spotlight-result-row]").first()).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/styles\/sumi-e\/$/u);
+});
+
+test("populated Spotlight results and actions have valid accessibility semantics", async ({ page }) => {
+  await page.goto("/");
+  await page.keyboard.press("Control+K");
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  await dialog.getByRole("combobox").fill("góc máy");
+  await expect(dialog.locator("[data-spotlight-result-row]")).not.toHaveCount(0);
+  await expect(dialog.getByRole("button", { name: /Thêm .* vào prompt/u }).first()).toBeVisible();
+
+  const results = await new AxeBuilder({ page }).include("[data-spotlight-dialog]").analyze();
+  expect(results.violations.filter((item) => item.impact === "serious" || item.impact === "critical")).toEqual([]);
 });
 
 test("Discover exposes a short skip-to-results path and live result count", async ({ page }) => {
