@@ -31,7 +31,14 @@ const roleLabels = {
       {examples.map((example) => (
         <figure data-example-role={example.role}>
           <img src={example.publicPath} width={example.asset.width} height={example.asset.height} alt={example.alt.vi} loading="lazy" decoding="async" />
-          <figcaption><b>{roleLabels[example.role]}</b><span>{example.knownLimitations[0] ?? "Ví dụ đã qua content review."}</span></figcaption>
+          <figcaption>
+            <b>{roleLabels[example.role]}</b>
+            <span data-observation-caption>{value.observableCues[0] ?? value.definition.vi}</span>
+            <details class="anatomy-example__technical">
+              <summary>Xem chi tiết QA và provenance</summary>
+              <p data-technical-caption>{example.knownLimitations[0] ?? "Ví dụ đã qua content review; chưa ghi nhận hạn chế bổ sung."}</p>
+            </details>
+          </figcaption>
         </figure>
       ))}
     </div>

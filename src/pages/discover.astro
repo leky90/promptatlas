@@ -43,7 +43,7 @@ const jsonLd = {
     </div>
   </section>
 
-  <section class="discover-workspace" aria-labelledby="library-title" data-discover-workspace>
+  <section class="discover-workspace" aria-label="Thư viện Prompt primitives" data-discover-workspace>
     <div class="discover-toolbar-wrap">
       <div class="discover-toolbar shell">
         <form class="discover-search" role="search" data-discover-search-form>
@@ -54,6 +54,7 @@ const jsonLd = {
         </form>
 
         <div class="discover-toolbar__actions">
+          <a class="discover-skip-results" href="#discover-results" data-skip-to-results>Bỏ qua bộ lọc, tới kết quả</a>
           <button class="facet-toggle" type="button" data-facet-toggle aria-expanded="false" aria-controls="taxonomy-panel">
             Taxonomy <span data-active-filter-count>0</span>
           </button>
@@ -75,7 +76,7 @@ const jsonLd = {
     <div class="discover-layout shell">
       <aside class="taxonomy-panel" id="taxonomy-panel" data-facet-panel data-open="false" aria-label="Taxonomy phân cấp">
         <div class="taxonomy-panel__head">
-          <div><p class="eyebrow">HIERARCHICAL FACETS</p><h2>Image anatomy</h2></div>
+          <div><p class="eyebrow">HIERARCHICAL FACETS</p><h2>Prompt primitives</h2></div>
           <button type="button" data-facet-close aria-label="Đóng taxonomy"><Icon name="close" size={19} /></button>
         </div>
         <button class="taxonomy-all" type="button" data-group-filter="all" aria-pressed="true">Tất cả primitive <span>{primitiveEntries.length}</span></button>
@@ -94,13 +95,13 @@ const jsonLd = {
         </div>
       </aside>
 
-      <div class="primitive-library">
+      <div class="primitive-library" id="discover-results" tabindex="-1" aria-labelledby="library-title">
         <header class="primitive-library__head">
           <div>
             <p class="eyebrow">SPECIMEN INDEX</p>
             <h2 id="library-title">Image primitives</h2>
           </div>
-          <div class="primitive-library__status">
+          <div class="primitive-library__status" data-discover-live role="status" aria-live="polite" aria-atomic="true">
             <p><strong data-result-count>{primitiveEntries.length}</strong> kết quả · hiển thị <span data-visible-count>24</span></p>
             <p data-filter-summary>Tất cả taxonomy</p>
           </div>

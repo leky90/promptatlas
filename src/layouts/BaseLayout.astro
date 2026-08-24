@@ -6,6 +6,7 @@ import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import ComposerTray from "../components/ComposerTray.astro";
+import SharedDiscovery from "../components/SharedDiscovery.astro";
 
 type Props = {
   title?: string;
@@ -78,6 +79,7 @@ const structuredData = jsonLd
   <body class={bodyClass}>
     <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
     <SiteHeader />
+    <SharedDiscovery />
     <main id="main-content">
       <slot />
     </main>

@@ -2,6 +2,31 @@ import { addPrimitiveToActiveDraft, readActiveDraft } from "./composer-store.ts"
 
 const storageKey = "prompt-atlas:favorites:v1";
 
+type DiscoveryIndexItem = {
+  id: string;
+  type: "style" | "primitive" | "anatomy";
+  typeLabel: string;
+  label: string;
+  detail: string;
+  keywords: string;
+  href: string;
+  openLabel: string;
+  composer?: {
+    primitiveId: string;
+    primitiveAliases: string;
+    dimensionId: string;
+    slug: string;
+    label: string;
+    fragment: string;
+    sourcePrompt: string;
+  };
+};
+
+const normalizeSearch = (value: string) => value
+  .toLocaleLowerCase("vi")
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/gu, "");
+
 function readFavorites(): string[] {
   try {
     const value = JSON.parse(localStorage.getItem(storageKey) ?? "[]");
@@ -177,43 +202,240 @@ function initializeComposerEntries() {
     });
   };
 
-  document.querySelectorAll<HTMLButtonElement>("[data-composer-add]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const primitiveId = button.dataset.primitiveId;
-      if (!primitiveId) return;
-      try {
-        const selected = new Set((readActiveDraft(localStorage)?.items ?? []).map((item) => item.primitiveId));
-        if (primitiveKeys(button).some((id) => selected.has(id))) {
-          update();
-          showToast("Thành phần này đã có trong recipe.");
-          return;
-        }
-        const result = addPrimitiveToActiveDraft(localStorage, {
-          primitiveId,
-          dimensionId: button.dataset.primitiveDimension ?? (primitiveId.startsWith("primitive.style.") ? "style.medium" : ""),
-          slug: button.dataset.primitiveSlug ?? "",
-          label: button.dataset.primitiveLabel ?? primitiveId,
-          fragment: button.dataset.primitiveFragment ?? "",
-          sourcePrompt: button.dataset.sourcePrompt ?? "",
-        });
+  document.addEventListener("click", (event) => {
+    const button = event.target instanceof Element
+      ? event.target.closest<HTMLButtonElement>("button[data-composer-add]")
+      : null;
+    if (!button) return;
+    const primitiveId = button.dataset.primitiveId;
+    if (!primitiveId) return;
+    try {
+      const selected = new Set((readActiveDraft(localStorage)?.items ?? []).map((item) => item.primitiveId));
+      if (primitiveKeys(button).some((id) => selected.has(id))) {
         update();
-        window.dispatchEvent(new CustomEvent("prompt-atlas:composer-change", { detail: result.draft }));
-        const message = result.added
-          ? "Đã thêm vào Composer."
-          : result.reason === "dimension-conflict"
-            ? "Dimension này đã có một giá trị trong Composer."
-            : result.reason === "limit"
-              ? "Composer đã đạt giới hạn 90 thành phần."
-              : "Thành phần này đã có trong recipe.";
-        showToast(message, result.reason === "dimension-conflict" || result.reason === "limit" ? "error" : "default");
-      } catch {
-        showToast("Không thể lưu recipe trong trình duyệt này.", "error");
+        showToast("Thành phần này đã có trong recipe.");
+        return;
       }
-    });
+      const result = addPrimitiveToActiveDraft(localStorage, {
+        primitiveId,
+        dimensionId: button.dataset.primitiveDimension ?? (primitiveId.startsWith("primitive.style.") ? "style.medium" : ""),
+        slug: button.dataset.primitiveSlug ?? "",
+        label: button.dataset.primitiveLabel ?? primitiveId,
+        fragment: button.dataset.primitiveFragment ?? "",
+        sourcePrompt: button.dataset.sourcePrompt ?? "",
+      });
+      update();
+      window.dispatchEvent(new CustomEvent("prompt-atlas:composer-change", { detail: result.draft }));
+      const message = result.added
+        ? "Đã thêm vào Composer."
+        : result.reason === "dimension-conflict"
+          ? "Dimension này đã có một giá trị trong Composer."
+          : result.reason === "limit"
+            ? "Composer đã đạt giới hạn 90 thành phần."
+            : "Thành phần này đã có trong recipe.";
+      showToast(message, result.reason === "dimension-conflict" || result.reason === "limit" ? "error" : "default");
+    } catch {
+      showToast("Không thể lưu recipe trong trình duyệt này.", "error");
+    }
   });
   window.addEventListener("prompt-atlas:composer-change", update);
   window.addEventListener("storage", update);
   update();
+}
+
+function initializeSharedDiscovery() {
+  const dialog = document.querySelector<HTMLDialogElement>("[data-spotlight-dialog]");
+  const shortcutDialog = document.querySelector<HTMLDialogElement>("[data-shortcut-dialog]");
+  const input = dialog?.querySelector<HTMLInputElement>("[data-spotlight-search]");
+  const resultList = dialog?.querySelector<HTMLElement>("[data-spotlight-results]");
+  const count = dialog?.querySelector<HTMLElement>("[data-spotlight-count]");
+  const indexSource = document.querySelector<HTMLScriptElement>("#spotlight-index");
+  if (!dialog || !shortcutDialog || !input || !resultList || !count || !indexSource) return;
+
+  let index: DiscoveryIndexItem[] = [];
+  try {
+    const parsed = JSON.parse(indexSource.textContent ?? "[]");
+    if (Array.isArray(parsed)) index = parsed;
+  } catch {
+    index = [];
+  }
+
+  let activeIndex = -1;
+  let previousFocus: HTMLElement | null = null;
+  let shortcutPreviousFocus: HTMLElement | null = null;
+  let options: HTMLElement[] = [];
+  const typeOrder: DiscoveryIndexItem["type"][] = ["style", "primitive", "anatomy"];
+
+  const setActive = (next: number) => {
+    if (options.length === 0) {
+      activeIndex = -1;
+      input.removeAttribute("aria-activedescendant");
+      return;
+    }
+    activeIndex = (next + options.length) % options.length;
+    options.forEach((option, optionIndex) => option.setAttribute("aria-selected", String(optionIndex === activeIndex)));
+    const active = options[activeIndex];
+    input.setAttribute("aria-activedescendant", active.id);
+    active.scrollIntoView({ block: "nearest" });
+  };
+
+  const createComposerButton = (item: DiscoveryIndexItem) => {
+    if (!item.composer) return null;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "spotlight-add";
+    button.dataset.composerAdd = "";
+    button.dataset.primitiveId = item.composer.primitiveId;
+    button.dataset.primitiveAliases = item.composer.primitiveAliases;
+    button.dataset.primitiveDimension = item.composer.dimensionId;
+    button.dataset.primitiveSlug = item.composer.slug;
+    button.dataset.primitiveLabel = item.composer.label;
+    button.dataset.primitiveFragment = item.composer.fragment;
+    button.dataset.sourcePrompt = item.composer.sourcePrompt;
+    button.setAttribute("aria-pressed", "false");
+    button.setAttribute("aria-label", `Thêm ${item.label} vào prompt`);
+    const label = document.createElement("span");
+    label.dataset.composerAddLabel = "";
+    label.textContent = "Thêm";
+    button.append(label);
+    return button;
+  };
+
+  const render = () => {
+    const query = normalizeSearch(input.value.trim());
+    const tokens = query.split(/\s+/u).filter(Boolean);
+    const matches = index.filter((item) => {
+      const haystack = normalizeSearch(`${item.label} ${item.detail} ${item.keywords}`);
+      return tokens.length === 0 || tokens.every((token) => haystack.includes(token));
+    });
+    const limited = tokens.length === 0
+      ? typeOrder.flatMap((type) => matches.filter((item) => item.type === type).slice(0, 3))
+      : typeOrder.flatMap((type) => matches.filter((item) => item.type === type).slice(0, 8));
+
+    resultList.replaceChildren();
+    activeIndex = -1;
+    input.removeAttribute("aria-activedescendant");
+    for (const type of typeOrder) {
+      const groupItems = limited.filter((item) => item.type === type);
+      if (groupItems.length === 0) continue;
+      const section = document.createElement("section");
+      const typeLabel = groupItems[0].typeLabel;
+      section.className = "spotlight-group";
+      section.setAttribute("role", "group");
+      section.setAttribute("aria-label", typeLabel);
+      const heading = document.createElement("h3");
+      heading.textContent = typeLabel;
+      section.append(heading);
+
+      for (const item of groupItems) {
+        const row = document.createElement("div");
+        row.className = "spotlight-result";
+        row.dataset.spotlightType = item.type;
+        const option = document.createElement("a");
+        option.id = `spotlight-option-${item.id.replace(/[^a-z0-9-]/giu, "-")}`;
+        option.href = item.href;
+        option.className = "spotlight-option";
+        option.setAttribute("role", "option");
+        option.setAttribute("aria-selected", "false");
+        option.setAttribute("aria-label", item.openLabel);
+        option.tabIndex = -1;
+        const copy = document.createElement("span");
+        const label = document.createElement("strong");
+        label.textContent = item.label;
+        const detail = document.createElement("small");
+        detail.textContent = item.detail;
+        copy.append(label, detail);
+        const action = document.createElement("span");
+        action.textContent = "Mở";
+        option.append(copy, action);
+        row.append(option);
+        const composer = createComposerButton(item);
+        if (composer) row.append(composer);
+        section.append(row);
+      }
+      resultList.append(section);
+    }
+
+    options = [...resultList.querySelectorAll<HTMLElement>("[role=option]")];
+    count.textContent = tokens.length === 0
+      ? "Gợi ý từ ba thư viện."
+      : `${matches.length} kết quả trong ${new Set(matches.map((item) => item.type)).size} nhóm`;
+    if (matches.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "spotlight-empty";
+      empty.textContent = "Không có kết quả. Thử một từ khóa hoặc tên gọi khác.";
+      resultList.append(empty);
+    }
+  };
+
+  const openSpotlight = (initialQuery = "") => {
+    if (!dialog.open) {
+      previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      dialog.showModal();
+    }
+    input.value = initialQuery;
+    input.setAttribute("aria-expanded", "true");
+    render();
+    window.requestAnimationFrame(() => input.focus());
+  };
+
+  document.querySelectorAll<HTMLButtonElement>("[data-spotlight-trigger]").forEach((trigger) => {
+    trigger.addEventListener("click", () => openSpotlight());
+  });
+  input.addEventListener("input", render);
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActive(activeIndex + 1);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActive(activeIndex <= 0 ? options.length - 1 : activeIndex - 1);
+    } else if (event.key === "Enter" && activeIndex >= 0) {
+      event.preventDefault();
+      options[activeIndex]?.click();
+    }
+  });
+  resultList.addEventListener("pointermove", (event) => {
+    const option = event.target instanceof Element ? event.target.closest<HTMLElement>("[role=option]") : null;
+    if (!option) return;
+    const optionIndex = options.indexOf(option);
+    if (optionIndex >= 0 && optionIndex !== activeIndex) setActive(optionIndex);
+  });
+
+  dialog.addEventListener("close", () => {
+    const focusTarget = previousFocus;
+    previousFocus = null;
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+    window.setTimeout(() => focusTarget?.focus(), 0);
+  });
+  shortcutDialog.addEventListener("close", () => {
+    const focusTarget = shortcutPreviousFocus;
+    shortcutPreviousFocus = null;
+    window.setTimeout(() => focusTarget?.focus(), 0);
+  });
+
+  window.addEventListener("keydown", (event) => {
+    const target = event.target;
+    const editing = target instanceof HTMLInputElement
+      || target instanceof HTMLTextAreaElement
+      || (target instanceof HTMLElement && target.isContentEditable);
+    if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "k") {
+      event.preventDefault();
+      openSpotlight(input.value);
+      return;
+    }
+    if (editing || event.metaKey || event.ctrlKey || event.altKey) return;
+    if (event.key === "?" || (event.key === "/" && event.shiftKey)) {
+      event.preventDefault();
+      shortcutPreviousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      shortcutDialog.showModal();
+      window.requestAnimationFrame(() => shortcutDialog.querySelector<HTMLButtonElement>("button")?.focus());
+    } else if (event.key === "/") {
+      event.preventDefault();
+      openSpotlight();
+    }
+  });
 }
 
 window.promptAtlas = { readFavorites, showToast, readActiveComposerDraft: () => readActiveDraft(localStorage) };
@@ -223,5 +445,6 @@ initializeFavorites();
 initializeCopy();
 initializeImageStates();
 initializeComposerEntries();
+initializeSharedDiscovery();
 
 export {};

@@ -1,0 +1,118 @@
+---
+import { anatomyCategoryById, anatomyDimensionSlug, anatomyDimensions, anatomyValuesForDimension } from "../lib/anatomy";
+import { primitiveEntries, primitiveGroupMeta, primitiveSlug } from "../lib/primitives";
+import { styles } from "../lib/styles";
+import Icon from "./Icon.astro";
+
+const index = [
+  ...styles.map((style) => ({
+    id: `style-${style.slug}`,
+    type: "style",
+    typeLabel: "Phong cách",
+    label: style.name,
+    detail: style.title,
+    keywords: [style.name, style.title, style.subtitle, style.summary, ...style.aliases, ...style.legacySlugs, ...style.cues].join(" "),
+    href: `/styles/${style.slug}/`,
+    openLabel: `Mở phong cách ${style.name}`,
+    composer: {
+      primitiveId: `primitive.style.${style.slug}`,
+      primitiveAliases: style.legacySlugs.map((slug) => `primitive.style.${slug}`).join(" "),
+      dimensionId: "style.medium",
+      slug: style.slug,
+      label: style.name,
+      fragment: `Style/medium: ${style.promptReadyFragment.replace(/\.+$/u, "")}.`,
+      sourcePrompt: style.sourcePrompt,
+    },
+  })),
+  ...primitiveEntries.map((primitive) => ({
+    id: `primitive-${primitive.id}`,
+    type: "primitive",
+    typeLabel: "Prompt primitives",
+    label: primitive.labelVi,
+    detail: primitiveGroupMeta.find((group) => group.id === primitive.group)?.label ?? primitive.group,
+    keywords: [primitive.labelVi, primitive.definitionVi, primitive.promptFragment, primitive.example, primitive.dimensionId, primitive.group].join(" "),
+    href: `/discover/?q=${encodeURIComponent(primitive.labelVi)}#discover-results`,
+    openLabel: `Mở trong Học prompt: ${primitive.labelVi}`,
+    composer: {
+      primitiveId: primitive.id,
+      primitiveAliases: "",
+      dimensionId: primitive.dimensionId,
+      slug: primitiveSlug(primitive),
+      label: primitive.labelVi,
+      fragment: primitive.promptFragment,
+      sourcePrompt: primitive.example,
+    },
+  })),
+  ...anatomyDimensions.map((dimension) => {
+    const category = anatomyCategoryById(dimension.categoryId);
+    const values = anatomyValuesForDimension(dimension.dimensionId);
+    return {
+      id: `anatomy-${dimension.dimensionId}`,
+      type: "anatomy",
+      typeLabel: "Image Anatomy",
+      label: dimension.label.vi,
+      detail: category?.label.vi ?? dimension.label.en,
+      keywords: [
+        dimension.label.vi,
+        dimension.label.en,
+        dimension.dimensionId,
+        category?.label.vi ?? "",
+        ...values.flatMap((value) => [value.label.vi, value.label.en, value.definition.vi, value.promptFragment, ...value.aliases]),
+      ].join(" "),
+      href: `/anatomy/${anatomyDimensionSlug(dimension.dimensionId)}/`,
+      openLabel: `Mở Image Anatomy: ${dimension.label.vi}`,
+    };
+  }),
+];
+const serializedIndex = JSON.stringify(index).replace(/</gu, "\\u003c");
+---
+
+<dialog class="spotlight-dialog" data-spotlight-dialog aria-labelledby="spotlight-title">
+  <div class="spotlight-shell">
+    <header class="spotlight-head">
+      <div>
+        <p class="eyebrow">TÌM KIẾM CHUNG</p>
+        <h2 id="spotlight-title">Tìm trong Prompt Atlas</h2>
+      </div>
+      <form method="dialog"><button class="icon-button" aria-label="Đóng tìm kiếm"><Icon name="close" size={20} /></button></form>
+    </header>
+    <label class="spotlight-search" for="spotlight-search">
+      <Icon name="search" size={20} />
+      <span class="visually-hidden">Tìm phong cách, prompt primitive hoặc Image Anatomy</span>
+      <input
+        id="spotlight-search"
+        type="search"
+        role="combobox"
+        aria-label="Tìm phong cách, prompt primitive hoặc Image Anatomy"
+        aria-controls="spotlight-results"
+        aria-autocomplete="list"
+        aria-expanded="false"
+        autocomplete="off"
+        placeholder="Thử “góc máy”, “màu nước”, “ánh sáng”…"
+        data-spotlight-search
+      />
+      <kbd>ESC</kbd>
+    </label>
+    <p class="spotlight-summary" data-spotlight-count role="status" aria-live="polite">Nhập từ khóa để bắt đầu.</p>
+    <div class="spotlight-results" id="spotlight-results" role="listbox" aria-label="Kết quả tìm kiếm" data-spotlight-results></div>
+    <footer class="spotlight-foot"><span>↑↓ Chọn</span><span>Enter Mở</span><span>Esc Đóng</span></footer>
+  </div>
+</dialog>
+
+<dialog class="shortcut-dialog" data-shortcut-dialog aria-labelledby="shortcut-title">
+  <div class="shortcut-shell">
+    <header class="spotlight-head">
+      <div><p class="eyebrow">KEYBOARD FIRST</p><h2 id="shortcut-title">Phím tắt Prompt Atlas</h2></div>
+      <form method="dialog"><button class="icon-button" aria-label="Đóng hướng dẫn phím tắt"><Icon name="close" size={20} /></button></form>
+    </header>
+    <dl class="shortcut-list">
+      <div><dt><kbd>⌘/Ctrl</kbd> + <kbd>K</kbd></dt><dd>Mở Spotlight ở mọi trang</dd></div>
+      <div><dt><kbd>/</kbd></dt><dd>Tìm ngay khi không nhập văn bản</dd></div>
+      <div><dt><kbd>?</kbd></dt><dd>Mở bảng phím tắt này</dd></div>
+      <div><dt><kbd>↑</kbd> <kbd>↓</kbd> <kbd>Enter</kbd></dt><dd>Chọn và mở kết quả</dd></div>
+      <div><dt><kbd>Esc</kbd></dt><dd>Đóng và trở về vị trí trước</dd></div>
+    </dl>
+  </div>
+</dialog>
+
+<script is:inline id="spotlight-index" type="application/json" set:html={serializedIndex}></script>
