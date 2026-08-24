@@ -71,6 +71,51 @@ test("Spotlight preserves selected Composer actions after reopen and re-filter",
   await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
 });
 
+test("Spotlight maps persisted legacy style aliases without duplicating Composer", async ({ page }) => {
+  await page.goto("/");
+  const canonical = page.locator('[data-style-card][data-slug="interlocking-toy-brick-diorama"]');
+  await canonical.locator("[data-prompt-disclosure] summary").click();
+  await canonical.getByRole("button", { name: /Thêm .* vào prompt/u }).click();
+  await page.evaluate(() => {
+    const draftId = localStorage.getItem("pa:drafts:active:v1");
+    const key = `pa:drafts:v1:${draftId}`;
+    const draft = JSON.parse(localStorage.getItem(key) ?? "null");
+    draft.items[0].primitiveId = "primitive.style.lego";
+    draft.items[0].slug = "lego";
+    localStorage.setItem(key, JSON.stringify(draft));
+  });
+
+  await page.keyboard.press("Control+K");
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  const search = dialog.getByRole("combobox");
+  await search.fill("lego");
+  let action = dialog.locator('[data-spotlight-type="style"]:visible').first().getByRole("button");
+  await expect(action).toHaveAttribute("aria-pressed", "true");
+  await expect(action.locator("[data-composer-add-label]")).toHaveText("Đã thêm");
+
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Control+K");
+  await search.fill("interlocking");
+  await search.fill("lego");
+  action = dialog.locator('[data-spotlight-type="style"]:visible').first().getByRole("button");
+  await expect(action).toHaveAttribute("aria-pressed", "true");
+  await action.click();
+  await expect(page.locator("[data-composer-count]").first()).toHaveText("1");
+  await expect(action.locator("[data-composer-add-label]")).toHaveText("Đã thêm");
+});
+
+test("Discover and Home communicate the canonical shared-discovery vocabulary", async ({ page }) => {
+  await page.goto("/discover/");
+  await expect(page).toHaveTitle("Discover Prompt primitives | Prompt Atlas");
+  await expect(page.locator(".discover-intro .eyebrow")).toContainText("PROMPT PRIMITIVES");
+  await expect(page.locator(".discover-specimens")).toHaveAttribute("aria-label", "Mẫu Prompt primitives");
+  await expect(page.locator(".discover-search label")).toHaveText("Tìm trong Prompt primitives");
+  await expect(page.locator("#library-title")).toHaveText("Prompt primitives");
+
+  await page.goto("/");
+  await expect(page.locator(".search-field kbd")).toHaveCount(0);
+});
+
 test("Spotlight supports Arrow, Enter and accessible combobox state", async ({ page }) => {
   await page.goto("/");
   await page.keyboard.press("Control+K");

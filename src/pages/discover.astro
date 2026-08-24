@@ -8,23 +8,23 @@ const specimens = [primitiveEntries[0], primitiveEntries[90], primitiveEntries[1
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  name: "Discover image primitives | Prompt Atlas",
-  description: "Thư viện 187 image primitives có ảnh tham chiếu, prompt fragment và taxonomy phân cấp.",
+  name: "Discover Prompt primitives | Prompt Atlas",
+  description: "Thư viện 187 Prompt primitives có ảnh tham chiếu, prompt fragment và taxonomy phân cấp.",
   url: "https://prompt-atlas.ldktech.com/discover/",
   numberOfItems: primitiveEntries.length,
 };
 ---
 
 <BaseLayout
-  title="Discover image primitives | Prompt Atlas"
-  description="Khám phá 187 image primitives theo taxonomy phân cấp, xem bằng chứng trực quan và thêm trực tiếp vào Prompt Composer."
+  title="Discover Prompt primitives | Prompt Atlas"
+  description="Khám phá 187 Prompt primitives theo taxonomy phân cấp, xem bằng chứng trực quan và thêm trực tiếp vào Prompt Composer."
   canonicalPath="/discover/"
   bodyClass="discover-page"
   jsonLd={jsonLd}
 >
   <section class="discover-intro shell" aria-labelledby="discover-title">
     <div class="discover-intro__copy">
-      <p class="eyebrow">IMAGE VOCABULARY / DATASET {primitiveManifestVersion}</p>
+      <p class="eyebrow">PROMPT PRIMITIVES / DATASET {primitiveManifestVersion}</p>
       <h1 id="discover-title">Xây một khung hình<br /><em>từ ngôn ngữ nhìn thấy.</em></h1>
       <p>187 primitive đã được kiểm chứng bằng ảnh tham chiếu. Lọc theo cấu trúc hình ảnh, đọc prompt fragment, rồi đưa thành phần vào Composer mà không rời mạch khám phá.</p>
       <div class="discover-intro__metrics" aria-label="Quy mô thư viện">
@@ -33,7 +33,7 @@ const jsonLd = {
         <span><strong>1:1</strong> ảnh / prompt</span>
       </div>
     </div>
-    <div class="discover-specimens" aria-label="Mẫu image primitives">
+    <div class="discover-specimens" aria-label="Mẫu Prompt primitives">
       {specimens.map((primitive, index) => (
         <figure style={`--specimen-index:${index}`}>
           <img src={primitive.thumbnail} width="640" height="512" alt={primitive.alt.vi} fetchpriority={index === 0 ? "high" : undefined} />
@@ -47,7 +47,7 @@ const jsonLd = {
     <div class="discover-toolbar-wrap">
       <div class="discover-toolbar shell">
         <form class="discover-search" role="search" data-discover-search-form>
-          <label for="primitive-search">Tìm trong image vocabulary</label>
+          <label for="primitive-search">Tìm trong Prompt primitives</label>
           <span><Icon name="search" size={18} /></span>
           <input id="primitive-search" type="search" name="q" autocomplete="off" placeholder="vai trò, vật liệu, góc máy, ánh sáng…" data-discover-search />
           <button type="submit">Tìm</button>
@@ -99,7 +99,7 @@ const jsonLd = {
         <header class="primitive-library__head">
           <div>
             <p class="eyebrow">SPECIMEN INDEX</p>
-            <h2 id="library-title">Image primitives</h2>
+            <h2 id="library-title">Prompt primitives</h2>
           </div>
           <div class="primitive-library__status" data-discover-live role="status" aria-live="polite" aria-atomic="true">
             <p><strong data-result-count>{primitiveEntries.length}</strong> kết quả · hiển thị <span data-visible-count>24</span></p>
