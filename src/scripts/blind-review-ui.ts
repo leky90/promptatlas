@@ -59,6 +59,11 @@ if (data) {
     }
   }
 
+  function withStorageLock<T>(name: string, operation: () => T | Promise<T>) {
+    if (!("locks" in navigator)) return Promise.resolve(operation());
+    return navigator.locks.request(name, operation);
+  }
+
   function newReviewerId() {
     const id = `reviewer-${crypto.randomUUID().slice(0, 8)}`;
     sessionStorage.setItem(REVIEWER_KEY, id);
@@ -205,7 +210,7 @@ if (data) {
     });
   });
 
-  form?.addEventListener("submit", (event) => {
+  form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const outputId = originalOutputId();
     if (!outputId) return;
@@ -244,9 +249,11 @@ if (data) {
       ratings,
     };
     try {
-      const currentHistory = readJson<BlindReviewRecord[]>(STORAGE_KEY, []);
-      history = [...appendReviewRecord(currentHistory, nextRecord)];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      await withStorageLock("pa:blind-review:history", () => {
+        const currentHistory = readJson<BlindReviewRecord[]>(STORAGE_KEY, []);
+        history = [...appendReviewRecord(currentHistory, nextRecord)];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      });
     } catch (error) {
       if (message) message.textContent = error instanceof Error ? error.message : "Không thể khóa review.";
       return;
@@ -300,22 +307,26 @@ if (data) {
         const button = document.createElement("button");
         button.type = "button";
         button.textContent = `Giữ score ${original.score ?? "N/A"}`;
-        button.addEventListener("click", () => {
-          const currentAdjudications = readJson<Array<{ id: string }>>(ADJUDICATION_KEY, []);
-          if (currentAdjudications.some((candidate) => candidate.id === disagreement.id)) {
+        button.addEventListener("click", async () => {
+          const stored = await withStorageLock("pa:blind-review:adjudications", () => {
+            const currentAdjudications = readJson<Array<{ id: string }>>(ADJUDICATION_KEY, []);
+            if (currentAdjudications.some((candidate) => candidate.id === disagreement.id)) return false;
+            const resolved = adjudicateDisagreement(disagreement, {
+              adjudicationId: `adjudication-${crypto.randomUUID()}`,
+              adjudicatorId: `adjudicator-${reviewerId}`,
+              resolvedScore: original.score,
+              confidence: original.confidence,
+              rationale: `Decisive evidence retained from ${original.reviewId}.`,
+              evidence: original.evidence,
+              submittedAt: new Date().toISOString(),
+            });
+            localStorage.setItem(ADJUDICATION_KEY, JSON.stringify([...currentAdjudications, resolved]));
+            return true;
+          });
+          if (!stored) {
             renderDisagreements(true);
             return;
           }
-          const resolved = adjudicateDisagreement(disagreement, {
-            adjudicationId: `adjudication-${crypto.randomUUID()}`,
-            adjudicatorId: `adjudicator-${reviewerId}`,
-            resolvedScore: original.score,
-            confidence: original.confidence,
-            rationale: `Decisive evidence retained from ${original.reviewId}.`,
-            evidence: original.evidence,
-            submittedAt: new Date().toISOString(),
-          });
-          localStorage.setItem(ADJUDICATION_KEY, JSON.stringify([...currentAdjudications, resolved]));
           item.dataset.status = "resolved";
           title.textContent = `${disagreement.dimensionId} · resolved · originals preserved`;
           item.querySelectorAll("button").forEach((candidate) => { candidate.disabled = true; });

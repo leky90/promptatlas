@@ -105,6 +105,126 @@ test("stale reviewer tabs cannot replace an immutable stored review", async ({ p
   await stalePage.close();
 });
 
+test("simultaneous reviewer tabs serialize immutable history writes", async ({ page }) => {
+  await page.goto("/review");
+  await page.evaluate(() => {
+    localStorage.clear();
+    sessionStorage.setItem("pa:blind-review:active-reviewer", "reviewer-simultaneous");
+  });
+  await page.reload();
+
+  const competingPage = await page.context().newPage();
+  await competingPage.addInitScript(() => sessionStorage.setItem("pa:blind-review:active-reviewer", "reviewer-simultaneous"));
+  await competingPage.goto("/review");
+  const observer = await page.context().newPage();
+  await observer.goto("/review");
+  await observer.evaluate(() => {
+    (window as typeof window & { reviewStorageEvents: string[] }).reviewStorageEvents = [];
+    window.addEventListener("storage", (event) => {
+      if (event.key === "pa:blind-review:v1" && event.newValue) {
+        (window as typeof window & { reviewStorageEvents: string[] }).reviewStorageEvents.push(event.newValue);
+      }
+    });
+  });
+  await observer.evaluate(() => new Promise<void>((acquired) => {
+    void navigator.locks.request("pa:blind-review:history", async () => {
+      await new Promise<void>((release) => {
+        (window as typeof window & { releaseReviewStorageLock: () => void }).releaseReviewStorageLock = release;
+        acquired();
+      });
+    });
+  }));
+
+  for (const [candidate, score] of [[page, "4"], [competingPage, "1"]] as const) {
+    await candidate.locator("[data-evidence-canvas]").focus();
+    await candidate.keyboard.press("Enter");
+    await fillOutput(candidate, { score, rationale: (index) => `Concurrent score ${score}, dimension ${index + 1}.` });
+  }
+
+  await Promise.all([
+    page.getByRole("button", { name: "Lưu đánh giá bất biến" }).click(),
+    competingPage.getByRole("button", { name: "Lưu đánh giá bất biến" }).click(),
+  ]);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("pa:blind-review:v1") ?? "[]"))).toHaveLength(0);
+  await observer.evaluate(() => (window as typeof window & { releaseReviewStorageLock: () => void }).releaseReviewStorageLock());
+  await page.waitForTimeout(100);
+
+  const writes = await observer.evaluate(() => (window as typeof window & { reviewStorageEvents: string[] }).reviewStorageEvents);
+  expect(writes).toHaveLength(1);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("pa:blind-review:v1") ?? "[]"))).toHaveLength(1);
+  const messages = await Promise.all([
+    page.locator("[data-form-message]").innerText(),
+    competingPage.locator("[data-form-message]").innerText(),
+  ]);
+  expect(messages.filter((value) => /already exists|immutable|đã tồn tại|bất biến/iu.test(value))).toHaveLength(1);
+  await competingPage.close();
+  await observer.close();
+});
+
+test("simultaneous adjudications serialize the first immutable resolution", async ({ page }) => {
+  await page.goto("/review");
+  const reviewData = JSON.parse(await page.locator("#blind-review-data").textContent() || "null");
+  const history = reviewData.outputs.flatMap((output: { outputId: string }) => [4, 1].map((score, index) => ({
+    id: `reviewer-${index}:${reviewData.caseId}:${output.outputId}`,
+    caseId: reviewData.caseId,
+    outputId: output.outputId,
+    reviewerId: `reviewer-${index}`,
+    protocolVersion: reviewData.protocolVersion,
+    calibrationVersion: reviewData.calibrationVersion,
+    submittedAt: `2026-08-24T00:0${index}:00.000Z`,
+    ratings: [{
+      dimensionId: "attribute",
+      score,
+      confidence: "high",
+      rationale: `Observed score ${score}.`,
+      evidence: [{ kind: "region", x: 0.2, y: 0.2, width: 0.3, height: 0.3 }],
+    }],
+  })));
+  await page.evaluate(({ history }) => {
+    localStorage.setItem("pa:blind-review:v1", JSON.stringify(history));
+    localStorage.removeItem("pa:blind-adjudications:v1");
+    sessionStorage.setItem("pa:blind-review:active-reviewer", "reviewer-0");
+  }, { history });
+  await page.reload();
+
+  const competingPage = await page.context().newPage();
+  await competingPage.addInitScript(() => sessionStorage.setItem("pa:blind-review:active-reviewer", "reviewer-0"));
+  await competingPage.goto("/review");
+  const observer = await page.context().newPage();
+  await observer.goto("/review");
+  await observer.evaluate(() => {
+    (window as typeof window & { adjudicationStorageEvents: string[] }).adjudicationStorageEvents = [];
+    window.addEventListener("storage", (event) => {
+      if (event.key === "pa:blind-adjudications:v1" && event.newValue) {
+        (window as typeof window & { adjudicationStorageEvents: string[] }).adjudicationStorageEvents.push(event.newValue);
+      }
+    });
+  });
+  await observer.evaluate(() => new Promise<void>((acquired) => {
+    void navigator.locks.request("pa:blind-review:adjudications", async () => {
+      await new Promise<void>((release) => {
+        (window as typeof window & { releaseAdjudicationStorageLock: () => void }).releaseAdjudicationStorageLock = release;
+        acquired();
+      });
+    });
+  }));
+
+  await Promise.all([
+    page.locator("[data-disagreement-list] .disagreement-item").first().getByRole("button", { name: "Giữ score 4" }).click(),
+    competingPage.locator("[data-disagreement-list] .disagreement-item").first().getByRole("button", { name: "Giữ score 1" }).click(),
+  ]);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("pa:blind-adjudications:v1") ?? "[]"))).toHaveLength(0);
+  await observer.evaluate(() => (window as typeof window & { releaseAdjudicationStorageLock: () => void }).releaseAdjudicationStorageLock());
+  await page.waitForTimeout(100);
+
+  const writes = await observer.evaluate(() => (window as typeof window & { adjudicationStorageEvents: string[] }).adjudicationStorageEvents);
+  expect(writes).toHaveLength(1);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("pa:blind-adjudications:v1") ?? "[]"))).toHaveLength(1);
+  expect(await page.evaluate(() => localStorage.getItem("pa:blind-review:v1"))).toBe(JSON.stringify(history));
+  await competingPage.close();
+  await observer.close();
+});
+
 test("resolved adjudication stays resolved after reload and originals remain intact", async ({ page }) => {
   await page.goto("/review");
   const reviewData = JSON.parse(await page.locator("#blind-review-data").textContent() || "null");
