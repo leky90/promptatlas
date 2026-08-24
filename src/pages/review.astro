@@ -2,6 +2,10 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
+import "@fontsource-variable/instrument-sans";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/600.css";
+
 import { evidenceForStyle } from "../lib/evidence";
 import { styles } from "../lib/styles";
 
@@ -186,37 +190,50 @@ const canonical = new URL("/review", Astro.site);
 
 <style>
   :global(*) { box-sizing: border-box; }
-  :global(html) { background: #e9e5dc; color: #151613; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+  :global(html) {
+    --font-display: "Instrument Sans Variable", "Arial", sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --type-meta: 0.75rem;
+    --type-control: 0.8125rem;
+    --type-card: 0.875rem;
+    --type-body: 1rem;
+    --type-heading: clamp(2rem, 4vw, 3.5rem);
+    --type-hero: clamp(3.25rem, 7vw, 6rem);
+    background: #e9e5dc;
+    color: #151613;
+    font-family: var(--font-display);
+  }
   :global(body) { margin: 0; }
   :global(button), :global(select), :global(textarea), :global(input) { font: inherit; }
   :global(a) { color: inherit; }
+  :global(:focus-visible) { outline: 2px solid #151613; outline-offset: 3px; }
   :global(.blind-review-page) { min-width: 320px; background: #e9e5dc; color: #151613; }
   .skip-link { position: fixed; z-index: 100; top: 8px; left: 8px; padding: 10px 14px; background: #151613; color: #fff; transform: translateY(-160%); }
   .skip-link:focus { transform: translateY(0); }
   .neutral-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px; padding: 12px clamp(16px, 4vw, 48px); border-bottom: 1px solid #151613; background: #f4f0e7; }
   .neutral-brand { font-weight: 900; letter-spacing: -.03em; text-decoration: none; }
   .neutral-header nav { display: flex; align-items: center; gap: 18px; }
-  .neutral-header nav a { font: 700 12px ui-monospace, monospace; text-transform: uppercase; }
+  .neutral-header nav a { font: 700 var(--type-meta)/1 var(--font-mono); text-transform: uppercase; }
   .neutral-header nav a[aria-current="page"] { text-decoration-thickness: 3px; text-underline-offset: 6px; }
   .shell { width: min(1440px, calc(100% - clamp(32px, 7vw, 96px))); margin-inline: auto; }
   .button { min-height: 44px; padding: 10px 16px; border: 1px solid #151613; background: #151613; color: #f4f0e7; font-weight: 800; cursor: pointer; }
   .button--ghost { background: transparent; color: #151613; }
   .review-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .34fr); gap: 32px; padding-block: clamp(48px, 7vw, 92px) 32px; }
-  .review-hero h1 { max-width: 900px; margin: 8px 0 12px; font-size: clamp(42px, 7vw, 92px); line-height: .92; letter-spacing: -.06em; }
+  .review-hero h1 { max-width: 900px; margin: 8px 0 12px; font-size: var(--type-hero); line-height: .92; letter-spacing: -.06em; }
   .review-hero > div > p:last-child { max-width: 680px; font-size: 18px; }
   .review-status { align-self: end; border: 1px solid #151613; background: #151613; color: #f4f0e7; padding: 20px; }
-  .review-status span, .review-status small { display: block; color: #b9b5ac; font: 12px/1.4 "IBM Plex Mono", monospace; text-transform: uppercase; }
+  .review-status span, .review-status small { display: block; color: #b9b5ac; font: var(--type-meta)/1.4 var(--font-mono); text-transform: uppercase; }
   .review-status strong { display: block; margin: 6px 0; color: #cbff35; font-size: 24px; }
   .blind-review { display: grid; grid-template-columns: minmax(240px, .33fr) minmax(0, 1fr); border: 1px solid #151613; background: #f4f0e7; }
   .review-brief { padding: 24px; border-right: 1px solid #151613; }
   .review-brief h2 { margin: 8px 0 16px; font-size: 26px; line-height: 1.05; }
   .review-prompt { padding: 16px 0; border-block: 1px solid #bbb6ab; line-height: 1.55; }
   .review-brief dl div { display: grid; grid-template-columns: 80px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid #d0cbc1; }
-  .review-brief dt, .review-note { color: #625f58; font: 12px/1.5 "IBM Plex Mono", monospace; text-transform: uppercase; }
+  .review-brief dt, .review-note { color: #625f58; font: var(--type-meta)/1.5 var(--font-mono); text-transform: uppercase; }
   .review-brief dd { margin: 0; font-weight: 700; }
   .review-workspace { min-width: 0; }
   .output-tabs { display: flex; border-bottom: 1px solid #151613; }
-  .output-tabs button { min-height: 48px; flex: 1; border: 0; border-right: 1px solid #151613; background: transparent; font: 700 13px "IBM Plex Mono", monospace; }
+  .output-tabs button { min-height: 48px; flex: 1; border: 0; border-right: 1px solid #151613; background: transparent; font: 700 var(--type-control)/1 var(--font-mono); }
   .output-tabs button[aria-selected="true"] { background: #151613; color: #cbff35; }
   .output-tabs button[data-complete="true"]::after { content: " · LOCKED"; }
   .evidence-stage { padding: 24px; border-bottom: 1px solid #151613; }
@@ -227,7 +244,7 @@ const canonical = new URL("/review", Astro.site);
   .evidence-canvas:focus-visible { outline: 4px solid #cbff35; outline-offset: 3px; }
   .evidence-canvas img { display: block; width: 100%; max-height: 620px; object-fit: contain; }
   .evidence-region { position: absolute; border: 3px solid #cbff35; background: rgb(203 255 53 / 18%); box-shadow: 0 0 0 9999px rgb(21 22 19 / 22%); pointer-events: none; transform: translate(-50%, -50%); }
-  .evidence-coordinates { margin: 10px 0 0; font: 12px "IBM Plex Mono", monospace; }
+  .evidence-coordinates { margin: 10px 0 0; font: var(--type-meta)/1.4 var(--font-mono); }
   .review-form { padding: 24px; }
   .review-form > fieldset { margin: 0; padding: 0; border: 0; }
   .review-form > fieldset > legend { font-size: 24px; font-weight: 800; }
@@ -236,13 +253,13 @@ const canonical = new URL("/review", Astro.site);
   .review-dimension { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 16px; padding: 16px; border-right: 1px solid #151613; border-bottom: 1px solid #151613; }
   .review-dimension:nth-child(even) { border-right: 0; }
   .review-dimension h3 { margin: 0 0 4px; }
-  .review-dimension p { margin: 0; color: #625f58; font-size: 13px; }
+  .review-dimension p { margin: 0; color: #625f58; font-size: var(--type-control); }
   .score-options { grid-column: 1 / -1; display: flex; gap: 6px; margin: 0; padding: 0; border: 0; }
   .score-options legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .score-options label { display: grid; min-width: 42px; min-height: 42px; place-items: center; border: 1px solid #8c887f; cursor: pointer; }
   .score-options input { position: absolute; opacity: 0; }
   .score-options label:has(input:checked) { border-color: #151613; background: #151613; color: #cbff35; }
-  .confidence { display: grid; gap: 4px; font: 12px "IBM Plex Mono", monospace; }
+  .confidence { display: grid; gap: 4px; font: var(--type-meta)/1.4 var(--font-mono); }
   .confidence select { min-height: 42px; border: 1px solid #151613; background: #fff; }
   .attach-evidence { min-height: 42px; align-self: end; border: 1px solid #151613; background: transparent; font-weight: 700; }
   .attach-evidence:not(:disabled):hover { background: #cbff35; }
@@ -259,7 +276,7 @@ const canonical = new URL("/review", Astro.site);
   .adjudication-queue { grid-template-columns: .7fr 1.3fr; margin-bottom: 64px; }
   .disagreement-item { margin-bottom: 8px; }
   .disagreement-item ul { margin: 8px 0; padding-left: 20px; }
-  .eyebrow { margin: 0; font: 600 12px "IBM Plex Mono", monospace; letter-spacing: .08em; }
+  .eyebrow { margin: 0; font: 600 var(--type-meta)/1.2 var(--font-mono); letter-spacing: .08em; }
   @media (max-width: 900px) {
     .review-hero, .blind-review, .review-disclosure, .adjudication-queue { grid-template-columns: 1fr; }
     .review-brief { border-right: 0; border-bottom: 1px solid #151613; }
