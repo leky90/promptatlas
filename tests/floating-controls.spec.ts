@@ -281,6 +281,71 @@ test("Discover sticky controls keep taxonomy quick actions reachable while relea
   }
 });
 
+test("Discover pinned controls preserve vertical scroll during native Tab traversal", async ({ page }) => {
+  const scenarios = [
+    { width: 1024, height: 720 },
+    { width: 819, height: 720 },
+    { width: 682, height: 600 },
+    { width: 621, height: 720 },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize(scenario);
+    await page.goto("/discover/");
+    await page.evaluate(() => {
+      document.documentElement.style.scrollBehavior = "auto";
+      const scope = document.querySelector<HTMLElement>(".discover-controls-scope")!;
+      const group = document.querySelector<HTMLElement>(".discover-controls-sticky")!;
+      const header = document.querySelector<HTMLElement>(".site-header")!;
+      const runway = scope.getBoundingClientRect().height - group.getBoundingClientRect().height;
+      const stickyStart = scope.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height;
+      const targetScrollY = stickyStart + Math.max(1, Math.floor(runway / 2));
+      window.scrollTo(0, targetScrollY);
+    });
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const pinnedScrollY = await page.evaluate(() => window.scrollY);
+    const pinned = await page.evaluate(() => ({
+      groupTop: document.querySelector<HTMLElement>(".discover-controls-sticky")!.getBoundingClientRect().top,
+      headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
+    }));
+    expect(Math.abs(pinned.groupTop - pinned.headerBottom), `${scenario.width}x${scenario.height} starts pinned`).toBeLessThanOrEqual(1);
+
+    const search = page.locator("#primitive-search");
+    const searchPoint = await search.evaluate((target) => {
+      const rect = target.getBoundingClientRect();
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    });
+    await page.mouse.click(searchPoint.x, searchPoint.y);
+    await expect(search).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(pinnedScrollY);
+    const focusableCount = await page.locator('.discover-controls-sticky input:not([disabled]), .discover-controls-sticky button:not([disabled]), .discover-controls-sticky a[href]')
+      .evaluateAll((elements) => elements.filter((element) => (element as HTMLElement).getClientRects().length > 0).length);
+    expect(focusableCount).toBeGreaterThanOrEqual(9);
+
+    for (let index = 1; index < focusableCount; index += 1) {
+      await page.keyboard.press("Tab");
+      await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+      const state = await page.evaluate(() => {
+        const active = document.activeElement as HTMLElement | null;
+        const group = document.querySelector<HTMLElement>(".discover-controls-sticky")!;
+        const quick = active?.closest<HTMLElement>(".taxonomy-quick");
+        const activeRect = active?.getBoundingClientRect();
+        const quickRect = quick?.getBoundingClientRect();
+        return {
+          activeInsideGroup: Boolean(active && group.contains(active)),
+          focusVisibleVertically: Boolean(activeRect && activeRect.bottom > 0 && activeRect.top < window.innerHeight),
+          focusVisibleInQuick: !quickRect || Boolean(activeRect && activeRect.right > quickRect.left && activeRect.left < quickRect.right),
+          scrollY: window.scrollY,
+        };
+      });
+      expect(state.activeInsideGroup, `${scenario.width}x${scenario.height} Tab ${index}`).toBe(true);
+      expect(state.focusVisibleVertically, `${scenario.width}x${scenario.height} Tab ${index}`).toBe(true);
+      expect(state.focusVisibleInQuick, `${scenario.width}x${scenario.height} Tab ${index}`).toBe(true);
+      expect(Math.abs(state.scrollY - pinnedScrollY), `${scenario.width}x${scenario.height} Tab ${index} scroll`).toBeLessThanOrEqual(1);
+    }
+  }
+});
+
 test("floating controls use the inline fallback when no safe vertical lane exists", async ({ page }) => {
   await page.addInitScript(() => {
     const viewport = new EventTarget() as EventTarget & {

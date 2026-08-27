@@ -26,6 +26,8 @@ if (workspace) {
   const mobileFacets = window.matchMedia("(max-width: 959px)");
   const skipToResults = workspace.querySelector<HTMLAnchorElement>("[data-skip-to-results]");
   const resultsRegion = workspace.querySelector<HTMLElement>("#discover-results");
+  const stickyControls = workspace.querySelector<HTMLElement>(".discover-controls-sticky")!;
+  const siteHeader = document.querySelector<HTMLElement>(".site-header")!;
 
   const normalize = (value: string) => value.toLocaleLowerCase("vi").normalize("NFD").replace(/[\u0300-\u036f]/gu, "");
   const readPositiveInt = (value: string | null) => Math.max(1, Number.parseInt(value ?? "1", 10) || 1);
@@ -37,6 +39,44 @@ if (workspace) {
   let view: "grid" | "list" = "grid";
   let batch = 1;
   let searchTimer = 0;
+  let pinnedTabScrollY: number | null = null;
+  let pinnedTabClearFrame = 0;
+  let pinnedTabRestoreFrame = 0;
+
+  const restoreVerticalScroll = (scrollY: number) => {
+    const root = document.documentElement;
+    const inlineScrollBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo(window.scrollX, scrollY);
+    root.style.scrollBehavior = inlineScrollBehavior;
+  };
+
+  const stickyControlsArePinned = () => (
+    getComputedStyle(stickyControls).position === "sticky"
+    && Math.abs(stickyControls.getBoundingClientRect().top - siteHeader.getBoundingClientRect().bottom) <= 1
+  );
+
+  stickyControls.addEventListener("keydown", (event) => {
+    if (event.key !== "Tab" || event.altKey || event.ctrlKey || event.metaKey || !stickyControlsArePinned()) return;
+    pinnedTabScrollY = window.scrollY;
+    window.cancelAnimationFrame(pinnedTabClearFrame);
+    pinnedTabClearFrame = window.requestAnimationFrame(() => { pinnedTabScrollY = null; });
+  });
+
+  document.addEventListener("focusin", () => {
+    if (pinnedTabScrollY === null) return;
+    const scrollY = pinnedTabScrollY;
+    pinnedTabScrollY = null;
+    window.cancelAnimationFrame(pinnedTabClearFrame);
+    if (!stickyControls.contains(document.activeElement)) return;
+
+    // Native focus scrolls sticky descendants toward their unpainted document
+    // position. Preserve the vertical context while retaining native focus order
+    // and any horizontal auto-pan inside the taxonomy shortcut rail.
+    restoreVerticalScroll(scrollY);
+    window.cancelAnimationFrame(pinnedTabRestoreFrame);
+    pinnedTabRestoreFrame = window.requestAnimationFrame(() => restoreVerticalScroll(scrollY));
+  });
 
   const closePanel = ({ restoreFocus = false } = {}) => {
     const wasOpen = panel.dataset.open === "true";
