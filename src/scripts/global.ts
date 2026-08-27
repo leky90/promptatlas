@@ -255,6 +255,39 @@ function initializeSharedDiscovery() {
 
   const root = document.documentElement;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let clearanceFrame = 0;
+  const syncFloatingClearance = () => {
+    root.style.setProperty("--floating-content-offset", "0px");
+    const protectedTargets = [...document.querySelectorAll<HTMLElement>("[data-floating-clearance]")]
+      .flatMap((container) => [...container.querySelectorAll<HTMLElement>("input, button, a[href]")])
+      .filter((target) => target.getClientRects().length > 0);
+    if (protectedTargets.length === 0) return;
+
+    const controls = [launcher, ...document.querySelectorAll<HTMLElement>("[data-shortcut-trigger]")];
+    const controlRects = controls.map((control) => control.getBoundingClientRect());
+    const targetRects = protectedTargets.map((target) => target.getBoundingClientRect());
+    const overlaps = controlRects.some((control) => targetRects.some((target) => (
+      control.bottom > target.top - 4
+      && control.top < target.bottom + 4
+      && control.right > target.left - 4
+      && control.left < target.right + 4
+    )));
+    if (!overlaps) return;
+
+    const targetTop = Math.min(...targetRects.map((target) => target.top));
+    const controlBottom = Math.max(...controlRects.map((control) => control.bottom));
+    const offset = Math.ceil(controlBottom - targetTop + 4);
+    const nextControlTop = Math.min(...controlRects.map((control) => control.top)) - offset;
+    const headerBottom = document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect().bottom ?? 0;
+    const viewportTop = window.visualViewport?.offsetTop ?? 0;
+    if (offset > 0 && nextControlTop >= Math.max(headerBottom, viewportTop) + 4) {
+      root.style.setProperty("--floating-content-offset", `${offset}px`);
+    }
+  };
+  const scheduleFloatingClearance = () => {
+    window.cancelAnimationFrame(clearanceFrame);
+    clearanceFrame = window.requestAnimationFrame(syncFloatingClearance);
+  };
   const syncViewportInsets = () => {
     const viewport = window.visualViewport;
     const viewportWidth = viewport?.width ?? window.innerWidth;
@@ -269,11 +302,13 @@ function initializeSharedDiscovery() {
     root.style.setProperty("--visual-viewport-center-x", `${viewportLeft + viewportWidth / 2}px`);
     root.style.setProperty("--visual-viewport-right", `${viewportLeft + viewportWidth}px`);
     root.toggleAttribute("data-compact-visual-viewport", viewportWidth <= 360);
+    scheduleFloatingClearance();
   };
   syncViewportInsets();
   window.visualViewport?.addEventListener("resize", syncViewportInsets);
   window.visualViewport?.addEventListener("scroll", syncViewportInsets);
   window.addEventListener("resize", syncViewportInsets);
+  window.addEventListener("scroll", scheduleFloatingClearance, { passive: true });
 
   let index: DiscoveryIndexItem[] = [];
   try {

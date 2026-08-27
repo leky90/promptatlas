@@ -3718,6 +3718,7 @@ button {
 /* Shared discovery shell — LDK-643 */
 :root {
   --floating-keyboard-offset: 0px;
+  --floating-content-offset: 0px;
   --visual-viewport-height: 100svh;
   --visual-viewport-center-y: 50svh;
   --visual-viewport-width: 100vw;
@@ -3729,7 +3730,7 @@ button {
 .shortcut-help-trigger {
   position: fixed;
   z-index: 95;
-  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
   min-height: 52px;
   color: var(--paper);
   background: var(--ink);

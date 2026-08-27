@@ -51,8 +51,14 @@ test("floating controls expose search and shortcut help without collisions", asy
 });
 
 test("floating controls clear Anatomy toolbar and refinement actions", async ({ page }) => {
+  const anatomyMatrix = [1920, 1280, 1024, 768, 390].flatMap((width) => [1, 1.25, 1.5].map((zoom) => ({
+    route: "/anatomy/",
+    width: Math.floor(width / zoom),
+    height: Math.floor((width === 390 ? 844 : 900) / zoom),
+    targets: '[data-catalog-toolbar] input, [data-catalog-toolbar] button, [data-catalog-toolbar] a',
+  })));
   const scenarios = [
-    { route: "/anatomy/", width: 1440, height: 1000, targets: '[data-catalog-toolbar] input, [data-catalog-toolbar] button, [data-catalog-toolbar] a' },
+    ...anatomyMatrix,
     { route: "/anatomy/subject-person-role/", width: 1440, height: 1000, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
     { route: "/anatomy/camera-angle/", width: 390, height: 844, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
   ];
@@ -60,6 +66,7 @@ test("floating controls clear Anatomy toolbar and refinement actions", async ({ 
   for (const scenario of scenarios) {
     await page.setViewportSize({ width: scenario.width, height: scenario.height });
     await page.goto(scenario.route);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
     const geometry = await page.evaluate((targetSelector) => ({
       controls: [
         document.querySelector<HTMLElement>("[data-spotlight-launcher]")!.getBoundingClientRect(),
@@ -68,9 +75,13 @@ test("floating controls clear Anatomy toolbar and refinement actions", async ({ 
       targets: [...document.querySelectorAll<HTMLElement>(targetSelector)]
         .filter((target) => target.getClientRects().length > 0)
         .map((target) => target.getBoundingClientRect()),
+      headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
+      viewportHeight: window.innerHeight,
     }), scenario.targets);
 
     for (const control of geometry.controls) {
+      expect(control.top, `${scenario.route} control top at ${scenario.width}x${scenario.height}`).toBeGreaterThanOrEqual(geometry.headerBottom + 4);
+      expect(control.bottom, `${scenario.route} control bottom at ${scenario.width}x${scenario.height}`).toBeLessThanOrEqual(geometry.viewportHeight);
       for (const target of geometry.targets) {
         expect(rectanglesOverlap(control, target), `${scenario.route} at ${scenario.width}x${scenario.height}`).toBe(false);
       }
