@@ -257,6 +257,7 @@ function initializeSharedDiscovery() {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let clearanceFrame = 0;
   const syncFloatingClearance = () => {
+    root.removeAttribute("data-floating-controls-inline");
     root.style.setProperty("--floating-content-offset", "0px");
     const protectedTargets = [...document.querySelectorAll<HTMLElement>("[data-floating-target]")]
       .filter((target) => target.getClientRects().length > 0);
@@ -287,6 +288,8 @@ function initializeSharedDiscovery() {
     const maximumOffset = Math.floor(Math.min(...controlRects.map((control) => control.top)) - Math.max(headerBottom, viewportTop) - gap);
     if (offset <= maximumOffset) {
       root.style.setProperty("--floating-content-offset", `${offset}px`);
+    } else {
+      root.setAttribute("data-floating-controls-inline", "");
     }
   };
   const scheduleFloatingClearance = () => {

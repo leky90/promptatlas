@@ -6224,6 +6224,7 @@ body.composer-page .site-footer {
 
 :root[data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher {
   position: fixed;
+  top: auto;
   bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
   left: var(--visual-viewport-center-x);
   transform: translateX(-50%);
@@ -6237,5 +6238,57 @@ body.composer-page .site-footer {
   position: fixed;
   right: auto;
   bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
+  left: calc(var(--visual-viewport-right) - max(16px, env(safe-area-inset-right)) - 52px);
+}
+
+:root[data-floating-controls-inline] .shared-discovery-controls {
+  position: relative;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+:root[data-floating-controls-inline] .spotlight-launcher {
+  position: absolute;
+  top: 8px;
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: none;
+}
+
+:root[data-floating-controls-inline] .spotlight-launcher:hover {
+  transform: translate(-50%, -2px);
+}
+
+:root[data-floating-controls-inline] .shortcut-help-trigger {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  bottom: auto;
+  left: auto;
+  box-shadow: none;
+}
+
+:root[data-floating-controls-inline][data-compact-visual-viewport][data-panned-visual-viewport] .shared-discovery-controls {
+  display: flex;
+}
+
+:root[data-floating-controls-inline][data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher {
+  position: absolute;
+  top: 8px;
+  bottom: auto;
+  left: var(--visual-viewport-center-x);
+}
+
+:root[data-floating-controls-inline][data-compact-visual-viewport][data-panned-visual-viewport] .shortcut-help-trigger {
+  position: absolute;
+  top: 8px;
+  right: auto;
+  bottom: auto;
   left: calc(var(--visual-viewport-right) - max(16px, env(safe-area-inset-right)) - 52px);
 }

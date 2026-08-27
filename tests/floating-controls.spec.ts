@@ -96,6 +96,109 @@ test("floating controls clear protected content and refinement actions", async (
   }
 });
 
+test("floating controls stay collision-free while Discover scrolls", async ({ page }) => {
+  const targetSelector = ".discover-intro__copy > *, .discover-specimens figure, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick";
+  const scenarios = [
+    { width: 1024, height: 720, scrollY: [80] },
+    { width: 819, height: 720, scrollY: [80, 200, 320] },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto("/discover/");
+    for (const scrollY of scenario.scrollY) {
+      await page.evaluate((nextScrollY) => window.scrollTo(0, nextScrollY), scrollY);
+      const readGeometry = () => page.evaluate((selector) => {
+        const controls = [
+          document.querySelector<HTMLElement>("[data-spotlight-launcher]")!,
+          document.querySelector<HTMLElement>("[data-shortcut-trigger]")!,
+        ];
+        const targets = [...document.querySelectorAll<HTMLElement>(selector)]
+          .filter((target) => target.getClientRects().length > 0)
+          .map((target) => target.getBoundingClientRect());
+        return {
+          inline: document.documentElement.hasAttribute("data-floating-controls-inline"),
+          controls: controls.map((control) => ({
+            rect: control.getBoundingClientRect(),
+            position: getComputedStyle(control).position,
+          })),
+          targets,
+          headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
+          viewportHeight: window.innerHeight,
+        };
+      }, targetSelector);
+
+      await expect.poll(async () => {
+        const geometry = await readGeometry();
+        return geometry.controls.flatMap(({ rect }) => geometry.targets
+          .filter((target) => rectanglesOverlap(rect, target))).length;
+      }, { message: `${scenario.width}x${scenario.height} at scrollY=${scrollY}` }).toBe(0);
+
+      const geometry = await readGeometry();
+      for (const control of geometry.controls) {
+        if (geometry.inline) {
+          expect(control.position).not.toBe("fixed");
+        } else {
+          expect(control.rect.top).toBeGreaterThanOrEqual(geometry.headerBottom + 4);
+          expect(control.rect.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+        }
+      }
+    }
+  }
+});
+
+test("floating controls use the inline fallback when no safe vertical lane exists", async ({ page }) => {
+  await page.addInitScript(() => {
+    const viewport = new EventTarget() as EventTarget & {
+      height: number;
+      offsetTop: number;
+      offsetLeft: number;
+      width: number;
+      pageLeft: number;
+      pageTop: number;
+      scale: number;
+    };
+    Object.assign(viewport, {
+      height: 720,
+      offsetTop: 0,
+      offsetLeft: 65,
+      width: 300,
+      pageLeft: 65,
+      pageTop: 0,
+      scale: 1.3,
+    });
+    Object.defineProperty(window, "visualViewport", { configurable: true, value: viewport });
+  });
+  await page.setViewportSize({ width: 390, height: 720 });
+  await page.goto("/discover/");
+  await page.evaluate(() => {
+    const blocker = document.createElement("div");
+    blocker.dataset.floatingTarget = "";
+    blocker.dataset.testFloatingBlocker = "";
+    blocker.style.cssText = "position:fixed;inset:80px 0 0;pointer-events:none";
+    document.body.append(blocker);
+    window.dispatchEvent(new Event("scroll"));
+  });
+
+  await expect.poll(() => page.locator("html").evaluate((root) => ({
+    compact: root.hasAttribute("data-compact-visual-viewport"),
+    inline: root.hasAttribute("data-floating-controls-inline"),
+    panned: root.hasAttribute("data-panned-visual-viewport"),
+  }))).toEqual({ compact: true, inline: true, panned: true });
+  const controls = await page.locator("[data-spotlight-launcher], [data-shortcut-trigger]").evaluateAll((elements) => elements.map((element) => ({
+    height: element.getBoundingClientRect().height,
+    left: element.getBoundingClientRect().left,
+    position: getComputedStyle(element).position,
+    right: element.getBoundingClientRect().right,
+  })));
+  for (const control of controls) {
+    expect(control.position).not.toBe("fixed");
+    expect(control.height).toBeLessThanOrEqual(64);
+    expect(control.left).toBeGreaterThanOrEqual(65);
+    expect(control.right).toBeLessThanOrEqual(365);
+  }
+});
+
 test("footer content and transient notices clear the floating controls", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
@@ -300,11 +403,14 @@ test("floating controls follow a horizontally panned visual viewport", async ({ 
 
   const assertInsideVisualViewport = async () => page.evaluate(() => {
     const viewport = window.visualViewport!;
+    const visibleTop = viewport.offsetTop;
+    const visibleBottom = viewport.offsetTop + viewport.height;
     const visibleLeft = viewport.offsetLeft;
     const visibleRight = viewport.offsetLeft + viewport.width;
     const launcher = document.querySelector<HTMLElement>("[data-spotlight-launcher]")!.getBoundingClientRect();
     const help = document.querySelector<HTMLElement>("[data-shortcut-trigger]")!.getBoundingClientRect();
-    return { visibleLeft, visibleRight, launcher, help };
+    const headerBottom = document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom;
+    return { visibleTop, visibleBottom, visibleLeft, visibleRight, headerBottom, launcher, help };
   });
 
   for (const offsetLeft of [65, 130]) {
@@ -315,6 +421,12 @@ test("floating controls follow a horizontally panned visual viewport", async ({ 
     expect(geometry.help.left).toBeGreaterThanOrEqual(geometry.visibleLeft);
     expect(geometry.help.right).toBeLessThanOrEqual(geometry.visibleRight);
     expect(geometry.launcher.right).toBeLessThanOrEqual(geometry.help.left - 4);
+    expect(geometry.launcher.height).toBeLessThanOrEqual(64);
+    expect(geometry.help.height).toBeLessThanOrEqual(64);
+    expect(geometry.launcher.top).toBeGreaterThanOrEqual(geometry.headerBottom + 4);
+    expect(geometry.help.top).toBeGreaterThanOrEqual(geometry.headerBottom + 4);
+    expect(geometry.launcher.bottom).toBeLessThanOrEqual(geometry.visibleBottom);
+    expect(geometry.help.bottom).toBeLessThanOrEqual(geometry.visibleBottom);
   }
 
   await page.getByRole("button", { name: "Tìm trong Prompt Atlas" }).click();
