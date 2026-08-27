@@ -5388,6 +5388,15 @@ button {
   min-height: 44px;
 }
 
+[data-catalog-toolbar="standard"] [data-catalog-filters] button,
+[data-catalog-toolbar="standard"] [data-catalog-status] button,
+[data-catalog-toolbar="dense"] input,
+[data-catalog-toolbar="dense"] button,
+[data-catalog-toolbar="dense"] a[data-skip-to-results] {
+  height: var(--catalog-control-height);
+  min-height: var(--catalog-control-height);
+}
+
 .learning-output,
 .prompt-anatomy,
 .how-to-use,

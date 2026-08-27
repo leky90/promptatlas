@@ -52,9 +52,12 @@ test("Home and Anatomy expose one catalog-toolbar geometry contract", async ({ p
         const status = element.querySelector<HTMLElement>("[data-catalog-status]")!;
         const input = search.querySelector<HTMLInputElement>("input")!;
         const styles = getComputedStyle(element);
+        const controlHeights = [input, ...filters.querySelectorAll<HTMLElement>("button"), ...status.querySelectorAll<HTMLElement>("button")]
+          .filter((control) => control.getClientRects().length > 0)
+          .map((control) => control.getBoundingClientRect().height);
         return {
           contract: element.getAttribute("data-catalog-toolbar"),
-          controlHeight: input.getBoundingClientRect().height,
+          controlHeights,
           columnGap: styles.columnGap,
           rowGap: styles.rowGap,
           searchTop: Math.round(search.getBoundingClientRect().top - element.getBoundingClientRect().top),
@@ -68,8 +71,8 @@ test("Home and Anatomy expose one catalog-toolbar geometry contract", async ({ p
 
     expect(snapshots[0].contract).toBe("standard");
     expect(snapshots[1].contract).toBe("standard");
-    expect(snapshots[0].controlHeight).toBe(48);
-    expect(snapshots[1].controlHeight).toBe(48);
+    expect(snapshots[0].controlHeights.every((height) => height === 48)).toBe(true);
+    expect(snapshots[1].controlHeights.every((height) => height === 48)).toBe(true);
     expect(snapshots[0].columnGap).toBe(snapshots[1].columnGap);
     expect(snapshots[0].rowGap).toBe(snapshots[1].rowGap);
     expect(snapshots[0].searchTop).toBe(snapshots[1].searchTop);
@@ -86,18 +89,20 @@ test("Discover declares its dense toolbar exception while following application 
     const toolbar = page.locator('[data-catalog-toolbar="dense"]');
     await expect(toolbar).toBeVisible();
     const geometry = await toolbar.evaluate((element) => {
-      const input = element.querySelector<HTMLInputElement>("input")!;
       const wrapper = element.closest<HTMLElement>(".discover-toolbar-wrap")!;
       const header = document.querySelector<HTMLElement>(".site-header")!;
+      const controlHeights = [...element.querySelectorAll<HTMLElement>("input, button, a[data-skip-to-results]")]
+        .filter((control) => control.getClientRects().length > 0)
+        .map((control) => control.getBoundingClientRect().height);
       return {
-        controlHeight: input.getBoundingClientRect().height,
+        controlHeights,
         wrapperPosition: getComputedStyle(wrapper).position,
         stickyOffset: Math.round(wrapper.getBoundingClientRect().top - header.getBoundingClientRect().bottom),
         clientWidth: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
       };
     });
-    expect(geometry.controlHeight).toBe(48);
+    expect(geometry.controlHeights.every((height) => height === 48)).toBe(true);
     expect(geometry.wrapperPosition).toBe(width <= 620 ? "relative" : "sticky");
     if (geometry.wrapperPosition === "sticky") expect(geometry.stickyOffset).toBeGreaterThanOrEqual(-1);
     expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 1);
