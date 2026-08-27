@@ -66,6 +66,8 @@ test("floating controls clear protected content and refinement actions", async (
       ...viewport,
       targets: ".discover-intro__copy > *, .discover-specimens figure, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick",
     })),
+    { route: "/anatomy/subject-person-role/", width: 1024, height: 720, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
+    { route: "/anatomy/subject-person-role/", width: 819, height: 720, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
     { route: "/anatomy/subject-person-role/", width: 1440, height: 1000, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
     { route: "/anatomy/camera-angle/", width: 390, height: 844, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
   ];
