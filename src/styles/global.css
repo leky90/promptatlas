@@ -182,28 +182,6 @@ button {
   gap: 18px;
 }
 
-.spotlight-trigger {
-  min-height: 42px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex: 0 0 auto;
-  padding: 8px 10px;
-  color: var(--paper);
-  background: rgb(241 238 230 / 8%);
-  border: 1px solid rgb(241 238 230 / 34%);
-  font: 600 var(--type-control)/1 var(--font-mono);
-  cursor: pointer;
-}
-
-.spotlight-trigger kbd {
-  padding: 4px 6px;
-  color: var(--ink);
-  background: var(--acid);
-  border: 0;
-  font: inherit;
-}
-
 .brand {
   min-width: 0;
   display: inline-flex;
@@ -3665,10 +3643,76 @@ button {
 }
 
 /* Shared discovery shell — LDK-643 */
+:root {
+  --floating-keyboard-offset: 0px;
+  --visual-viewport-height: 100svh;
+}
+
+.spotlight-launcher,
+.shortcut-help-trigger {
+  position: fixed;
+  z-index: 95;
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset));
+  min-height: 52px;
+  color: var(--paper);
+  background: var(--ink);
+  border: 1px solid var(--acid);
+  border-radius: 999px;
+  box-shadow: 7px 7px 0 rgb(18 19 17 / 18%);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.spotlight-launcher:hover,
+.shortcut-help-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 9px 9px 0 rgb(18 19 17 / 22%);
+}
+
+.spotlight-launcher:focus-visible,
+.shortcut-help-trigger:focus-visible {
+  outline: 3px solid var(--acid-dark);
+  outline-offset: 3px;
+}
+
+.spotlight-launcher {
+  left: 50%;
+  width: min(360px, calc(100vw - 160px));
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 10px 16px;
+  transform: translateX(-50%);
+  font: 600 var(--type-control)/1 var(--font-mono);
+  text-align: left;
+}
+
+.spotlight-launcher:hover {
+  transform: translate(-50%, -2px);
+}
+
+.spotlight-launcher kbd {
+  padding: 5px 7px;
+  color: var(--ink);
+  background: var(--acid);
+  border: 0;
+  font: inherit;
+}
+
+.shortcut-help-trigger {
+  right: max(16px, env(safe-area-inset-right));
+  width: 52px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
 .spotlight-dialog,
 .shortcut-dialog {
   width: min(920px, calc(100vw - 28px));
-  max-height: min(820px, calc(100svh - 28px));
+  max-height: min(820px, calc(var(--visual-viewport-height) - 28px));
+  overflow: hidden;
   padding: 0;
   color: var(--ink);
   background: var(--paper);
@@ -3686,7 +3730,8 @@ button {
 .shortcut-shell {
   display: grid;
   min-height: 0;
-  max-height: calc(100svh - 32px);
+  max-height: calc(var(--visual-viewport-height) - 32px);
+  overflow: hidden;
 }
 
 .spotlight-shell {
@@ -3894,23 +3939,9 @@ button {
   color: var(--ink-soft);
 }
 
-@media (max-width: 1180px) {
-  .spotlight-trigger span {
-    display: none;
-  }
-}
-
 @media (max-width: 820px) {
   .site-header__inner {
     gap: 9px;
-  }
-
-  .spotlight-trigger {
-    margin-left: auto;
-  }
-
-  .spotlight-trigger kbd {
-    display: none;
   }
 }
 
@@ -3918,7 +3949,7 @@ button {
   .spotlight-dialog,
   .shortcut-dialog {
     width: calc(100vw - 16px);
-    max-height: calc(100svh - 16px);
+    max-height: calc(var(--visual-viewport-height) - 16px);
     box-shadow: 8px 8px 0 rgb(18 19 17 / 22%);
   }
 
@@ -3952,6 +3983,15 @@ button {
     grid-template-columns: 1fr;
     gap: 8px;
     padding-block: 14px;
+  }
+
+  .spotlight-launcher {
+    gap: 8px;
+    padding-inline: 13px 10px;
+  }
+
+  .spotlight-launcher kbd {
+    display: none;
   }
 }
 
@@ -5852,5 +5892,37 @@ button {
   .compare-prompt dl > div {
     border-right: 0;
     border-bottom: 1px solid rgb(241 238 230 / 20%);
+  }
+}
+
+/* Floating discovery clearance — LDK-664 */
+body:not(.composer-page) .site-footer,
+body.composer-page .site-footer {
+  padding-bottom: calc(76px + max(16px, env(safe-area-inset-bottom)));
+}
+
+.toast {
+  bottom: calc(84px + max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset));
+}
+
+.shortcut-dialog {
+  overflow-y: auto;
+}
+
+.shortcut-shell {
+  overflow: visible;
+}
+
+@media (max-width: 360px) {
+  .spotlight-launcher {
+    width: 64px;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding-inline: 0;
+  }
+
+  .spotlight-launcher span,
+  .spotlight-launcher kbd {
+    display: none;
   }
 }

@@ -246,11 +246,27 @@ function initializeComposerEntries() {
 function initializeSharedDiscovery() {
   const dialog = document.querySelector<HTMLDialogElement>("[data-spotlight-dialog]");
   const shortcutDialog = document.querySelector<HTMLDialogElement>("[data-shortcut-dialog]");
+  const launcher = document.querySelector<HTMLButtonElement>("[data-spotlight-launcher]");
   const input = dialog?.querySelector<HTMLInputElement>("[data-spotlight-search]");
   const resultList = dialog?.querySelector<HTMLElement>("[data-spotlight-results]");
   const count = dialog?.querySelector<HTMLElement>("[data-spotlight-count]");
   const indexSource = document.querySelector<HTMLScriptElement>("#spotlight-index");
-  if (!dialog || !shortcutDialog || !input || !resultList || !count || !indexSource) return;
+  if (!dialog || !shortcutDialog || !launcher || !input || !resultList || !count || !indexSource) return;
+
+  const root = document.documentElement;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const syncViewportInsets = () => {
+    const viewport = window.visualViewport;
+    const keyboardOffset = viewport
+      ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
+      : 0;
+    root.style.setProperty("--floating-keyboard-offset", `${keyboardOffset}px`);
+    root.style.setProperty("--visual-viewport-height", `${viewport?.height ?? window.innerHeight}px`);
+  };
+  syncViewportInsets();
+  window.visualViewport?.addEventListener("resize", syncViewportInsets);
+  window.visualViewport?.addEventListener("scroll", syncViewportInsets);
+  window.addEventListener("resize", syncViewportInsets);
 
   let index: DiscoveryIndexItem[] = [];
   try {
@@ -398,6 +414,19 @@ function initializeSharedDiscovery() {
     if (!dialog.open) {
       previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       dialog.showModal();
+      const launcherRect = launcher.getBoundingClientRect();
+      const dialogRect = dialog.getBoundingClientRect();
+      dialog.style.transformOrigin = `${launcherRect.left + launcherRect.width / 2 - dialogRect.left}px ${launcherRect.top + launcherRect.height / 2 - dialogRect.top}px`;
+      dialog.dataset.spotlightState = reducedMotion.matches ? "open" : "opening";
+      if (!reducedMotion.matches) {
+        dialog.animate([
+          { opacity: 0, transform: "translateY(18px) scale(.82)" },
+          { opacity: 1, transform: "translateY(0) scale(1)" },
+        ], { duration: 240, easing: "cubic-bezier(.2,.8,.2,1)" })
+          .finished
+          .then(() => { if (dialog.open) dialog.dataset.spotlightState = "open"; })
+          .catch(() => {});
+      }
     }
     input.value = initialQuery;
     input.setAttribute("aria-expanded", "true");
@@ -407,6 +436,13 @@ function initializeSharedDiscovery() {
 
   document.querySelectorAll<HTMLButtonElement>("[data-spotlight-trigger]").forEach((trigger) => {
     trigger.addEventListener("click", () => openSpotlight());
+  });
+  document.querySelectorAll<HTMLButtonElement>("[data-shortcut-trigger]").forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      shortcutPreviousFocus = trigger;
+      shortcutDialog.showModal();
+      window.requestAnimationFrame(() => shortcutDialog.querySelector<HTMLButtonElement>("button")?.focus());
+    });
   });
   input.addEventListener("input", render);
   input.addEventListener("keydown", (event) => {
@@ -433,6 +469,7 @@ function initializeSharedDiscovery() {
     previousFocus = null;
     input.setAttribute("aria-expanded", "false");
     input.removeAttribute("aria-activedescendant");
+    delete dialog.dataset.spotlightState;
     window.setTimeout(() => focusTarget?.focus(), 0);
   });
   shortcutDialog.addEventListener("close", () => {
