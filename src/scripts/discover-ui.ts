@@ -68,13 +68,13 @@ if (workspace) {
     const scrollY = pinnedTabScrollY;
     pinnedTabScrollY = null;
     window.cancelAnimationFrame(pinnedTabClearFrame);
+    window.cancelAnimationFrame(pinnedTabRestoreFrame);
     if (!stickyControls.contains(document.activeElement)) return;
 
     // Native focus scrolls sticky descendants toward their unpainted document
     // position. Preserve the vertical context while retaining native focus order
     // and any horizontal auto-pan inside the taxonomy shortcut rail.
     restoreVerticalScroll(scrollY);
-    window.cancelAnimationFrame(pinnedTabRestoreFrame);
     pinnedTabRestoreFrame = window.requestAnimationFrame(() => restoreVerticalScroll(scrollY));
   });
 

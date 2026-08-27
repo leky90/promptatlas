@@ -346,6 +346,67 @@ test("Discover pinned controls preserve vertical scroll during native Tab traver
   }
 });
 
+test("Discover rapid Tab exit cancels pending pinned scroll restoration", async ({ page }) => {
+  const cdp = await page.context().newCDPSession(page);
+  const pressNativeTab = async (modifiers = 0) => {
+    const event = {
+      key: "Tab",
+      code: "Tab",
+      windowsVirtualKeyCode: 9,
+      nativeVirtualKeyCode: 9,
+      modifiers,
+    };
+    await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", ...event });
+    await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", ...event });
+  };
+  const scenarios = [
+    { width: 682, height: 600 },
+    { width: 621, height: 720 },
+  ];
+
+  for (const scenario of scenarios) {
+    for (const direction of ["forward", "reverse"] as const) {
+      await page.setViewportSize(scenario);
+      await page.goto("/discover/");
+      await page.evaluate(() => {
+        const root = document.documentElement;
+        root.style.scrollBehavior = "auto";
+        const scope = document.querySelector<HTMLElement>(".discover-controls-scope")!;
+        const group = document.querySelector<HTMLElement>(".discover-controls-sticky")!;
+        const header = document.querySelector<HTMLElement>(".site-header")!;
+        const runway = scope.getBoundingClientRect().height - group.getBoundingClientRect().height;
+        const stickyStart = scope.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height;
+        window.scrollTo(0, stickyStart + Math.max(1, Math.floor(runway / 2)));
+        root.style.removeProperty("scroll-behavior");
+      });
+      await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+      const pinnedScrollY = await page.evaluate(() => window.scrollY);
+
+      const start = direction === "forward"
+        ? page.locator('.taxonomy-quick [data-group-filter="lighting"]')
+        : page.locator('.discover-search button[type="submit"]');
+      await start.evaluate((target) => target.focus({ preventScroll: true }));
+      await expect(start).toBeFocused();
+
+      const modifiers = direction === "reverse" ? 8 : 0;
+      await pressNativeTab(modifiers);
+      await pressNativeTab(modifiers);
+
+      await expect.poll(() => page.evaluate((originalScrollY) => ({
+        activeOutsideGroup: !document.querySelector<HTMLElement>(".discover-controls-sticky")!.contains(document.activeElement),
+        movedFromPinned: Math.abs(window.scrollY - originalScrollY) > 100,
+      }), pinnedScrollY), { message: `${scenario.width}x${scenario.height} ${direction} native exit` })
+        .toEqual({ activeOutsideGroup: true, movedFromPinned: true });
+      const focus = await page.evaluate(() => {
+        const rect = (document.activeElement as HTMLElement).getBoundingClientRect();
+        return { centerY: rect.top + rect.height / 2, viewportHeight: window.innerHeight };
+      });
+      expect(focus.centerY, `${scenario.width}x${scenario.height} ${direction} focus center`).toBeGreaterThanOrEqual(0);
+      expect(focus.centerY, `${scenario.width}x${scenario.height} ${direction} focus center`).toBeLessThanOrEqual(focus.viewportHeight);
+    }
+  }
+});
+
 test("floating controls use the inline fallback when no safe vertical lane exists", async ({ page }) => {
   await page.addInitScript(() => {
     const viewport = new EventTarget() as EventTarget & {
