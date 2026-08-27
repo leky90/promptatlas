@@ -246,11 +246,34 @@ function initializeComposerEntries() {
 function initializeSharedDiscovery() {
   const dialog = document.querySelector<HTMLDialogElement>("[data-spotlight-dialog]");
   const shortcutDialog = document.querySelector<HTMLDialogElement>("[data-shortcut-dialog]");
+  const launcher = document.querySelector<HTMLButtonElement>("[data-spotlight-launcher]");
   const input = dialog?.querySelector<HTMLInputElement>("[data-spotlight-search]");
   const resultList = dialog?.querySelector<HTMLElement>("[data-spotlight-results]");
   const count = dialog?.querySelector<HTMLElement>("[data-spotlight-count]");
   const indexSource = document.querySelector<HTMLScriptElement>("#spotlight-index");
-  if (!dialog || !shortcutDialog || !input || !resultList || !count || !indexSource) return;
+  if (!dialog || !shortcutDialog || !launcher || !input || !resultList || !count || !indexSource) return;
+
+  const root = document.documentElement;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const syncViewportInsets = () => {
+    const viewport = window.visualViewport;
+    const viewportWidth = viewport?.width ?? window.innerWidth;
+    const viewportLeft = viewport?.offsetLeft ?? 0;
+    const keyboardOffset = viewport
+      ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
+      : 0;
+    root.style.setProperty("--floating-keyboard-offset", `${keyboardOffset}px`);
+    root.style.setProperty("--visual-viewport-height", `${viewport?.height ?? window.innerHeight}px`);
+    root.style.setProperty("--visual-viewport-center-y", `${(viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight) / 2}px`);
+    root.style.setProperty("--visual-viewport-width", `${viewportWidth}px`);
+    root.style.setProperty("--visual-viewport-center-x", `${viewportLeft + viewportWidth / 2}px`);
+    root.style.setProperty("--visual-viewport-right", `${viewportLeft + viewportWidth}px`);
+    root.toggleAttribute("data-compact-visual-viewport", viewportWidth <= 360);
+  };
+  syncViewportInsets();
+  window.visualViewport?.addEventListener("resize", syncViewportInsets);
+  window.visualViewport?.addEventListener("scroll", syncViewportInsets);
+  window.addEventListener("resize", syncViewportInsets);
 
   let index: DiscoveryIndexItem[] = [];
   try {
@@ -262,6 +285,23 @@ function initializeSharedDiscovery() {
 
   let activeIndex = -1;
   let previousFocus: HTMLElement | null = null;
+  const trapDialogFocus = (event: KeyboardEvent) => {
+    if (event.key !== "Tab" || !(event.currentTarget instanceof HTMLDialogElement)) return;
+    const activeDialog = event.currentTarget;
+    const focusable = [...activeDialog.querySelectorAll<HTMLElement>('a[href]:not([tabindex="-1"]), button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+      .filter((candidate) => candidate.getClientRects().length > 0);
+    if (focusable.length === 0) return;
+    const current = document.activeElement;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && (current === first || !activeDialog.contains(current))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (current === last || !activeDialog.contains(current))) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
   let shortcutPreviousFocus: HTMLElement | null = null;
   let resultRows: HTMLElement[] = [];
   const typeOrder: DiscoveryIndexItem["type"][] = ["style", "primitive", "anatomy"];
@@ -398,6 +438,19 @@ function initializeSharedDiscovery() {
     if (!dialog.open) {
       previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       dialog.showModal();
+      const launcherRect = launcher.getBoundingClientRect();
+      const dialogRect = dialog.getBoundingClientRect();
+      dialog.style.transformOrigin = `${launcherRect.left + launcherRect.width / 2 - dialogRect.left}px ${launcherRect.top + launcherRect.height / 2 - dialogRect.top}px`;
+      dialog.dataset.spotlightState = reducedMotion.matches ? "open" : "opening";
+      if (!reducedMotion.matches) {
+        dialog.animate([
+          { opacity: 0, transform: "translate(-50%, calc(-50% + 18px)) scale(.82)" },
+          { opacity: 1, transform: "translate(-50%, -50%) scale(1)" },
+        ], { duration: 240, easing: "cubic-bezier(.2,.8,.2,1)" })
+          .finished
+          .then(() => { if (dialog.open) dialog.dataset.spotlightState = "open"; })
+          .catch(() => {});
+      }
     }
     input.value = initialQuery;
     input.setAttribute("aria-expanded", "true");
@@ -408,7 +461,16 @@ function initializeSharedDiscovery() {
   document.querySelectorAll<HTMLButtonElement>("[data-spotlight-trigger]").forEach((trigger) => {
     trigger.addEventListener("click", () => openSpotlight());
   });
+  document.querySelectorAll<HTMLButtonElement>("[data-shortcut-trigger]").forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      shortcutPreviousFocus = trigger;
+      shortcutDialog.showModal();
+      window.requestAnimationFrame(() => shortcutDialog.querySelector<HTMLButtonElement>("button")?.focus());
+    });
+  });
   input.addEventListener("input", render);
+  dialog.addEventListener("keydown", trapDialogFocus);
+  shortcutDialog.addEventListener("keydown", trapDialogFocus);
   input.addEventListener("keydown", (event) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
@@ -433,6 +495,7 @@ function initializeSharedDiscovery() {
     previousFocus = null;
     input.setAttribute("aria-expanded", "false");
     input.removeAttribute("aria-activedescendant");
+    delete dialog.dataset.spotlightState;
     window.setTimeout(() => focusTarget?.focus(), 0);
   });
   shortcutDialog.addEventListener("close", () => {

@@ -9,6 +9,7 @@ type IconName =
   | "copy"
   | "close"
   | "download"
+  | "help-circle"
   | "lock"
   | "menu"
   | "plus"
@@ -44,6 +45,7 @@ const { name, size = 18, strokeWidth = 1.9 } = Astro.props;
   {name === "copy" && <><rect x="8" y="8" width="11" height="11" rx="1.5" /><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-10A1.5 1.5 0 0 0 3 5.5v10A1.5 1.5 0 0 0 4.5 17H8" /></>}
   {name === "close" && <><path d="m6 6 12 12" /><path d="m18 6-12 12" /></>}
   {name === "download" && <><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></>}
+  {name === "help-circle" && <><circle cx="12" cy="12" r="9" /><path d="M9.8 9.25a2.35 2.35 0 0 1 4.5.95c0 1.75-2.3 2.05-2.3 3.55" /><path d="M12 17h.01" /></>}
   {name === "lock" && <><rect x="5" y="10" width="14" height="10" rx="1.5" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></>}
   {name === "menu" && <><path d="M4 6.5h16" /><path d="M4 12h16" /><path d="M4 17.5h16" /></>}
   {name === "plus" && <><path d="M12 5v14" /><path d="M5 12h14" /></>}

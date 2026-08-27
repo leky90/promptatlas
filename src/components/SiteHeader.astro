@@ -22,9 +22,6 @@ const links = [
       <span>Menu</span>
       <Icon name="menu" size={20} />
     </button>
-    <button class="spotlight-trigger" type="button" data-spotlight-trigger aria-label="Tìm trong Prompt Atlas">
-      <Icon name="search" size={18} /><span>Tìm kiếm</span><kbd>⌘K</kbd>
-    </button>
     <nav class="site-nav" id="site-navigation" data-site-nav data-open="false" aria-label="Điều hướng chính">
       {links.map(([href, label]) => href === "/composer/" ? (
         <a href={href} data-composer-nav aria-current={path.startsWith(href) ? "page" : undefined}>
