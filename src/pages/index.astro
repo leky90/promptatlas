@@ -56,17 +56,17 @@ const jsonLd = {
 
   <section class="atlas-section" id="atlas" aria-labelledby="atlas-title">
     <div class="atlas-toolbar-wrap">
-      <div class="atlas-toolbar shell">
-        <div class="search-field">
+      <div class="atlas-toolbar catalog-toolbar shell" data-catalog-toolbar="standard">
+        <div class="search-field" data-catalog-search>
           <label for="style-search">Tìm phong cách hoặc ý tưởng</label>
           <span class="search-field__icon"><Icon name="search" size={18} /></span>
           <input id="style-search" type="search" autocomplete="off" placeholder="mực tàu, retro, 3D, Sài Gòn…" data-style-search />
         </div>
-        <div class="filter-row" role="group" aria-label="Lọc theo facet phong cách V2">
+        <div class="filter-row" role="group" aria-label="Lọc theo facet phong cách V2" data-catalog-filters>
           <button class="filter-chip is-active" type="button" data-facet-filter="all" aria-pressed="true">Tất cả</button>
           {styleFacets.map((facet) => <button class="filter-chip" type="button" data-facet-filter={facet.id} aria-pressed="false">{facet.label}</button>)}
         </div>
-        <div class="toolbar-status">
+        <div class="toolbar-status catalog-toolbar__status" data-catalog-status>
           <p><strong data-result-count>{styles.length}</strong> / {styles.length} phong cách</p>
           <button type="button" class="saved-filter" data-saved-filter aria-pressed="false">
             <Icon name="bookmark" size={18} />

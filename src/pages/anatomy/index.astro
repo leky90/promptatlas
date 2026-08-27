@@ -34,19 +34,21 @@ const jsonLd = {
 
   <section class="anatomy-browser" aria-labelledby="anatomy-browser-title">
     <div class="anatomy-toolbar-wrap">
-      <div class="anatomy-toolbar shell">
-        <div class="search-field">
+      <div class="anatomy-toolbar catalog-toolbar shell" data-catalog-toolbar="standard">
+        <div class="search-field" data-catalog-search>
           <label for="anatomy-search">Tìm thuộc tính hoặc giá trị</label>
           <span class="search-field__icon"><Icon name="search" size={18} /></span>
           <input id="anatomy-search" type="search" autocomplete="off" placeholder="góc máy, da, ánh sáng, màu…" data-anatomy-search />
         </div>
-        <div class="filter-row" role="group" aria-label="Lọc theo nhóm Image Anatomy">
+        <div class="filter-row" role="group" aria-label="Lọc theo nhóm Image Anatomy" data-catalog-filters>
           <button class="filter-chip is-active" type="button" data-category-filter="all" aria-pressed="true">Tất cả</button>
           {anatomyCategories.map((category) => (
             <button class="filter-chip" type="button" data-category-filter={category.categoryId} aria-pressed="false">{category.label.vi}</button>
           ))}
         </div>
-        <p class="anatomy-result"><strong data-anatomy-count>{anatomyDimensions.length}</strong> / {anatomyDimensions.length} thuộc tính</p>
+        <div class="catalog-toolbar__status" data-catalog-status>
+          <p class="anatomy-result"><strong data-anatomy-count>{anatomyDimensions.length}</strong> / {anatomyDimensions.length} thuộc tính</p>
+        </div>
       </div>
     </div>
 
