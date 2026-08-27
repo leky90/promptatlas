@@ -217,8 +217,67 @@ test("Discover sticky controls release before refinement actions scroll undernea
       samples.push(...blockers.slice(0, Math.max(0, 5 - samples.length)));
     }
 
-    await expect(page.locator(".discover-toolbar-wrap")).toHaveCSS("position", "sticky");
+    await expect(page.locator(".discover-controls-sticky")).toHaveCSS("position", "sticky");
     expect(blockedCount, `${scenario.width}x${scenario.height}: ${JSON.stringify(samples)}`).toBe(0);
+  }
+});
+
+test("Discover sticky controls keep taxonomy quick actions reachable while releasing", async ({ page }) => {
+  const scenarios = [
+    { width: 1024, height: 720, scrollY: 1300 },
+    { width: 819, height: 720, scrollY: 1905 },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto("/discover/");
+    const stickyScrollY = await page.evaluate(() => {
+      const scope = document.querySelector<HTMLElement>(".discover-controls-scope")!;
+      const header = document.querySelector<HTMLElement>(".site-header")!;
+      return Math.max(0, scope.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height + 10);
+    });
+    await page.evaluate((scrollY) => window.scrollTo(0, scrollY), stickyScrollY);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const stickyGeometry = await page.evaluate(() => ({
+      groupTop: document.querySelector<HTMLElement>(".discover-controls-sticky")!.getBoundingClientRect().top,
+      headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
+      quickTop: document.querySelector<HTMLElement>(".taxonomy-quick")!.getBoundingClientRect().top,
+      toolbarBottom: document.querySelector<HTMLElement>(".discover-toolbar-wrap")!.getBoundingClientRect().bottom,
+    }));
+    expect(Math.abs(stickyGeometry.groupTop - stickyGeometry.headerBottom)).toBeLessThanOrEqual(1);
+    expect(stickyGeometry.quickTop).toBeGreaterThanOrEqual(stickyGeometry.toolbarBottom - 1);
+
+    await page.evaluate((scrollY) => window.scrollTo(0, scrollY), scenario.scrollY);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const subject = page.locator('.taxonomy-quick [data-group-filter="subject"]');
+    const pointer = await subject.evaluate((target) => {
+      const rect = target.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const hit = document.elementFromPoint(x, y);
+      return {
+        hitOwnsTarget: hit === target || target.contains(hit),
+        x,
+        y,
+      };
+    });
+    expect(pointer.hitOwnsTarget, `${scenario.width}x${scenario.height} pointer hit`).toBe(true);
+    await page.mouse.click(pointer.x, pointer.y);
+    await expect(subject).toHaveAttribute("aria-pressed", "true");
+
+    await page.goto("/discover/");
+    await page.evaluate((scrollY) => window.scrollTo(0, scrollY), scenario.scrollY);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const all = page.locator('.taxonomy-quick [data-group-filter="all"]');
+    await all.evaluate((target) => target.focus({ preventScroll: true }));
+    await expect(all).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scenario.scrollY);
+    const focusHitOwnsTarget = await all.evaluate((target) => {
+      const rect = target.getBoundingClientRect();
+      const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return hit === target || target.contains(hit);
+    });
+    expect(focusHitOwnsTarget, `${scenario.width}x${scenario.height} focused control remains visible`).toBe(true);
   }
 });
 

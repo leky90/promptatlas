@@ -67,33 +67,35 @@ const jsonLd = {
 
   <section class="discover-workspace" aria-label="Thư viện Prompt primitives" data-discover-workspace>
     <div class="discover-controls-scope">
-      <div class="discover-toolbar-wrap">
-        <div class="discover-toolbar shell" data-catalog-toolbar="dense">
-          <form class="discover-search" role="search" data-discover-search-form data-catalog-search data-floating-target>
-            <label for="primitive-search">Tìm trong Prompt primitives</label>
-            <span><Icon name="search" size={18} /></span>
-            <input id="primitive-search" type="search" name="q" autocomplete="off" placeholder="vai trò, vật liệu, góc máy, ánh sáng…" data-discover-search />
-            <button type="submit">Tìm</button>
-          </form>
+      <div class="discover-controls-sticky">
+        <div class="discover-toolbar-wrap">
+          <div class="discover-toolbar shell" data-catalog-toolbar="dense">
+            <form class="discover-search" role="search" data-discover-search-form data-catalog-search data-floating-target>
+              <label for="primitive-search">Tìm trong Prompt primitives</label>
+              <span><Icon name="search" size={18} /></span>
+              <input id="primitive-search" type="search" name="q" autocomplete="off" placeholder="vai trò, vật liệu, góc máy, ánh sáng…" data-discover-search />
+              <button type="submit">Tìm</button>
+            </form>
 
-          <div class="discover-toolbar__actions" data-floating-target>
-            <a class="discover-skip-results" href="#discover-results" data-skip-to-results>Bỏ qua bộ lọc, tới kết quả</a>
-            <button class="facet-toggle" type="button" data-facet-toggle aria-expanded="false" aria-controls="taxonomy-panel">
-              Taxonomy <span data-active-filter-count>0</span>
-            </button>
-            <div class="view-switch" role="group" aria-label="Kiểu hiển thị">
-              <button type="button" data-view="grid" aria-pressed="true">Lưới</button>
-              <button type="button" data-view="list" aria-pressed="false">Danh sách</button>
+            <div class="discover-toolbar__actions" data-floating-target>
+              <a class="discover-skip-results" href="#discover-results" data-skip-to-results>Bỏ qua bộ lọc, tới kết quả</a>
+              <button class="facet-toggle" type="button" data-facet-toggle aria-expanded="false" aria-controls="taxonomy-panel">
+                Taxonomy <span data-active-filter-count>0</span>
+              </button>
+              <div class="view-switch" role="group" aria-label="Kiểu hiển thị">
+                <button type="button" data-view="grid" aria-pressed="true">Lưới</button>
+                <button type="button" data-view="list" aria-pressed="false">Danh sách</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="taxonomy-quick shell" aria-label="Lọc nhanh theo nhóm" data-floating-target>
-        <button type="button" data-group-filter="all" aria-pressed="true"><span>00</span>Tất cả <b>{primitiveEntries.length}</b></button>
-        {primitiveGroups.map((group) => (
-          <button type="button" data-group-filter={group.id} aria-pressed="false"><span>{group.order}</span>{group.label} <b>{group.count}</b></button>
-        ))}
+        <div class="taxonomy-quick shell" aria-label="Lọc nhanh theo nhóm" data-floating-target>
+          <button type="button" data-group-filter="all" aria-pressed="true"><span>00</span>Tất cả <b>{primitiveEntries.length}</b></button>
+          {primitiveGroups.map((group) => (
+            <button type="button" data-group-filter={group.id} aria-pressed="false"><span>{group.order}</span>{group.label} <b>{group.count}</b></button>
+          ))}
+        </div>
       </div>
     </div>
 

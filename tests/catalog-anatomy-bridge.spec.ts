@@ -89,7 +89,7 @@ test("Discover declares its dense toolbar exception while following application 
     const toolbar = page.locator('[data-catalog-toolbar="dense"]');
     await expect(toolbar).toBeVisible();
     const geometry = await toolbar.evaluate((element) => {
-      const wrapper = element.closest<HTMLElement>(".discover-toolbar-wrap")!;
+      const wrapper = element.closest<HTMLElement>(".discover-controls-sticky")!;
       const header = document.querySelector<HTMLElement>(".site-header")!;
       const controlHeights = [...element.querySelectorAll<HTMLElement>("input, button, a[data-skip-to-results]")]
         .filter((control) => control.getClientRects().length > 0)

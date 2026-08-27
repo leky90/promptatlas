@@ -4321,9 +4321,6 @@ button {
 }
 
 .discover-toolbar-wrap {
-  position: sticky;
-  top: var(--header-height);
-  z-index: 70;
   color: var(--paper);
   background: var(--ink);
   border-bottom: 1px solid rgb(241 238 230 / 24%);
@@ -4331,6 +4328,18 @@ button {
 
 .discover-controls-scope {
   position: relative;
+}
+
+.discover-controls-scope::after {
+  content: "";
+  display: block;
+  height: 36px;
+}
+
+.discover-controls-sticky {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 70;
 }
 
 .discover-toolbar {
@@ -4498,7 +4507,7 @@ button {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
   gap: 42px;
-  padding-top: 36px;
+  padding-top: 0;
 }
 
 .taxonomy-panel {
@@ -5020,7 +5029,11 @@ button {
 
   .discover-layout {
     grid-template-columns: 1fr;
-    padding-top: 28px;
+    padding-top: 0;
+  }
+
+  .discover-controls-scope::after {
+    height: 28px;
   }
 
   .taxonomy-panel {
@@ -5113,6 +5126,10 @@ button {
     padding-top: 0;
   }
 
+  .discover-controls-scope::after {
+    height: 0;
+  }
+
   .primitive-library__head {
     align-items: start;
     padding: 24px 18px 18px;
@@ -5175,6 +5192,7 @@ button {
 }
 
 @media (max-width: 620px) {
+  .discover-controls-sticky,
   .discover-toolbar-wrap {
     position: relative;
     top: auto;

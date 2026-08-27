@@ -16,8 +16,9 @@ high-density workspace, taxonomy shortcuts, and workspace actions remain
 distinct. The dense variant still follows the application shell gutter, the
 same 48 CSS px control height, the same sticky offset, and the same 620 CSS px
 sticky breakpoint. Its sticky containing block is limited to the toolbar and
-taxonomy-control zone, so the dense controls release before the result grid and
-cannot obscure result actions during catalog scrolling.
+taxonomy-control zone. Toolbar and taxonomy shortcuts move as one sticky unit,
+using the existing post-control spacing as a release runway, so controls cannot
+obscure one another and the unit releases before result actions enter the grid.
 
 These variants are presentation contracts only. They must not change route
 identity, search/filter URL state, saved-only behavior, grid/list state,
