@@ -15,7 +15,9 @@ Discover (`/discover/`) intentionally uses the `dense` variant: its dark,
 high-density workspace, taxonomy shortcuts, and workspace actions remain
 distinct. The dense variant still follows the application shell gutter, the
 same 48 CSS px control height, the same sticky offset, and the same 620 CSS px
-sticky breakpoint.
+sticky breakpoint. Its sticky containing block is limited to the toolbar and
+taxonomy-control zone, so the dense controls release before the result grid and
+cannot obscure result actions during catalog scrolling.
 
 These variants are presentation contracts only. They must not change route
 identity, search/filter URL state, saved-only behavior, grid/list state,

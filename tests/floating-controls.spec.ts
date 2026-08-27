@@ -173,6 +173,55 @@ test("floating controls preserve scroll position and stay collision-free on Disc
   }
 });
 
+test("Discover sticky controls release before refinement actions scroll underneath", async ({ page }) => {
+  const scenarios = [
+    { width: 1024, height: 720, exactScrollY: 2050 },
+    { width: 819, height: 720, exactScrollY: 2809 },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto("/discover/");
+    const maxScrollY = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
+    const positions = new Set<number>();
+    for (let scrollY = 0; scrollY <= maxScrollY; scrollY += 1600) positions.add(scrollY);
+    const exactPosition = Math.min(scenario.exactScrollY, maxScrollY);
+    positions.add(exactPosition);
+    positions.add(maxScrollY);
+    const orderedPositions = [exactPosition, ...[...positions]
+      .filter((scrollY) => scrollY !== exactPosition)
+      .sort((left, right) => left - right)];
+    const samples: Array<{ href: string; hit: string; scrollY: number }> = [];
+    let blockedCount = 0;
+
+    for (const scrollY of orderedPositions) {
+      await page.evaluate((nextScrollY) => window.scrollTo(0, nextScrollY), scrollY);
+      await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+      const blockers = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>(".primitive-card__anatomy-link")]
+        .flatMap((target) => {
+          const rect = target.getBoundingClientRect();
+          if (rect.bottom <= 0 || rect.top >= window.innerHeight) return [];
+          const hit = document.elementFromPoint(
+            Math.min(window.innerWidth - 1, Math.max(0, rect.left + rect.width / 2)),
+            Math.min(window.innerHeight - 1, Math.max(0, rect.top + rect.height / 2)),
+          );
+          return hit?.closest(".discover-toolbar-wrap")
+            ? [{
+              href: target.getAttribute("href") ?? "",
+              hit: hit instanceof HTMLElement ? hit.className || hit.tagName : "unknown",
+              scrollY: window.scrollY,
+            }]
+            : [];
+        }));
+      blockedCount += blockers.length;
+      samples.push(...blockers.slice(0, Math.max(0, 5 - samples.length)));
+    }
+
+    await expect(page.locator(".discover-toolbar-wrap")).toHaveCSS("position", "sticky");
+    expect(blockedCount, `${scenario.width}x${scenario.height}: ${JSON.stringify(samples)}`).toBe(0);
+  }
+});
+
 test("floating controls use the inline fallback when no safe vertical lane exists", async ({ page }) => {
   await page.addInitScript(() => {
     const viewport = new EventTarget() as EventTarget & {
