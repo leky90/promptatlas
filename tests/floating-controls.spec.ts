@@ -2,6 +2,13 @@ import { expect, test } from "@playwright/test";
 
 const supportedRoutes = ["/", "/discover/", "/anatomy/", "/composer/", "/compare/", "/methodology/"];
 
+const rectanglesOverlap = (first: { top: number; right: number; bottom: number; left: number }, second: { top: number; right: number; bottom: number; left: number }, gap = 4) => (
+  first.bottom > second.top - gap
+  && first.top < second.bottom + gap
+  && first.right > second.left - gap
+  && first.left < second.right + gap
+);
+
 test("floating controls expose search and shortcut help without collisions", async ({ page }) => {
   test.setTimeout(60_000);
   for (const width of [1920, 1280, 1024, 768, 390]) {
@@ -38,6 +45,34 @@ test("floating controls expose search and shortcut help without collisions", asy
         expect(geometry.launcher.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
         expect(geometry.help.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
         expect(geometry.documentWidth, `${route} width at ${width}px/${zoom * 100}%`).toBeLessThanOrEqual(geometry.clientWidth + 1);
+      }
+    }
+  }
+});
+
+test("floating controls clear Anatomy toolbar and refinement actions", async ({ page }) => {
+  const scenarios = [
+    { route: "/anatomy/", width: 1440, height: 1000, targets: '[data-catalog-toolbar] input, [data-catalog-toolbar] button, [data-catalog-toolbar] a' },
+    { route: "/anatomy/subject-person-role/", width: 1440, height: 1000, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
+    { route: "/anatomy/camera-angle/", width: 390, height: 844, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto(scenario.route);
+    const geometry = await page.evaluate((targetSelector) => ({
+      controls: [
+        document.querySelector<HTMLElement>("[data-spotlight-launcher]")!.getBoundingClientRect(),
+        document.querySelector<HTMLElement>("[data-shortcut-trigger]")!.getBoundingClientRect(),
+      ],
+      targets: [...document.querySelectorAll<HTMLElement>(targetSelector)]
+        .filter((target) => target.getClientRects().length > 0)
+        .map((target) => target.getBoundingClientRect()),
+    }), scenario.targets);
+
+    for (const control of geometry.controls) {
+      for (const target of geometry.targets) {
+        expect(rectanglesOverlap(control, target), `${scenario.route} at ${scenario.width}x${scenario.height}`).toBe(false);
       }
     }
   }

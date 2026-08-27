@@ -2328,6 +2328,16 @@ button {
   padding-block: clamp(70px, 10vw, 150px) clamp(54px, 8vw, 110px);
 }
 
+.anatomy-detail-page .anatomy-detail-hero {
+  padding-bottom: clamp(30px, 5vw, 78px);
+}
+
+@media (min-width: 821px) {
+  .anatomy-page .anatomy-hero {
+    padding-bottom: 12px;
+  }
+}
+
 .anatomy-hero h1,
 .anatomy-detail-hero h1 {
   max-width: 980px;
@@ -2789,6 +2799,10 @@ button {
 }
 
 @media (max-width: 720px) {
+  .anatomy-detail-page .anatomy-detail-hero {
+    padding-bottom: 134px;
+  }
+
   .anatomy-refinement-journey {
     grid-template-columns: 1fr;
   }
