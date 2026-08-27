@@ -262,6 +262,7 @@ function initializeSharedDiscovery() {
       : 0;
     root.style.setProperty("--floating-keyboard-offset", `${keyboardOffset}px`);
     root.style.setProperty("--visual-viewport-height", `${viewport?.height ?? window.innerHeight}px`);
+    root.style.setProperty("--visual-viewport-center-y", `${(viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight) / 2}px`);
   };
   syncViewportInsets();
   window.visualViewport?.addEventListener("resize", syncViewportInsets);
@@ -420,8 +421,8 @@ function initializeSharedDiscovery() {
       dialog.dataset.spotlightState = reducedMotion.matches ? "open" : "opening";
       if (!reducedMotion.matches) {
         dialog.animate([
-          { opacity: 0, transform: "translateY(18px) scale(.82)" },
-          { opacity: 1, transform: "translateY(0) scale(1)" },
+          { opacity: 0, transform: "translate(-50%, calc(-50% + 18px)) scale(.82)" },
+          { opacity: 1, transform: "translate(-50%, -50%) scale(1)" },
         ], { duration: 240, easing: "cubic-bezier(.2,.8,.2,1)" })
           .finished
           .then(() => { if (dialog.open) dialog.dataset.spotlightState = "open"; })

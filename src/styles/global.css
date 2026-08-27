@@ -3646,6 +3646,7 @@ button {
 :root {
   --floating-keyboard-offset: 0px;
   --visual-viewport-height: 100svh;
+  --visual-viewport-center-y: 50svh;
 }
 
 .spotlight-launcher,
@@ -3710,14 +3711,20 @@ button {
 
 .spotlight-dialog,
 .shortcut-dialog {
+  position: fixed;
+  inset: auto;
+  top: var(--visual-viewport-center-y);
+  left: 50%;
   width: min(920px, calc(100vw - 28px));
   max-height: min(820px, calc(var(--visual-viewport-height) - 28px));
+  margin: 0;
   overflow: hidden;
   padding: 0;
   color: var(--ink);
   background: var(--paper);
   border: 2px solid var(--ink);
   box-shadow: 18px 18px 0 rgb(18 19 17 / 22%);
+  transform: translate(-50%, -50%);
 }
 
 .spotlight-dialog::backdrop,
@@ -3814,7 +3821,7 @@ button {
 }
 
 .spotlight-results {
-  min-height: 220px;
+  min-height: 72px;
   overflow-y: auto;
   overscroll-behavior: contain;
 }

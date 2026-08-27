@@ -126,8 +126,9 @@ test("floating controls move above an onscreen keyboard viewport", async ({ page
       scale: 1,
     });
     Object.defineProperty(window, "visualViewport", { configurable: true, value: viewport });
-    (window as typeof window & { __setKeyboardHeight: (height: number) => void }).__setKeyboardHeight = (height) => {
-      viewport.height = window.innerHeight - height;
+    (window as typeof window & { __setKeyboardViewport: (height: number, offsetTop?: number) => void }).__setKeyboardViewport = (height, offsetTop = 0) => {
+      viewport.height = window.innerHeight - height - offsetTop;
+      viewport.offsetTop = offsetTop;
       viewport.dispatchEvent(new Event("resize"));
     };
   });
@@ -136,12 +137,51 @@ test("floating controls move above an onscreen keyboard viewport", async ({ page
 
   const launcher = page.getByRole("button", { name: "Tìm trong Prompt Atlas" });
   const before = await launcher.boundingBox();
-  await page.evaluate(() => (window as typeof window & { __setKeyboardHeight: (height: number) => void }).__setKeyboardHeight(280));
+  await page.evaluate(() => (window as typeof window & { __setKeyboardViewport: (height: number, offsetTop?: number) => void }).__setKeyboardViewport(280, 24));
   await expect.poll(async () => Number.parseFloat(await page.locator("html").evaluate((element) => getComputedStyle(element).getPropertyValue("--floating-keyboard-offset")))).toBeGreaterThanOrEqual(280);
   const after = await launcher.boundingBox();
   expect(before).not.toBeNull();
   expect(after).not.toBeNull();
   expect(after!.y).toBeLessThanOrEqual(before!.y - 260);
+
+  await launcher.click();
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  await expect(dialog).toBeVisible();
+  const viewportFit = await dialog.evaluate((element) => {
+    const viewport = window.visualViewport!;
+    const visibleTop = viewport.offsetTop;
+    const visibleBottom = viewport.offsetTop + viewport.height;
+    const dialogRect = element.getBoundingClientRect();
+    const queryRect = element.querySelector<HTMLInputElement>("[data-spotlight-search]")!.getBoundingClientRect();
+    const closeRect = element.querySelector<HTMLButtonElement>('button[aria-label="Đóng tìm kiếm"]')!.getBoundingClientRect();
+    const resultsRect = element.querySelector<HTMLElement>("[data-spotlight-results]")!.getBoundingClientRect();
+    return { visibleTop, visibleBottom, dialogRect, queryRect, closeRect, resultsRect };
+  });
+  expect(viewportFit.dialogRect.top).toBeGreaterThanOrEqual(viewportFit.visibleTop);
+  expect(viewportFit.dialogRect.bottom).toBeLessThanOrEqual(viewportFit.visibleBottom);
+  expect(viewportFit.queryRect.bottom).toBeLessThanOrEqual(viewportFit.visibleBottom);
+  expect(viewportFit.closeRect.bottom).toBeLessThanOrEqual(viewportFit.visibleBottom);
+  expect(viewportFit.resultsRect.bottom).toBeLessThanOrEqual(viewportFit.visibleBottom);
+  expect(viewportFit.resultsRect.height).toBeGreaterThanOrEqual(72);
+
+  await page.setViewportSize({ width: 390, height: 667 });
+  await page.evaluate(() => (window as typeof window & { __setKeyboardViewport: (height: number, offsetTop?: number) => void }).__setKeyboardViewport(300));
+  await expect.poll(async () => Number.parseFloat(await page.locator("html").evaluate((element) => getComputedStyle(element).getPropertyValue("--visual-viewport-height")))).toBe(367);
+  const compactFit = await dialog.evaluate((element) => {
+    const viewport = window.visualViewport!;
+    const visibleBottom = viewport.offsetTop + viewport.height;
+    const dialogRect = element.getBoundingClientRect();
+    const queryRect = element.querySelector<HTMLInputElement>("[data-spotlight-search]")!.getBoundingClientRect();
+    const closeRect = element.querySelector<HTMLButtonElement>('button[aria-label="Đóng tìm kiếm"]')!.getBoundingClientRect();
+    const resultsRect = element.querySelector<HTMLElement>("[data-spotlight-results]")!.getBoundingClientRect();
+    return { visibleTop: viewport.offsetTop, visibleBottom, dialogRect, queryRect, closeRect, resultsRect };
+  });
+  expect(compactFit.dialogRect.top).toBeGreaterThanOrEqual(compactFit.visibleTop);
+  expect(compactFit.dialogRect.bottom).toBeLessThanOrEqual(compactFit.visibleBottom);
+  expect(compactFit.queryRect.bottom).toBeLessThanOrEqual(compactFit.visibleBottom);
+  expect(compactFit.closeRect.bottom).toBeLessThanOrEqual(compactFit.visibleBottom);
+  expect(compactFit.resultsRect.bottom).toBeLessThanOrEqual(compactFit.visibleBottom);
+  expect(compactFit.resultsRect.height).toBeGreaterThanOrEqual(72);
 });
 
 test("reduced motion keeps Spotlight opening immediate", async ({ page }) => {
