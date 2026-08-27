@@ -92,6 +92,29 @@ test("launcher morphs into a single-scroll Spotlight and restores focus", async 
   await expect(launcher).toBeFocused();
 });
 
+test("Spotlight traps forward and reverse tab navigation", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Tìm trong Prompt Atlas" }).click();
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  const input = dialog.getByRole("combobox");
+  await expect(input).toBeFocused();
+
+  const focusableCount = await dialog.evaluate((element) => [...element.querySelectorAll<HTMLElement>('a[href]:not([tabindex="-1"]), button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+    .filter((candidate) => candidate.getClientRects().length > 0).length);
+  expect(focusableCount).toBeGreaterThan(1);
+
+  for (let step = 0; step < focusableCount + 2; step += 1) {
+    await page.keyboard.press("Tab");
+    expect(await dialog.evaluate((element) => element.contains(document.activeElement)), `forward Tab step ${step + 1}`).toBe(true);
+  }
+
+  await input.focus();
+  for (let step = 0; step < focusableCount + 2; step += 1) {
+    await page.keyboard.press("Shift+Tab");
+    expect(await dialog.evaluate((element) => element.contains(document.activeElement)), `reverse Tab step ${step + 1}`).toBe(true);
+  }
+});
+
 test("visible help control reuses the shortcut dialog and restores focus", async ({ page }) => {
   await page.goto("/discover/");
   const help = page.getByRole("button", { name: "Xem hướng dẫn phím tắt" });
@@ -101,6 +124,12 @@ test("visible help control reuses the shortcut dialog and restores focus", async
   const dialog = page.getByRole("dialog", { name: "Phím tắt Prompt Atlas" });
   await expect(dialog).toBeVisible();
   await expect(dialog).toContainText("⌘/Ctrl");
+  const close = dialog.getByRole("button", { name: "Đóng hướng dẫn phím tắt" });
+  await expect(close).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(close).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(close).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(help).toBeFocused();
 });

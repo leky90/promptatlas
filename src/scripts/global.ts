@@ -279,6 +279,23 @@ function initializeSharedDiscovery() {
 
   let activeIndex = -1;
   let previousFocus: HTMLElement | null = null;
+  const trapDialogFocus = (event: KeyboardEvent) => {
+    if (event.key !== "Tab" || !(event.currentTarget instanceof HTMLDialogElement)) return;
+    const activeDialog = event.currentTarget;
+    const focusable = [...activeDialog.querySelectorAll<HTMLElement>('a[href]:not([tabindex="-1"]), button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+      .filter((candidate) => candidate.getClientRects().length > 0);
+    if (focusable.length === 0) return;
+    const current = document.activeElement;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && (current === first || !activeDialog.contains(current))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (current === last || !activeDialog.contains(current))) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
   let shortcutPreviousFocus: HTMLElement | null = null;
   let resultRows: HTMLElement[] = [];
   const typeOrder: DiscoveryIndexItem["type"][] = ["style", "primitive", "anatomy"];
@@ -446,6 +463,8 @@ function initializeSharedDiscovery() {
     });
   });
   input.addEventListener("input", render);
+  dialog.addEventListener("keydown", trapDialogFocus);
+  shortcutDialog.addEventListener("keydown", trapDialogFocus);
   input.addEventListener("keydown", (event) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
