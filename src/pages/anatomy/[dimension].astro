@@ -26,6 +26,9 @@ const comparisons = anatomyComparisonsForDimension(dimension.dimensionId);
 const tierSummary = advancedValues.length > 0
   ? `${coreValues.length} giá trị Core và ${advancedValues.length} giá trị Advanced`
   : `${coreValues.length} giá trị Core`;
+const refinementHeading = advancedValues.length > 0
+  ? "So sánh Core và Advanced, rồi quay lại recipe đang giữ trên thiết bị."
+  : "Khám phá các mốc Core, rồi quay lại recipe đang giữ trên thiết bị.";
 const description = `${dimension.label.vi}: ${tierSummary} với ví dụ trực quan trong Image Anatomy V2.`;
 ---
 
@@ -49,7 +52,7 @@ const description = `${dimension.label.vi}: ${tierSummary} với ví dụ trực
     <section class="anatomy-refinement-journey shell" aria-label="Tiếp tục hành trình Prompt primitive">
       <div>
         <p class="eyebrow">PROMPT PRIMITIVE → IMAGE ANATOMY → COMPOSER</p>
-        <h2>So sánh Core và Advanced, rồi quay lại recipe đang giữ trên thiết bị.</h2>
+        <h2>{refinementHeading}</h2>
         <p>Primitive đặt cấu trúc chỉ dẫn; các giá trị bên dưới giúp bạn đọc và tinh chỉnh thuộc tính <strong>{dimension.label.vi}</strong> bằng dấu hiệu quan sát được.</p>
       </div>
       <div class="anatomy-refinement-journey__actions">

@@ -28,6 +28,15 @@ test("Discover teaches the three layers and carries one primitive through Anatom
   await expect(page.locator("[data-composer-preview]")).toContainText("a craftsperson");
 });
 
+test("Anatomy refinement journey only names tiers present on the dimension", async ({ page }) => {
+  await page.goto("/anatomy/camera-angle/");
+
+  const continuation = page.getByRole("region", { name: "Tiếp tục hành trình Prompt primitive" });
+  await expect(continuation).toContainText("Khám phá các mốc Core");
+  await expect(continuation).not.toContainText("Advanced");
+  await expect(page.locator('[data-anatomy-tier="advanced"]')).toHaveCount(0);
+});
+
 test("Home and Anatomy expose one catalog-toolbar geometry contract", async ({ page }) => {
   for (const width of [1280, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
