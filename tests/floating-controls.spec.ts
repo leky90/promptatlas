@@ -96,11 +96,11 @@ test("floating controls clear protected content and refinement actions", async (
   }
 });
 
-test("floating controls stay collision-free while Discover scrolls", async ({ page }) => {
+test("floating controls preserve scroll position and stay collision-free on Discover", async ({ page }) => {
   const targetSelector = ".discover-intro__copy > *, .discover-specimens figure, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick";
   const scenarios = [
-    { width: 1024, height: 720, scrollY: [80] },
-    { width: 819, height: 720, scrollY: [80, 200, 320] },
+    { width: 1024, height: 720, scrollY: [80, 15] },
+    { width: 819, height: 720, scrollY: [80, 15, 200, 320] },
   ];
 
   for (const scenario of scenarios) {
@@ -108,6 +108,9 @@ test("floating controls stay collision-free while Discover scrolls", async ({ pa
     await page.goto("/discover/");
     for (const scrollY of scenario.scrollY) {
       await page.evaluate((nextScrollY) => window.scrollTo(0, nextScrollY), scrollY);
+      await expect.poll(() => page.evaluate(() => window.scrollY), {
+        message: `${scenario.width}x${scenario.height} preserves scrollY=${scrollY}`,
+      }).toBe(scrollY);
       const readGeometry = () => page.evaluate((selector) => {
         const controls = [
           document.querySelector<HTMLElement>("[data-spotlight-launcher]")!,

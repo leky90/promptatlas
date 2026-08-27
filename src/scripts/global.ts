@@ -257,39 +257,46 @@ function initializeSharedDiscovery() {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let clearanceFrame = 0;
   const syncFloatingClearance = () => {
-    root.removeAttribute("data-floating-controls-inline");
-    root.style.setProperty("--floating-content-offset", "0px");
-    const protectedTargets = [...document.querySelectorAll<HTMLElement>("[data-floating-target]")]
-      .filter((target) => target.getClientRects().length > 0);
-    if (protectedTargets.length === 0) return;
+    const overflowAnchor = root.style.overflowAnchor;
+    root.style.overflowAnchor = "none";
+    try {
+      root.removeAttribute("data-floating-controls-inline");
+      root.style.setProperty("--floating-content-offset", "0px");
+      const protectedTargets = [...document.querySelectorAll<HTMLElement>("[data-floating-target]")]
+        .filter((target) => target.getClientRects().length > 0);
+      if (protectedTargets.length === 0) return;
 
-    const controls = [launcher, ...document.querySelectorAll<HTMLElement>("[data-shortcut-trigger]")];
-    const controlRects = controls.map((control) => control.getBoundingClientRect());
-    const targetRects = protectedTargets.map((target) => target.getBoundingClientRect());
-    const gap = 4;
-    const forbiddenOffsets = controlRects.flatMap((control) => targetRects
-      .filter((target) => control.right > target.left - gap && control.left < target.right + gap)
-      .map((target) => ({
-        lower: control.top - target.bottom - gap,
-        upper: control.bottom - target.top + gap,
-      }))
-      .filter(({ lower, upper }) => upper > 0 && lower < upper));
+      const controls = [launcher, ...document.querySelectorAll<HTMLElement>("[data-shortcut-trigger]")];
+      const controlRects = controls.map((control) => control.getBoundingClientRect());
+      const targetRects = protectedTargets.map((target) => target.getBoundingClientRect());
+      const gap = 4;
+      const forbiddenOffsets = controlRects.flatMap((control) => targetRects
+        .filter((target) => control.right > target.left - gap && control.left < target.right + gap)
+        .map((target) => ({
+          lower: control.top - target.bottom - gap,
+          upper: control.bottom - target.top + gap,
+        }))
+        .filter(({ lower, upper }) => upper > 0 && lower < upper));
 
-    let offset = 0;
-    for (let step = 0; step <= forbiddenOffsets.length; step += 1) {
-      const collisions = forbiddenOffsets.filter(({ lower, upper }) => offset > lower && offset < upper);
-      if (collisions.length === 0) break;
-      offset = Math.ceil(Math.max(...collisions.map(({ upper }) => upper)));
-    }
+      let offset = 0;
+      for (let step = 0; step <= forbiddenOffsets.length; step += 1) {
+        const collisions = forbiddenOffsets.filter(({ lower, upper }) => offset > lower && offset < upper);
+        if (collisions.length === 0) break;
+        offset = Math.ceil(Math.max(...collisions.map(({ upper }) => upper)));
+      }
 
-    if (offset <= 0) return;
-    const headerBottom = document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect().bottom ?? 0;
-    const viewportTop = window.visualViewport?.offsetTop ?? 0;
-    const maximumOffset = Math.floor(Math.min(...controlRects.map((control) => control.top)) - Math.max(headerBottom, viewportTop) - gap);
-    if (offset <= maximumOffset) {
-      root.style.setProperty("--floating-content-offset", `${offset}px`);
-    } else {
-      root.setAttribute("data-floating-controls-inline", "");
+      if (offset <= 0) return;
+      const headerBottom = document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect().bottom ?? 0;
+      const viewportTop = window.visualViewport?.offsetTop ?? 0;
+      const maximumOffset = Math.floor(Math.min(...controlRects.map((control) => control.top)) - Math.max(headerBottom, viewportTop) - gap);
+      if (offset <= maximumOffset) {
+        root.style.setProperty("--floating-content-offset", `${offset}px`);
+      } else {
+        root.setAttribute("data-floating-controls-inline", "");
+      }
+    } finally {
+      root.getBoundingClientRect();
+      root.style.overflowAnchor = overflowAnchor;
     }
   };
   const scheduleFloatingClearance = () => {
