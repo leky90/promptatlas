@@ -50,15 +50,22 @@ test("floating controls expose search and shortcut help without collisions", asy
   }
 });
 
-test("floating controls clear Anatomy toolbar and refinement actions", async ({ page }) => {
-  const anatomyMatrix = [1920, 1280, 1024, 768, 390].flatMap((width) => [1, 1.25, 1.5].map((zoom) => ({
-    route: "/anatomy/",
+test("floating controls clear protected content and refinement actions", async ({ page }) => {
+  const viewportMatrix = [1920, 1280, 1024, 768, 390].flatMap((width) => [1, 1.25, 1.5].map((zoom) => ({
     width: Math.floor(width / zoom),
     height: Math.floor((width === 390 ? 844 : 900) / zoom),
-    targets: '[data-catalog-toolbar] input, [data-catalog-toolbar] button, [data-catalog-toolbar] a',
   })));
   const scenarios = [
-    ...anatomyMatrix,
+    ...viewportMatrix.map((viewport) => ({
+      route: "/anatomy/",
+      ...viewport,
+      targets: ".anatomy-hero > *, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] [data-catalog-filters], [data-catalog-toolbar] [data-catalog-status]",
+    })),
+    ...viewportMatrix.map((viewport) => ({
+      route: "/discover/",
+      ...viewport,
+      targets: ".discover-intro__copy > *, .discover-specimens figure, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick",
+    })),
     { route: "/anatomy/subject-person-role/", width: 1440, height: 1000, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
     { route: "/anatomy/camera-angle/", width: 390, height: 844, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
   ];

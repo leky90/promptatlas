@@ -25,10 +25,10 @@ const jsonLd = {
 >
   <section class="discover-intro shell" aria-labelledby="discover-title">
     <div class="discover-intro__copy">
-      <p class="eyebrow">PROMPT PRIMITIVES / DATASET {primitiveManifestVersion}</p>
-      <h1 id="discover-title">Xây một khung hình<br /><em>từ ngôn ngữ nhìn thấy.</em></h1>
-      <p>187 primitive đã được kiểm chứng bằng ảnh tham chiếu. Lọc theo cấu trúc hình ảnh, đọc prompt fragment, rồi đưa thành phần vào Composer mà không rời mạch khám phá.</p>
-      <div class="discover-intro__metrics" aria-label="Quy mô thư viện">
+      <p class="eyebrow" data-floating-target>PROMPT PRIMITIVES / DATASET {primitiveManifestVersion}</p>
+      <h1 id="discover-title" data-floating-target>Xây một khung hình<br /><em>từ ngôn ngữ nhìn thấy.</em></h1>
+      <p data-floating-target>187 primitive đã được kiểm chứng bằng ảnh tham chiếu. Lọc theo cấu trúc hình ảnh, đọc prompt fragment, rồi đưa thành phần vào Composer mà không rời mạch khám phá.</p>
+      <div class="discover-intro__metrics" aria-label="Quy mô thư viện" data-floating-target>
         <span><strong>187</strong> primitives</span>
         <span><strong>07</strong> nhóm taxonomy</span>
         <span><strong>1:1</strong> ảnh / prompt</span>
@@ -36,7 +36,7 @@ const jsonLd = {
     </div>
     <div class="discover-specimens" aria-label="Mẫu Prompt primitives">
       {specimens.map((primitive, index) => (
-        <figure style={`--specimen-index:${index}`}>
+        <figure style={`--specimen-index:${index}`} data-floating-target>
           <img src={primitive.thumbnail} width="640" height="512" alt={primitive.alt.vi} fetchpriority={index === 0 ? "high" : undefined} />
           <figcaption><span>{String(primitive.index).padStart(3, "0")}</span><strong>{primitive.labelVi}</strong></figcaption>
         </figure>
@@ -68,14 +68,14 @@ const jsonLd = {
   <section class="discover-workspace" aria-label="Thư viện Prompt primitives" data-discover-workspace>
     <div class="discover-toolbar-wrap">
       <div class="discover-toolbar shell" data-catalog-toolbar="dense">
-        <form class="discover-search" role="search" data-discover-search-form data-catalog-search>
+        <form class="discover-search" role="search" data-discover-search-form data-catalog-search data-floating-target>
           <label for="primitive-search">Tìm trong Prompt primitives</label>
           <span><Icon name="search" size={18} /></span>
           <input id="primitive-search" type="search" name="q" autocomplete="off" placeholder="vai trò, vật liệu, góc máy, ánh sáng…" data-discover-search />
           <button type="submit">Tìm</button>
         </form>
 
-        <div class="discover-toolbar__actions">
+        <div class="discover-toolbar__actions" data-floating-target>
           <a class="discover-skip-results" href="#discover-results" data-skip-to-results>Bỏ qua bộ lọc, tới kết quả</a>
           <button class="facet-toggle" type="button" data-facet-toggle aria-expanded="false" aria-controls="taxonomy-panel">
             Taxonomy <span data-active-filter-count>0</span>
@@ -88,7 +88,7 @@ const jsonLd = {
       </div>
     </div>
 
-    <div class="taxonomy-quick shell" aria-label="Lọc nhanh theo nhóm">
+    <div class="taxonomy-quick shell" aria-label="Lọc nhanh theo nhóm" data-floating-target>
       <button type="button" data-group-filter="all" aria-pressed="true"><span>00</span>Tất cả <b>{primitiveEntries.length}</b></button>
       {primitiveGroups.map((group) => (
         <button type="button" data-group-filter={group.id} aria-pressed="false"><span>{group.order}</span>{group.label} <b>{group.count}</b></button>

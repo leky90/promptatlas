@@ -27,6 +27,7 @@
   --catalog-toolbar-row-gap: 12px;
   --catalog-toolbar-padding-block: 14px;
   --catalog-toolbar-primary-row-height: 70px;
+  --floating-control-lane-height: calc(52px + (2 * var(--catalog-toolbar-row-gap)));
   --shadow-image: 0 22px 70px rgb(18 19 17 / 18%);
   --pa-surface-canvas: var(--paper);
   --pa-surface-subtle: var(--paper-deep);
@@ -3741,6 +3742,10 @@ button {
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
+.shared-discovery-controls {
+  display: contents;
+}
+
 .spotlight-launcher:hover,
 .shortcut-help-trigger:hover {
   transform: translateY(-2px);
@@ -5055,6 +5060,10 @@ button {
     font-size: var(--type-hero);
   }
 
+  .discover-intro__metrics {
+    margin-top: max(38px, var(--floating-control-lane-height));
+  }
+
   .discover-intro__metrics span {
     flex: 1 1 50%;
     padding-inline: 12px;
@@ -6165,13 +6174,68 @@ body.composer-page .site-footer {
 }
 
 :root[data-compact-visual-viewport] .spotlight-launcher {
-  width: 64px;
+  position: absolute;
+  top: 8px;
+  bottom: auto;
+  left: var(--visual-viewport-center-x);
+  width: 52px;
   grid-template-columns: 1fr;
   justify-items: center;
   padding-inline: 0;
+  transform: translateX(-50%);
+  box-shadow: none;
 }
 
 :root[data-compact-visual-viewport] .spotlight-launcher span,
 :root[data-compact-visual-viewport] .spotlight-launcher kbd {
   display: none;
+}
+
+:root[data-compact-visual-viewport] .spotlight-launcher:hover {
+  transform: translate(-50%, -2px);
+}
+
+:root[data-compact-visual-viewport] .shortcut-help-trigger {
+  position: absolute;
+  right: 14px;
+  bottom: auto;
+  left: auto;
+  box-shadow: none;
+}
+
+:root[data-compact-visual-viewport] .brand__text {
+  display: none;
+}
+
+:root[data-compact-visual-viewport] .shared-discovery-controls {
+  position: relative;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+:root[data-compact-visual-viewport][data-panned-visual-viewport] .shared-discovery-controls {
+  display: contents;
+}
+
+:root[data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher {
+  position: fixed;
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
+  left: var(--visual-viewport-center-x);
+  transform: translateX(-50%);
+}
+
+:root[data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher:hover {
+  transform: translate(-50%, -2px);
+}
+
+:root[data-compact-visual-viewport][data-panned-visual-viewport] .shortcut-help-trigger {
+  position: fixed;
+  right: auto;
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
+  left: calc(var(--visual-viewport-right) - max(16px, env(safe-area-inset-right)) - 52px);
 }
