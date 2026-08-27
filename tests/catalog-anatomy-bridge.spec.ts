@@ -111,3 +111,58 @@ test("Discover declares its dense toolbar exception while following application 
   const accessibility = await new AxeBuilder({ page }).analyze();
   expect(accessibility.violations.filter((item) => item.impact === "serious" || item.impact === "critical")).toEqual([]);
 });
+
+test("Discover dense controls pin and release through the declared 620px breakpoint", async ({ page }) => {
+  const scenarios = [
+    { label: "logical 1024 at 150%", width: 682, height: 600, sticky: true },
+    { label: "sticky lower edge", width: 621, height: 720, sticky: true },
+    { label: "compact upper edge", width: 620, height: 720, sticky: false },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto("/discover/");
+    const geometry = await page.evaluate(async ({ shouldStick }) => {
+      const scope = document.querySelector<HTMLElement>(".discover-controls-scope")!;
+      const group = document.querySelector<HTMLElement>(".discover-controls-sticky")!;
+      const results = document.querySelector<HTMLElement>(".discover-layout")!;
+      const header = document.querySelector<HTMLElement>(".site-header")!;
+      const position = getComputedStyle(group).position;
+      const runway = scope.getBoundingClientRect().height - group.getBoundingClientRect().height;
+      if (!shouldStick) return { position, runway };
+
+      const scopeTop = scope.getBoundingClientRect().top + window.scrollY;
+      const stickyStart = scopeTop - header.getBoundingClientRect().height;
+      const settle = () => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+      document.documentElement.style.scrollBehavior = "auto";
+      window.scrollTo(0, stickyStart + Math.max(1, Math.floor(runway / 2)));
+      await settle();
+      const pinnedTop = group.getBoundingClientRect().top;
+      const headerBottom = header.getBoundingClientRect().bottom;
+
+      window.scrollTo(0, stickyStart + runway + 2);
+      await settle();
+      const released = group.getBoundingClientRect();
+      return {
+        position,
+        runway,
+        pinnedTop,
+        headerBottom,
+        releasedTop: released.top,
+        releasedBottom: released.bottom,
+        resultsTop: results.getBoundingClientRect().top,
+      };
+    }, { shouldStick: scenario.sticky });
+
+    if (scenario.sticky) {
+      expect(geometry.position, scenario.label).toBe("sticky");
+      expect(geometry.runway, scenario.label).toBeGreaterThanOrEqual(27);
+      expect(Math.abs(geometry.pinnedTop! - geometry.headerBottom!), scenario.label).toBeLessThanOrEqual(1);
+      expect(geometry.releasedTop!, scenario.label).toBeLessThan(geometry.headerBottom! - 1);
+      expect(geometry.resultsTop!, scenario.label).toBeGreaterThanOrEqual(geometry.releasedBottom! - 1);
+    } else {
+      expect(geometry.position, scenario.label).toBe("relative");
+      expect(geometry.runway, scenario.label).toBeLessThanOrEqual(1);
+    }
+  }
+});

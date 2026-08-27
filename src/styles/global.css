@@ -5126,10 +5126,6 @@ button {
     padding-top: 0;
   }
 
-  .discover-controls-scope::after {
-    height: 0;
-  }
-
   .primitive-library__head {
     align-items: start;
     padding: 24px 18px 18px;
@@ -5192,6 +5188,10 @@ button {
 }
 
 @media (max-width: 620px) {
+  .discover-controls-scope::after {
+    height: 0;
+  }
+
   .discover-controls-sticky,
   .discover-toolbar-wrap {
     position: relative;
