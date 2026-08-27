@@ -387,10 +387,135 @@ test("Discover rapid Tab exit cancels pending pinned scroll restoration", async 
         : page.locator('.discover-search button[type="submit"]');
       await start.evaluate((target) => target.focus({ preventScroll: true }));
       await expect(start).toBeFocused();
+      await page.evaluate(() => {
+        const nativeRequestAnimationFrame = window.requestAnimationFrame.bind(window);
+        const nativeCancelAnimationFrame = window.cancelAnimationFrame.bind(window);
+        const pending = new Map<number, FrameRequestCallback>();
+        const events: Array<{ type: string; id?: number; trusted?: boolean; href?: string | null; group?: string; elementId?: string }> = [];
+        let nextId = -1;
+
+        window.requestAnimationFrame = (callback) => {
+          const id = nextId;
+          nextId -= 1;
+          pending.set(id, callback);
+          events.push({ type: "raf-schedule", id });
+          return id;
+        };
+        window.cancelAnimationFrame = (id) => {
+          if (pending.delete(id)) {
+            events.push({ type: "raf-cancel", id });
+            return;
+          }
+          nativeCancelAnimationFrame(id);
+        };
+
+        const recordFocus = (type: string, event: Event) => {
+          const target = event.target instanceof HTMLElement ? event.target : null;
+          events.push({
+            type,
+            trusted: event.isTrusted,
+            href: target?.getAttribute("href"),
+            group: target?.dataset.groupFilter,
+            elementId: target?.id,
+          });
+        };
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Tab") recordFocus("keydown", event);
+        }, true);
+        document.addEventListener("focusin", (event) => recordFocus("focusin", event), true);
+
+        Object.assign(window, {
+          __rapidTabGate: {
+            events,
+            pending,
+            release: () => {
+              window.requestAnimationFrame = nativeRequestAnimationFrame;
+              window.cancelAnimationFrame = nativeCancelAnimationFrame;
+              const callbacks = [...pending.values()];
+              pending.clear();
+              return new Promise<void>((resolve) => {
+                nativeRequestAnimationFrame((timestamp) => {
+                  events.push({ type: "raf-release" });
+                  callbacks.forEach((callback) => callback(timestamp));
+                  nativeRequestAnimationFrame(() => nativeRequestAnimationFrame(() => resolve()));
+                });
+              });
+            },
+          },
+        });
+      });
 
       const modifiers = direction === "reverse" ? 8 : 0;
       await pressNativeTab(modifiers);
+      const expectedInside = direction === "forward"
+        ? page.locator('.taxonomy-quick [data-group-filter="color"]')
+        : page.locator("#primitive-search");
+      await expect(expectedInside).toBeFocused();
       await pressNativeTab(modifiers);
+
+      const expectedExitHref = direction === "forward"
+        ? "/media/primitives/001-primitive-subject-role.webp"
+        : "/anatomy/?category=color";
+      const race = await page.evaluate((href) => {
+        const gate = (window as typeof window & {
+          __rapidTabGate: {
+            events: Array<{ type: string; id?: number; trusted?: boolean; href?: string | null; group?: string; elementId?: string }>;
+            pending: Map<number, FrameRequestCallback>;
+            release: () => Promise<void>;
+          };
+        }).__rapidTabGate;
+        const active = document.activeElement as HTMLElement | null;
+        const keydownIndexes = gate.events
+          .map((event, index) => ({ event, index }))
+          .filter(({ event }) => event.type === "keydown");
+        const insideFocusIndex = gate.events.findIndex((event) => (
+          event.type === "focusin"
+          && (event.group === "color" || event.elementId === "primitive-search")
+        ));
+        const outsideFocusIndex = gate.events.findIndex((event) => event.type === "focusin" && event.href === href);
+        const restoreSchedules = gate.events
+          .slice(insideFocusIndex + 1, keydownIndexes[1]?.index)
+          .filter((event) => event.type === "raf-schedule");
+        const restoreId = restoreSchedules[0]?.id;
+        return {
+          activeHref: active?.getAttribute("href"),
+          activeOwnerIsTop: active?.ownerDocument.defaultView === window.top,
+          activeOutsideGroup: !document.querySelector<HTMLElement>(".discover-controls-sticky")!.contains(active),
+          keydowns: gate.events
+            .filter((event) => event.type === "keydown")
+            .map((event) => ({
+              type: event.type,
+              trusted: event.trusted,
+              identity: event.group ?? event.elementId ?? "",
+            })),
+          releaseCount: gate.events.filter((event) => event.type === "raf-release").length,
+          insideFocusRecorded: insideFocusIndex >= 0,
+          outsideFocusRecorded: outsideFocusIndex >= 0,
+          restoreScheduleCount: restoreSchedules.length,
+          restoreCanceledAfterExit: gate.events
+            .slice(outsideFocusIndex + 1)
+            .some((event) => event.type === "raf-cancel" && event.id === restoreId),
+          expectedActive: active?.getAttribute("href") === href,
+        };
+      }, expectedExitHref);
+      expect(race, `${scenario.width}x${scenario.height} ${direction} gated race`).toEqual({
+        activeHref: expectedExitHref,
+        activeOwnerIsTop: true,
+        activeOutsideGroup: true,
+        keydowns: [
+          { type: "keydown", trusted: true, identity: direction === "forward" ? "lighting" : "" },
+          { type: "keydown", trusted: true, identity: direction === "forward" ? "color" : "primitive-search" },
+        ],
+        releaseCount: 0,
+        insideFocusRecorded: true,
+        outsideFocusRecorded: true,
+        restoreScheduleCount: 1,
+        restoreCanceledAfterExit: true,
+        expectedActive: true,
+      });
+      await page.evaluate(() => (window as typeof window & {
+        __rapidTabGate: { release: () => Promise<void> };
+      }).__rapidTabGate.release());
 
       await expect.poll(() => page.evaluate((originalScrollY) => ({
         activeOutsideGroup: !document.querySelector<HTMLElement>(".discover-controls-sticky")!.contains(document.activeElement),
