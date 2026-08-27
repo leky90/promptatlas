@@ -99,10 +99,10 @@ test("floating controls clear protected content and refinement actions", async (
 });
 
 test("floating controls preserve scroll position and stay collision-free on Discover", async ({ page }) => {
-  const targetSelector = ".discover-intro__copy > *, .discover-specimens figure, .discovery-layer-guide a, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick";
+  const targetSelector = ".discover-intro__copy > *, .discover-specimens figure, .discovery-layer-guide a, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick, .primitive-card__anatomy-link";
   const scenarios = [
-    { width: 1024, height: 720, scrollY: [80, 15, 500] },
-    { width: 819, height: 720, scrollY: [80, 15, 200, 320] },
+    { width: 1024, height: 720, scrollY: [80, 15, 500, 1510] },
+    { width: 819, height: 720, scrollY: [80, 15, 200, 320, 2231] },
   ];
 
   for (const scenario of scenarios) {
@@ -128,6 +128,23 @@ test("floating controls preserve scroll position and stay collision-free on Disc
             position: getComputedStyle(control).position,
           })),
           targets,
+          blockedAnatomyLinks: [...document.querySelectorAll<HTMLElement>(".primitive-card__anatomy-link")]
+            .filter((target) => {
+              const rect = target.getBoundingClientRect();
+              return rect.bottom > 0
+                && rect.top < window.innerHeight
+                && rect.right > 0
+                && rect.left < window.innerWidth;
+            })
+            .filter((target) => {
+              const rect = target.getBoundingClientRect();
+              const left = Math.max(0, rect.left);
+              const right = Math.min(window.innerWidth, rect.right);
+              const top = Math.max(0, rect.top);
+              const bottom = Math.min(window.innerHeight, rect.bottom);
+              const hit = document.elementFromPoint((left + right) / 2, (top + bottom) / 2);
+              return !hit || !(hit === target || target.contains(hit));
+            }).length,
           headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
           viewportHeight: window.innerHeight,
         };
@@ -138,6 +155,10 @@ test("floating controls preserve scroll position and stay collision-free on Disc
         return geometry.controls.flatMap(({ rect }) => geometry.targets
           .filter((target) => rectanglesOverlap(rect, target))).length;
       }, { message: `${scenario.width}x${scenario.height} at scrollY=${scrollY}` }).toBe(0);
+
+      await expect.poll(async () => (await readGeometry()).blockedAnatomyLinks, {
+        message: `${scenario.width}x${scenario.height} anatomy links remain pointer-reachable at scrollY=${scrollY}`,
+      }).toBe(0);
 
       const geometry = await readGeometry();
       for (const control of geometry.controls) {
