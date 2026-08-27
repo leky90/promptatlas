@@ -213,6 +213,81 @@ test("floating controls move above an onscreen keyboard viewport", async ({ page
   expect(compactFit.resultsRect.height).toBeGreaterThanOrEqual(72);
 });
 
+test("floating controls follow a horizontally panned visual viewport", async ({ page }) => {
+  await page.addInitScript(() => {
+    const viewport = new EventTarget() as EventTarget & {
+      height: number;
+      offsetTop: number;
+      offsetLeft: number;
+      width: number;
+      pageLeft: number;
+      pageTop: number;
+      scale: number;
+    };
+    Object.assign(viewport, {
+      height: 844,
+      offsetTop: 0,
+      offsetLeft: 0,
+      width: 390,
+      pageLeft: 0,
+      pageTop: 0,
+      scale: 1,
+    });
+    Object.defineProperty(window, "visualViewport", { configurable: true, value: viewport });
+    (window as typeof window & { __setHorizontalViewport: (width: number, offsetLeft: number) => void }).__setHorizontalViewport = (width, offsetLeft) => {
+      viewport.width = width;
+      viewport.offsetLeft = offsetLeft;
+      viewport.scale = window.innerWidth / width;
+      viewport.dispatchEvent(new Event("resize"));
+      viewport.dispatchEvent(new Event("scroll"));
+    };
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+
+  const assertInsideVisualViewport = async () => page.evaluate(() => {
+    const viewport = window.visualViewport!;
+    const visibleLeft = viewport.offsetLeft;
+    const visibleRight = viewport.offsetLeft + viewport.width;
+    const launcher = document.querySelector<HTMLElement>("[data-spotlight-launcher]")!.getBoundingClientRect();
+    const help = document.querySelector<HTMLElement>("[data-shortcut-trigger]")!.getBoundingClientRect();
+    return { visibleLeft, visibleRight, launcher, help };
+  });
+
+  for (const offsetLeft of [65, 130]) {
+    await page.evaluate((left) => (window as typeof window & { __setHorizontalViewport: (width: number, offsetLeft: number) => void }).__setHorizontalViewport(260, left), offsetLeft);
+    const geometry = await assertInsideVisualViewport();
+    expect(geometry.launcher.left).toBeGreaterThanOrEqual(geometry.visibleLeft);
+    expect(geometry.launcher.right).toBeLessThanOrEqual(geometry.visibleRight);
+    expect(geometry.help.left).toBeGreaterThanOrEqual(geometry.visibleLeft);
+    expect(geometry.help.right).toBeLessThanOrEqual(geometry.visibleRight);
+    expect(geometry.launcher.right).toBeLessThanOrEqual(geometry.help.left - 4);
+  }
+
+  await page.getByRole("button", { name: "Tìm trong Prompt Atlas" }).click();
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  await expect(dialog).toHaveAttribute("data-spotlight-state", "open");
+  const dialogFit = await dialog.evaluate((element) => {
+    const viewport = window.visualViewport!;
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, right: rect.right, visibleLeft: viewport.offsetLeft, visibleRight: viewport.offsetLeft + viewport.width };
+  });
+  expect(dialogFit.left).toBeGreaterThanOrEqual(dialogFit.visibleLeft);
+  expect(dialogFit.right).toBeLessThanOrEqual(dialogFit.visibleRight);
+
+  await dialog.getByRole("button", { name: "Đóng tìm kiếm" }).click();
+  await page.getByRole("button", { name: "Xem hướng dẫn phím tắt" }).click();
+  const shortcutDialog = page.getByRole("dialog", { name: "Phím tắt Prompt Atlas" });
+  await expect(shortcutDialog).toBeVisible();
+  const shortcutFit = await shortcutDialog.evaluate((element) => {
+    const viewport = window.visualViewport!;
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, right: rect.right, visibleLeft: viewport.offsetLeft, visibleRight: viewport.offsetLeft + viewport.width };
+  });
+  expect(shortcutFit.left).toBeGreaterThanOrEqual(shortcutFit.visibleLeft);
+  expect(shortcutFit.right).toBeLessThanOrEqual(shortcutFit.visibleRight);
+});
+
 test("reduced motion keeps Spotlight opening immediate", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");

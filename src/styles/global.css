@@ -3647,6 +3647,9 @@ button {
   --floating-keyboard-offset: 0px;
   --visual-viewport-height: 100svh;
   --visual-viewport-center-y: 50svh;
+  --visual-viewport-width: 100vw;
+  --visual-viewport-center-x: 50vw;
+  --visual-viewport-right: 100vw;
 }
 
 .spotlight-launcher,
@@ -3677,8 +3680,8 @@ button {
 }
 
 .spotlight-launcher {
-  left: 50%;
-  width: min(360px, calc(100vw - 160px));
+  left: var(--visual-viewport-center-x);
+  width: min(360px, calc(var(--visual-viewport-width) - 160px));
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -3702,7 +3705,8 @@ button {
 }
 
 .shortcut-help-trigger {
-  right: max(16px, env(safe-area-inset-right));
+  right: auto;
+  left: calc(var(--visual-viewport-right) - max(16px, env(safe-area-inset-right)) - 52px);
   width: 52px;
   display: grid;
   place-items: center;
@@ -3714,8 +3718,8 @@ button {
   position: fixed;
   inset: auto;
   top: var(--visual-viewport-center-y);
-  left: 50%;
-  width: min(920px, calc(100vw - 28px));
+  left: var(--visual-viewport-center-x);
+  width: min(920px, calc(var(--visual-viewport-width) - 28px));
   max-height: min(820px, calc(var(--visual-viewport-height) - 28px));
   margin: 0;
   overflow: hidden;
@@ -3955,7 +3959,7 @@ button {
 @media (max-width: 620px) {
   .spotlight-dialog,
   .shortcut-dialog {
-    width: calc(100vw - 16px);
+    width: calc(var(--visual-viewport-width) - 16px);
     max-height: calc(var(--visual-viewport-height) - 16px);
     box-shadow: 8px 8px 0 rgb(18 19 17 / 22%);
   }
@@ -5932,4 +5936,16 @@ body.composer-page .site-footer {
   .spotlight-launcher kbd {
     display: none;
   }
+}
+
+:root[data-compact-visual-viewport] .spotlight-launcher {
+  width: 64px;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding-inline: 0;
+}
+
+:root[data-compact-visual-viewport] .spotlight-launcher span,
+:root[data-compact-visual-viewport] .spotlight-launcher kbd {
+  display: none;
 }

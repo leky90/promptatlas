@@ -257,12 +257,18 @@ function initializeSharedDiscovery() {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const syncViewportInsets = () => {
     const viewport = window.visualViewport;
+    const viewportWidth = viewport?.width ?? window.innerWidth;
+    const viewportLeft = viewport?.offsetLeft ?? 0;
     const keyboardOffset = viewport
       ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
       : 0;
     root.style.setProperty("--floating-keyboard-offset", `${keyboardOffset}px`);
     root.style.setProperty("--visual-viewport-height", `${viewport?.height ?? window.innerHeight}px`);
     root.style.setProperty("--visual-viewport-center-y", `${(viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight) / 2}px`);
+    root.style.setProperty("--visual-viewport-width", `${viewportWidth}px`);
+    root.style.setProperty("--visual-viewport-center-x", `${viewportLeft + viewportWidth / 2}px`);
+    root.style.setProperty("--visual-viewport-right", `${viewportLeft + viewportWidth}px`);
+    root.toggleAttribute("data-compact-visual-viewport", viewportWidth <= 360);
   };
   syncViewportInsets();
   window.visualViewport?.addEventListener("resize", syncViewportInsets);
