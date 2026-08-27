@@ -99,9 +99,9 @@ test("floating controls clear protected content and refinement actions", async (
 });
 
 test("floating controls preserve scroll position and stay collision-free on Discover", async ({ page }) => {
-  const targetSelector = ".discover-intro__copy > *, .discover-specimens figure, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick";
+  const targetSelector = ".discover-intro__copy > *, .discover-specimens figure, .discovery-layer-guide a, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick";
   const scenarios = [
-    { width: 1024, height: 720, scrollY: [80, 15] },
+    { width: 1024, height: 720, scrollY: [80, 15, 500] },
     { width: 819, height: 720, scrollY: [80, 15, 200, 320] },
   ];
 
