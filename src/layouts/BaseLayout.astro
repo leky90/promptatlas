@@ -1,7 +1,11 @@
 ---
 import "@fontsource-variable/instrument-sans";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/600.css";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "@fontsource/ibm-plex-mono/vietnamese-400.css";
+import "@fontsource/ibm-plex-mono/latin-600.css";
+import "@fontsource/ibm-plex-mono/vietnamese-600.css";
+import plexMonoLatin600 from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2?url";
+import plexMonoVietnamese600 from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-vietnamese-600-normal.woff2?url";
 import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
@@ -28,6 +32,7 @@ const {
 
 const canonical = new URL(canonicalPath, Astro.site);
 const ogImage = new URL(image, Astro.site);
+const preloadMetricFonts = Astro.url.pathname.startsWith("/anatomy");
 const brandIdentity = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -60,6 +65,8 @@ const structuredData = jsonLd
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="/site.webmanifest" />
+    {preloadMetricFonts && <link rel="preload" href={plexMonoLatin600} as="font" type="font/woff2" crossorigin="anonymous" />}
+    {preloadMetricFonts && <link rel="preload" href={plexMonoVietnamese600} as="font" type="font/woff2" crossorigin="anonymous" />}
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="vi_VN" />
     <meta property="og:site_name" content="Prompt Atlas by LDKTech" />

@@ -2193,6 +2193,10 @@ button {
     font-size: var(--type-hero);
   }
 
+  .atlas-page #hero-title {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
   .hero__lead {
     margin-top: 24px;
     font-size: 18px;
@@ -3731,7 +3735,7 @@ button {
 .shortcut-help-trigger {
   position: fixed;
   z-index: 95;
-  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset));
   min-height: 52px;
   color: var(--paper);
   background: var(--ink);
@@ -3739,7 +3743,7 @@ button {
   border-radius: 999px;
   box-shadow: 7px 7px 0 rgb(18 19 17 / 18%);
   cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  transition: box-shadow 180ms ease;
 }
 
 .shared-discovery-controls {
@@ -3748,7 +3752,6 @@ button {
 
 .spotlight-launcher:hover,
 .shortcut-help-trigger:hover {
-  transform: translateY(-2px);
   box-shadow: 9px 9px 0 rgb(18 19 17 / 22%);
 }
 
@@ -3766,13 +3769,13 @@ button {
   align-items: center;
   gap: 12px;
   padding: 10px 12px 10px 16px;
-  transform: translateX(-50%);
+  transform: translate(-50%, calc(0px - var(--floating-content-offset)));
   font: 600 var(--type-control)/1 var(--font-mono);
   text-align: left;
 }
 
 .spotlight-launcher:hover {
-  transform: translate(-50%, -2px);
+  transform: translate(-50%, calc(-2px - var(--floating-content-offset)));
 }
 
 .spotlight-launcher kbd {
@@ -3790,6 +3793,11 @@ button {
   display: grid;
   place-items: center;
   padding: 0;
+  transform: translateY(calc(0px - var(--floating-content-offset)));
+}
+
+.shortcut-help-trigger:hover {
+  transform: translateY(calc(-2px - var(--floating-content-offset)));
 }
 
 .spotlight-dialog,
@@ -5235,6 +5243,11 @@ button {
   object-fit: contain;
 }
 
+.hero__output picture {
+  min-height: 0;
+  display: block;
+}
+
 .hero__output figcaption,
 .style-card__output figcaption,
 .learning-output__plate figcaption {
@@ -6219,6 +6232,7 @@ body.composer-page .site-footer {
   bottom: auto;
   left: auto;
   box-shadow: none;
+  transform: none;
 }
 
 :root[data-compact-visual-viewport] .brand__text {
@@ -6243,20 +6257,21 @@ body.composer-page .site-footer {
 :root[data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher {
   position: fixed;
   top: auto;
-  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset));
   left: var(--visual-viewport-center-x);
-  transform: translateX(-50%);
+  transform: translate(-50%, calc(0px - var(--floating-content-offset)));
 }
 
 :root[data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher:hover {
-  transform: translate(-50%, -2px);
+  transform: translate(-50%, calc(-2px - var(--floating-content-offset)));
 }
 
 :root[data-compact-visual-viewport][data-panned-visual-viewport] .shortcut-help-trigger {
   position: fixed;
   right: auto;
-  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset));
   left: calc(var(--visual-viewport-right) - max(16px, env(safe-area-inset-right)) - 52px);
+  transform: translateY(calc(0px - var(--floating-content-offset)));
 }
 
 :root[data-floating-controls-inline] .shared-discovery-controls {
@@ -6290,6 +6305,7 @@ body.composer-page .site-footer {
   bottom: auto;
   left: auto;
   box-shadow: none;
+  transform: none;
 }
 
 :root[data-floating-controls-inline][data-compact-visual-viewport][data-panned-visual-viewport] .shared-discovery-controls {

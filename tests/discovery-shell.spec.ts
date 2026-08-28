@@ -244,6 +244,122 @@ test("shared discovery routes avoid speculative prefetch and serious accessibili
   }
 });
 
+test("late mobile discovery positioning does not contribute layout shift", async ({ page }) => {
+  await page.setViewportSize({ width: 412, height: 823 });
+  await page.addInitScript(() => {
+    const metrics = { cls: 0 };
+    Object.defineProperty(window, "__promptAtlasShift", { value: metrics, configurable: true });
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        const shift = entry as PerformanceEntry & { hadRecentInput?: boolean; value?: number };
+        if (!shift.hadRecentInput) metrics.cls += shift.value ?? 0;
+      }
+    }).observe({ type: "layout-shift", buffered: true });
+  });
+  await page.route("**/_astro/BaseLayout*.js", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    await route.continue();
+  });
+
+  await page.goto("/discover/", { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(200);
+  const cls = await page.evaluate(() => (
+    window as typeof window & { __promptAtlasShift: { cls: number } }
+  ).__promptAtlasShift.cls);
+
+  expect(cls).toBeLessThanOrEqual(0.01);
+});
+
+test("mobile Home selects a responsive hero asset", async ({ page }) => {
+  await page.setViewportSize({ width: 412, height: 823 });
+  await page.goto("/");
+  const mobileSource = page.locator('.hero__output source[media="(max-width: 820px)"]');
+  const hero = page.locator(".hero__output img");
+
+  await expect(mobileSource).toHaveAttribute("srcset", /cyberpunk-plus-ukiyo-e-plus-glitch-art-chatgpt-mobile\.webp$/u);
+  await expect.poll(() => hero.evaluate((image: HTMLImageElement) => new URL(image.currentSrc).pathname))
+    .toMatch(/cyberpunk-plus-ukiyo-e-plus-glitch-art-chatgpt-mobile\.webp$/u);
+});
+
+test("mobile Home LCP title uses a network-independent font stack", async ({ page }) => {
+  await page.setViewportSize({ width: 412, height: 823 });
+  await page.goto("/");
+  const fontFamily = await page.locator("#hero-title").evaluate((title) => getComputedStyle(title).fontFamily);
+
+  expect(fontFamily).not.toContain("Instrument Sans Variable");
+  expect(fontFamily).toContain("system-ui");
+});
+
+test("production pages retain a referenced Astro stylesheet for delivery validation", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.locator('link[rel="stylesheet"][href*="/_astro/"]')).not.toHaveCount(0);
+});
+
+test("below-fold Home cards do not compete with the hero image", async ({ page }) => {
+  await page.setViewportSize({ width: 412, height: 823 });
+  await page.goto("/");
+  const cardImages = page.locator("[data-style-card] img");
+
+  await expect(cardImages.first()).toHaveAttribute("loading", "lazy");
+  await expect(cardImages.first()).not.toHaveAttribute("fetchpriority", "high");
+});
+
+test("Anatomy preloads metric fonts without penalizing Home", async ({ page }) => {
+  await page.goto("/anatomy/");
+  const preloadNames = await page.locator('link[rel="preload"][as="font"]').evaluateAll((links) => (
+    links.map((link) => new URL((link as HTMLLinkElement).href).pathname.split("/").pop() ?? "")
+  ));
+
+  expect(preloadNames).toEqual(expect.arrayContaining([
+    expect.stringMatching(/^ibm-plex-mono-latin-600-normal\./u),
+    expect.stringMatching(/^ibm-plex-mono-vietnamese-600-normal\./u),
+  ]));
+  expect(preloadNames.filter((name) => name.startsWith("instrument-sans-"))).toEqual([]);
+  const metricFontRequests = await page.evaluate(() => performance.getEntriesByType("resource")
+    .map((entry) => entry.name)
+    .filter((name) => name.includes("ibm-plex-mono-")));
+  expect(metricFontRequests.some((name) => name.includes("latin-ext") || name.includes("cyrillic"))).toBe(false);
+
+  await page.goto("/");
+  await expect(page.locator('link[rel="preload"][as="font"]')).toHaveCount(0);
+});
+
+test("Spotlight index stays off the critical HTML path and loads on demand", async ({ page }) => {
+  await page.goto("/");
+  const indexSource = page.locator("#spotlight-index");
+  await expect(indexSource).toHaveAttribute("data-index-url", "/spotlight-index.json");
+  expect(await indexSource.evaluate((element) => element.textContent)).toBe("[]");
+
+  const indexRequest = page.waitForRequest((request) => new URL(request.url()).pathname === "/spotlight-index.json");
+  await page.getByRole("button", { name: /Tìm trong Prompt Atlas/u }).click();
+  await indexRequest;
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  await dialog.getByRole("combobox").fill("góc máy");
+  await expect(dialog.locator("[data-spotlight-result-row]").first()).toBeVisible();
+});
+
+test("Spotlight retries the index after a transient request failure", async ({ page }) => {
+  let requests = 0;
+  await page.route("**/spotlight-index.json", async (route) => {
+    requests += 1;
+    if (requests === 1) await route.abort("failed");
+    else await route.continue();
+  });
+  await page.goto("/");
+
+  await page.getByRole("button", { name: /Tìm trong Prompt Atlas/u }).click();
+  await expect.poll(() => requests).toBe(1);
+  await page.getByRole("button", { name: "Đóng tìm kiếm" }).click();
+  await page.getByRole("button", { name: /Tìm trong Prompt Atlas/u }).click();
+
+  await expect.poll(() => requests).toBe(2);
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  await dialog.getByRole("combobox").fill("góc máy");
+  await expect(dialog.locator("[data-spotlight-result-row]").first()).toBeVisible();
+});
+
 test("core discovery routes keep LCP and CLS within the approved local thresholds", async ({ page }) => {
   await page.addInitScript(() => {
     const metrics = { lcp: 0, cls: 0 };
