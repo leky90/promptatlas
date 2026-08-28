@@ -33,6 +33,48 @@ test("WCAG text-spacing overrides preserve every home prompt cue", async ({ page
   expect(clipped).toEqual([]);
 });
 
+test("WCAG text-spacing overrides preserve every Discover primitive identifier", async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 1000 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/discover/");
+    await page.addStyleTag({
+      content: `
+        * {
+          line-height: 1.5 !important;
+          letter-spacing: 0.12em !important;
+          word-spacing: 0.16em !important;
+        }
+
+        p {
+          margin-bottom: 2em !important;
+        }
+      `,
+    });
+
+    const clipped = await page.locator(".primitive-card__meta code").evaluateAll((elements) =>
+      elements
+        .filter((element) => element.getClientRects().length > 0)
+        .filter(
+          (element) =>
+            element.scrollWidth > element.clientWidth + 1
+            || element.scrollHeight > element.clientHeight + 1,
+        )
+        .map((element) => ({
+          id: element.textContent?.trim(),
+          clientWidth: element.clientWidth,
+          scrollWidth: element.scrollWidth,
+          clientHeight: element.clientHeight,
+          scrollHeight: element.scrollHeight,
+        })),
+    );
+
+    expect(clipped, `${viewport.width}x${viewport.height}`).toEqual([]);
+  }
+});
+
 test("every aria-labelledby reference resolves on the primary routes", async ({ page }) => {
   for (const route of primaryRoutes) {
     await page.goto(route);

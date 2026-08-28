@@ -4713,9 +4713,9 @@ button {
 }
 
 .primitive-card__meta code {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
   text-transform: none;
 }
 
