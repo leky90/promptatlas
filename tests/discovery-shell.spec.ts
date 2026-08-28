@@ -277,9 +277,9 @@ test("mobile Home selects a responsive hero asset", async ({ page }) => {
   const mobileSource = page.locator('.hero__output source[media="(max-width: 820px)"]');
   const hero = page.locator(".hero__output img");
 
-  await expect(mobileSource).toHaveAttribute("srcset", /\/media\/thumbs\//u);
+  await expect(mobileSource).toHaveAttribute("srcset", /cyberpunk-plus-ukiyo-e-plus-glitch-art-chatgpt-mobile\.webp$/u);
   await expect.poll(() => hero.evaluate((image: HTMLImageElement) => new URL(image.currentSrc).pathname))
-    .toMatch(/\/media\/thumbs\//u);
+    .toMatch(/cyberpunk-plus-ukiyo-e-plus-glitch-art-chatgpt-mobile\.webp$/u);
 });
 
 test("mobile Home LCP title uses a network-independent font stack", async ({ page }) => {
