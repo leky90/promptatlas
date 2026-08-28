@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "facts": {
+    "has_forms": true,
+    "sends_email": false,
+    "has_server_logic": false,
+    "has_data": false,
+    "analytics.enabled": false,
+    "collects_data": true,
+    "is_migration": false,
+    "payments": false,
+    "i18n": false
+  },
+  "evidence": {
+    "has_forms": "Owner-confirmed local-first Composer form; detected at src/components/ComposerWorkspace.astro",
+    "sends_email": "No mail library in package.json",
+    "has_server_logic": "No API routes or server entry detected",
+    "has_data": "No server-side data store detected; product catalogue is static",
+    "analytics.enabled": "Owner-confirmed disabled; no gtag detected and analytics remains deferred",
+    "collects_data": "Composer accepts user input but retains it local-first without backend sync",
+    "is_migration": "Owner confirmed current assessment is not a URL/domain migration",
+    "payments": "No payment SDK detected",
+    "i18n": "No locale routing or i18n library detected"
+  }
+}

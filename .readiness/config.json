@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "product": {
+    "name": "Prompt Atlas",
+    "repo": "."
+  },
+  "template": {
+    "id": "marketing-site",
+    "version": "1.0.0",
+    "mixins": [
+      "has-forms"
+    ],
+    "resolved_hash": "sha256:0b82ba11ea8db84976c356ddbf56a9e6c928d73d079482fc36b4deae618b353d"
+  },
+  "environments": {
+    "production": "https://prompt-atlas.ldktech.com"
+  },
+  "primary_pages": [
+    "/",
+    "/discover/",
+    "/anatomy/"
+  ],
+  "timezone": "Asia/Ho_Chi_Minh",
+  "launch_date": "2026-08-28",
+  "tracker": {
+    "kind": "linear",
+    "binding": "bb336933-2a7d-4f19-98af-2f32e137821b"
+  },
+  "retention": {
+    "policy": "90d",
+    "enforced": false
+  },
+  "exclusions": []
+}
