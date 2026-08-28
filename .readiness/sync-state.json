@@ -5,5 +5,62 @@
     "ticket_ref": "LDK-716",
     "last_synced_at": "2026-08-28T08:41:32.535Z"
   },
-  "tickets": {}
+  "tickets": {
+    "sha256:766490fafbb1042bdd3cd0cbb9c2faaf7f8414171325a9da71b33f9c9f5d474f": {
+      "ticket_ref": "LDK-718",
+      "remote_status": "open",
+      "synced_hash": "sha256:14a255f4fd6fcca4e12af5336ee95d11b634e508f50412861b1359abe13d4394",
+      "last_synced_at": "2026-08-28T09:04:53.335Z",
+      "checkpoint": "security-headers-baseline",
+      "finding": "security-headers-baseline-01"
+    },
+    "sha256:b1f581e567e3749563df2c5c7d27ec80340f9962d7d1389337addf6ee21711c8": {
+      "ticket_ref": "LDK-717",
+      "remote_status": "open",
+      "synced_hash": "sha256:8a94a5874b7294e66c8dd910c7f8b628d404aadbf625e8b36a17715c78262cc0",
+      "last_synced_at": "2026-08-28T09:04:53.335Z",
+      "checkpoint": "accessibility",
+      "finding": "accessibility-01"
+    },
+    "sha256:4a1156e3b36faa39bbf03fdec6c88242ea7eec207d4f505bfc857fa537033f70": {
+      "ticket_ref": "LDK-719",
+      "remote_status": "open",
+      "synced_hash": "sha256:88782a905f8a20da1f978c71c4896d5307f56c3cab124d895c9a3475b20dfb00",
+      "last_synced_at": "2026-08-28T09:04:53.335Z",
+      "checkpoint": "performance-lab-budget",
+      "finding": "performance-lab-budget-01"
+    },
+    "sha256:987d726895ee203708e94dce2f7521481195dc3b54300faf35fb00c3d1193bad": {
+      "ticket_ref": "LDK-720",
+      "remote_status": "open",
+      "synced_hash": "sha256:1302acd1710983550bab6cceb2bf8d435e1dcfce5752039b2feff48fd894e03f",
+      "last_synced_at": "2026-08-28T09:04:53.335Z",
+      "checkpoint": "legal-pages",
+      "finding": "legal-pages-01"
+    },
+    "sha256:71bff773f887476d396aea3e8360f79faec9e129bd05f78a4938ab6a01937dbd": {
+      "ticket_ref": "LDK-724",
+      "remote_status": "open",
+      "synced_hash": "sha256:a0bf71db8eb52293a63aa4b80387467e0343f7b365f70e7083dc414b7d2da2fd",
+      "last_synced_at": "2026-08-28T09:04:53.335Z",
+      "checkpoint": "contact-works",
+      "finding": "contact-works-01"
+    },
+    "sha256:7225baccdb47e305430231fdbd2fe8979e42e176a3e2c3c9e6b520430574ec1d": {
+      "ticket_ref": "LDK-722",
+      "remote_status": "open",
+      "synced_hash": "sha256:901a59eed291f8e8d738d8ae13a3de4f2b893f3574d463fe8c234374afbb9905",
+      "last_synced_at": "2026-08-28T09:04:53.335Z",
+      "checkpoint": "gsc-verify",
+      "finding": "gsc-verify-01"
+    },
+    "sha256:5223ae855ce779031bc3da3df6de807d089b735e409110143a8c628c54ebe7c3": {
+      "ticket_ref": "LDK-723",
+      "remote_status": "open",
+      "synced_hash": "sha256:80dd2992a6dff651fb7149c4c8a83c61ed1b090442d81f802077a2e1d12312f0",
+      "last_synced_at": "2026-08-28T09:04:53.335Z",
+      "checkpoint": "gsc-sitemap-submitted",
+      "finding": "gsc-sitemap-submitted-01"
+    }
+  }
 }
