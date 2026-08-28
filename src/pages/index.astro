@@ -13,6 +13,9 @@ const featuredOutput = featuredEvidence.representative?.result ?? {
   height: featured.images.chatgpt.height,
   alt: `${featured.name} — ảnh tham chiếu.`,
 };
+const featuredThumbnail = "thumbnailPath" in featuredOutput
+  ? featuredOutput.thumbnailPath
+  : featured.images.chatgpt.thumb;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
@@ -43,7 +46,16 @@ const jsonLd = {
     <div class="hero__specimen" aria-label={`Output nổi bật ${featured.name}`}>
       <div class="hero__ruler" aria-hidden="true"><span>00</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
       <figure class="hero__output" data-learning-output>
-        <img src={featuredOutput.path} width={featuredOutput.width} height={featuredOutput.height} alt={featuredOutput.alt} fetchpriority="high" />
+        <picture>
+          <source media="(max-width: 820px)" srcset={featuredThumbnail} />
+          <img
+            src={featuredOutput.path}
+            width={featuredOutput.width}
+            height={featuredOutput.height}
+            alt={featuredOutput.alt}
+            fetchpriority="high"
+          />
+        </picture>
         <figcaption><b>OUTPUT</b><span>prompt → image</span></figcaption>
       </figure>
       <div class="hero__caption">
@@ -77,7 +89,7 @@ const jsonLd = {
     </div>
 
     <div class="style-grid shell" data-style-grid>
-      {styles.map((style, index) => <PairCard style={style} eager={index < 3} />)}
+      {styles.map((style) => <PairCard style={style} />)}
     </div>
 
     <div class="empty-state shell" data-empty-state hidden>

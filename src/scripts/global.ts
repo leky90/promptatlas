@@ -329,12 +329,9 @@ function initializeSharedDiscovery() {
   document.fonts?.ready.then(scheduleFloatingClearance);
 
   let index: DiscoveryIndexItem[] = [];
-  try {
-    const parsed = JSON.parse(indexSource.textContent ?? "[]");
-    if (Array.isArray(parsed)) index = parsed;
-  } catch {
-    index = [];
-  }
+  let indexReady = false;
+  let indexRequest: Promise<void> | null = null;
+  let pendingNavigation: -1 | 0 | 1 = 0;
 
   let activeIndex = -1;
   let previousFocus: HTMLElement | null = null;
@@ -358,6 +355,33 @@ function initializeSharedDiscovery() {
   let shortcutPreviousFocus: HTMLElement | null = null;
   let resultRows: HTMLElement[] = [];
   const typeOrder: DiscoveryIndexItem["type"][] = ["style", "primitive", "anatomy"];
+
+  const loadIndex = () => {
+    if (indexReady) return Promise.resolve();
+    if (indexRequest) return indexRequest;
+    const url = indexSource.dataset.indexUrl;
+    indexRequest = (async () => {
+      try {
+        if (!url) throw new Error("Spotlight index URL is missing");
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Spotlight index request failed: ${response.status}`);
+        const parsed = await response.json();
+        index = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        index = [];
+      } finally {
+        indexReady = true;
+        if (dialog.open) {
+          render();
+          if (pendingNavigation !== 0) {
+            setActive(pendingNavigation > 0 ? 0 : resultRows.length - 1);
+            pendingNavigation = 0;
+          }
+        }
+      }
+    })();
+    return indexRequest;
+  };
 
   const setActive = (next: number) => {
     if (resultRows.length === 0) {
@@ -399,6 +423,11 @@ function initializeSharedDiscovery() {
   };
 
   const render = () => {
+    if (!indexReady) {
+      resultList.replaceChildren();
+      count.textContent = "Đang tải chỉ mục tìm kiếm…";
+      return;
+    }
     const query = normalizeSearch(input.value.trim());
     const tokens = query.split(/\s+/u).filter(Boolean);
     const matches = index.filter((item) => {
@@ -508,6 +537,7 @@ function initializeSharedDiscovery() {
     input.value = initialQuery;
     input.setAttribute("aria-expanded", "true");
     render();
+    void loadIndex();
     window.requestAnimationFrame(() => input.focus());
   };
 
@@ -527,9 +557,17 @@ function initializeSharedDiscovery() {
   input.addEventListener("keydown", (event) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
+      if (!indexReady) {
+        pendingNavigation = 1;
+        return;
+      }
       setActive(activeIndex + 1);
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
+      if (!indexReady) {
+        pendingNavigation = -1;
+        return;
+      }
       setActive(activeIndex <= 0 ? resultRows.length - 1 : activeIndex - 1);
     } else if (event.key === "Enter" && activeIndex >= 0) {
       event.preventDefault();
