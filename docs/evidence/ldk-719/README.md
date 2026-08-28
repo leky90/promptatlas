@@ -1,7 +1,7 @@
 # LDK-719 mobile performance lab evidence
 
 This evidence set measures the production build from source revision
-`0add1afc984ff2fa1067e19f4978b30be12c1ccb` on a local Astro preview. It does
+`9bfcad6e31cd6b49ed69674b7890fc2e5797c071` on a local Astro preview. It does
 not represent a production deployment or a Cloudflare measurement.
 
 ## Declared lab contract
@@ -17,16 +17,17 @@ not represent a production deployment or a Cloudflare measurement.
   `http://127.0.0.1:4719`.
 - Lighthouse: 13.4.1, mobile form factor, 412 x 823 CSS pixels, DPR 1.75,
   simulated throttling, 150 ms RTT, 1,638.4 Kbps throughput, 4x CPU slowdown.
-- Chromium CLI present during the run: 144.0.7558.0. The raw Lighthouse
-  environment records its observed host and emulated user agents.
+- Chromium selected through `CHROME_PATH`: 144.0.7558.0. The raw Lighthouse
+  environment records `HeadlessChrome/144.0.0.0` as the host agent and
+  `Chrome/144.0.0.0 Mobile` as the emulated network agent.
 
 All nine measurements passed. The worst observed values were:
 
 | Route | Worst LCP | Worst CLS |
 | --- | ---: | ---: |
-| Home | 2,104.41 ms | 0 |
-| Discover | 2,254.46 ms | 0.000888 |
-| Anatomy | 1,801.14 ms | 0.038296 |
+| Home | 2,339.05 ms | 0 |
+| Discover | 2,480.29 ms | 0.000888 |
+| Anatomy | 1,877.91 ms | 0.038296 |
 
 ## Raw reports
 
@@ -44,9 +45,17 @@ gzip -dc docs/evidence/ldk-719/raw/run-1/home.report.json.gz | jq '.audits["larg
 The measurement command was equivalent to:
 
 ```sh
-lighthouse http://127.0.0.1:4719/ \
-  --chrome-path="$(command -v chromium)" \
+CHROME_PATH="$(command -v chromium)" lighthouse http://127.0.0.1:4719/ \
   --chrome-flags="--headless=new" \
+  --form-factor=mobile \
+  --screen-emulation-mobile \
+  --screen-emulation-width=412 \
+  --screen-emulation-height=823 \
+  --screen-emulation-device-scale-factor=1.75 \
+  --throttling-method=simulate \
+  --throttling-rtt-ms=150 \
+  --throttling-throughput-kbps=1638.4 \
+  --throttling-cpu-slowdown-multiplier=4 \
   --output=json \
   --output=html \
   --output-path=.linear-ops/ldk-719/canonical/run-1/home/lighthouse \

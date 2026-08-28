@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "issue": "LDK-719",
   "baseRevision": "b2523b11b23796789ecd3f9502ea165f1cbe0b5d",
-  "sourceRevision": "0add1afc984ff2fa1067e19f4978b30be12c1ccb",
+  "sourceRevision": "9bfcad6e31cd6b49ed69674b7890fc2e5797c071",
   "measurementWindowUtc": {
-    "startedAt": "2026-08-28T18:18:09.803Z",
-    "endedAt": "2026-08-28T18:19:37.147Z"
+    "startedAt": "2026-08-28T18:48:10.676Z",
+    "endedAt": "2026-08-28T18:49:39.762Z"
   },
   "target": {
     "kind": "local-production-build",
@@ -26,6 +26,9 @@
     "nodeVersion": "24.18.1",
     "npmVersion": "11.16.0",
     "chromiumCliVersion": "144.0.7558.0",
+    "chromePathSelection": "CHROME_PATH",
+    "rawHostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/144.0.0.0 Safari/537.36",
+    "rawNetworkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36",
     "formFactor": "mobile",
     "screenEmulation": {
       "width": 412,
@@ -48,15 +51,15 @@
   "summary": {
     "status": "pass",
     "home": {
-      "worstLargestContentfulPaintMs": 2104.40685,
+      "worstLargestContentfulPaintMs": 2339.04755,
       "worstCumulativeLayoutShift": 0
     },
     "discover": {
-      "worstLargestContentfulPaintMs": 2254.459,
+      "worstLargestContentfulPaintMs": 2480.2864,
       "worstCumulativeLayoutShift": 0.0008884555349455379
     },
     "anatomy": {
-      "worstLargestContentfulPaintMs": 1801.1419,
+      "worstLargestContentfulPaintMs": 1877.9052,
       "worstCumulativeLayoutShift": 0.03829642347517886
     }
   },
@@ -64,101 +67,101 @@
     {
       "run": 1,
       "route": "home",
-      "fetchTime": "2026-08-28T18:18:09.803Z",
-      "largestContentfulPaintMs": 2104.40685,
+      "fetchTime": "2026-08-28T18:48:10.676Z",
+      "largestContentfulPaintMs": 2339.04755,
       "cumulativeLayoutShift": 0,
-      "performanceScore": 0.98,
+      "performanceScore": 0.97,
       "rawReport": "raw/run-1/home.report.json.gz",
-      "rawSha256": "62ba0013138bf190ab0e12a48d5d9418387f7a34d052e7e41733f9573eb8f9c7",
-      "gzipSha256": "69aa2d381d5eb6096038ef20dd1521f5c438f0406d7069b87e528c89f0c26244"
+      "rawSha256": "98a6a0fbb23f82b2e9139ec5b6f18c84721ac5a2b98493b998d34445f058680c",
+      "gzipSha256": "06cd7b1b8ae9d03ee8c2e55c70425ab00bb08af7d66dcec312682542294e8dc7"
     },
     {
       "run": 1,
       "route": "discover",
-      "fetchTime": "2026-08-28T18:18:20.683Z",
-      "largestContentfulPaintMs": 2254.459,
+      "fetchTime": "2026-08-28T18:48:22.179Z",
+      "largestContentfulPaintMs": 2480.2864,
       "cumulativeLayoutShift": 0.0008884555349455379,
-      "performanceScore": 0.97,
+      "performanceScore": 0.96,
       "rawReport": "raw/run-1/discover.report.json.gz",
-      "rawSha256": "43ca8546f8b5351b5b74a6deca917f524df26724c6296173d9716c37b201d4fc",
-      "gzipSha256": "47592281394f9055df9d246ec4bd6139bd0b2572a7b7daa40d500de1ec5c75d2"
+      "rawSha256": "f3765a66519a42b0edc48a2ed96907d0ce9d9c8c04c538f58a9d9dd8a054d8a2",
+      "gzipSha256": "f104c241e9c557517a4b6bdc89b65730fb24dda5f312630bdd7187bf20b9eabb"
     },
     {
       "run": 1,
       "route": "anatomy",
-      "fetchTime": "2026-08-28T18:18:32.115Z",
-      "largestContentfulPaintMs": 1801.1419,
+      "fetchTime": "2026-08-28T18:48:33.878Z",
+      "largestContentfulPaintMs": 1877.69415,
       "cumulativeLayoutShift": 0.03829642347517886,
       "performanceScore": 0.99,
       "rawReport": "raw/run-1/anatomy.report.json.gz",
-      "rawSha256": "9e9b716bf84f2ebfcf7bbd5b96ac189d80bd6703ee7330d2fd447bfed0b1bd4f",
-      "gzipSha256": "c4db9037ef6df6693e9ea0c1f03b2917dd55a7a09f21e8c516bd0fd8c1ee0304"
+      "rawSha256": "b660ad06b07750913804cd4f1b99f96938f930573457b116799f5910f49a4ea8",
+      "gzipSha256": "cd314bc08893920bfc0477f886be742c778ed90e3e62d4d5cba8e64936ea370a"
     },
     {
       "run": 2,
       "route": "home",
-      "fetchTime": "2026-08-28T18:18:42.232Z",
-      "largestContentfulPaintMs": 1952.4545,
+      "fetchTime": "2026-08-28T18:48:44.132Z",
+      "largestContentfulPaintMs": 2328.0102,
       "cumulativeLayoutShift": 0,
-      "performanceScore": 0.99,
+      "performanceScore": 0.97,
       "rawReport": "raw/run-2/home.report.json.gz",
-      "rawSha256": "4bc966e0d93fe195c78481f593f812c21a9a83f91e948ea0a3d0f294c3fd23cd",
-      "gzipSha256": "a837c93b4e969e73bd8589b45d9ea6e5bb39100bf9425159bb925ff1f980eec8"
+      "rawSha256": "35a2ec90f050f122d4b453200af24bc5aa2a9350bce18523e030e4cc289b58a1",
+      "gzipSha256": "6c59fc8d53e6657dde833e977cbc915451ce6324bbcd3f177a00bc8eca9d0cc1"
     },
     {
       "run": 2,
       "route": "discover",
-      "fetchTime": "2026-08-28T18:18:53.103Z",
-      "largestContentfulPaintMs": 2177.0477,
+      "fetchTime": "2026-08-28T18:48:55.211Z",
+      "largestContentfulPaintMs": 2102.8634,
       "cumulativeLayoutShift": 0.0008884555349455379,
       "performanceScore": 0.98,
       "rawReport": "raw/run-2/discover.report.json.gz",
-      "rawSha256": "0e7afbfed767b1b16e6c077f5f64974c2b0c43ade1f5084fb551bf7580a89d0c",
-      "gzipSha256": "cc7a2f281173b9f2f3313aa6e035461c40dcb6ae7eb9271ec28b92faf17307aa"
+      "rawSha256": "7b46a0c35c9e895c4bbc37a941386959f864481955d6eeed627ea8fe9b502811",
+      "gzipSha256": "43898f27880a434e6a2f668d09715ccf452ffa420a5ff22c7e3b652f05971e4a"
     },
     {
       "run": 2,
       "route": "anatomy",
-      "fetchTime": "2026-08-28T18:19:04.675Z",
-      "largestContentfulPaintMs": 1651.2781,
+      "fetchTime": "2026-08-28T18:49:06.825Z",
+      "largestContentfulPaintMs": 1877.9052,
       "cumulativeLayoutShift": 0.03829642347517886,
-      "performanceScore": 1,
+      "performanceScore": 0.99,
       "rawReport": "raw/run-2/anatomy.report.json.gz",
-      "rawSha256": "9bfe0e636355b7a2200c6b037ab9e1961c89f6ce1c7042388f79727a0dbda8fc",
-      "gzipSha256": "4e6f4e62c9dfdad024096f80db21ec0cfd3900ac65834e791cfe63bb8bbf8bf6"
+      "rawSha256": "7f8b0a6822c43a08a1c7a1e1ea972ba63b5245d44a2c7e5154548e24c2e3dc1a",
+      "gzipSha256": "d554bb53ec61dab9d22f98ffd704047f59b9528c1b0b18a85dca8dcec32f0a80"
     },
     {
       "run": 3,
       "route": "home",
-      "fetchTime": "2026-08-28T18:19:14.785Z",
-      "largestContentfulPaintMs": 2104.1703,
+      "fetchTime": "2026-08-28T18:49:17.079Z",
+      "largestContentfulPaintMs": 2253.78705,
       "cumulativeLayoutShift": 0,
-      "performanceScore": 0.98,
+      "performanceScore": 0.97,
       "rawReport": "raw/run-3/home.report.json.gz",
-      "rawSha256": "4c5e6c5e9f0d0c34b54a44eaae6baa0221d2ebe2f1eec5e0b6332ebf76de7a2f",
-      "gzipSha256": "31fc72b81c9918ec278dfe51e2af8edbbba875287a520cd09e962600e0478ee6"
+      "rawSha256": "e4cd3fc27f3e23f1777a11eec74a6fd5074a55d8c8f63903efe323e5264b8c16",
+      "gzipSha256": "c95b424cde0ee590fb67f55536089d19c721da1d410d1a628684edfbdfd99c29"
     },
     {
       "run": 3,
       "route": "discover",
-      "fetchTime": "2026-08-28T18:19:25.670Z",
-      "largestContentfulPaintMs": 2176.9624,
+      "fetchTime": "2026-08-28T18:49:28.138Z",
+      "largestContentfulPaintMs": 2102.0558,
       "cumulativeLayoutShift": 0.0008884555349455379,
       "performanceScore": 0.98,
       "rawReport": "raw/run-3/discover.report.json.gz",
-      "rawSha256": "a94618b5879ee19c83182f53a2f9809c79c32ad699989da8f0e3b95f847c25e1",
-      "gzipSha256": "70120023784a351c90b8cfec1add6d8d739ef2613135305d817813c13e05f084"
+      "rawSha256": "97c0b85ae6a6e95ed1315c1ae825180744d87dbd10afb5072be87941f0d4504c",
+      "gzipSha256": "ba33c960d2105369f2755a5959181389f5412417f900518dc89390d7e3f894e4"
     },
     {
       "run": 3,
       "route": "anatomy",
-      "fetchTime": "2026-08-28T18:19:37.147Z",
-      "largestContentfulPaintMs": 1651.0337,
+      "fetchTime": "2026-08-28T18:49:39.762Z",
+      "largestContentfulPaintMs": 1877.83545,
       "cumulativeLayoutShift": 0.03829642347517886,
-      "performanceScore": 1,
+      "performanceScore": 0.99,
       "rawReport": "raw/run-3/anatomy.report.json.gz",
-      "rawSha256": "b54221bd391cc9627c00f25b3020def82a4bf44a41b6208c956325a6af94cd89",
-      "gzipSha256": "90f58faa3109959bec0051c1ff8f713e5376d0b0c897cedd6eca657fcccf9d4c"
+      "rawSha256": "7bfaf269e2be4c7a2b460de4f80332f108e05bba210b24c7c7f76c151f6bd8a1",
+      "gzipSha256": "146876d38f19bc4e59aa43245f9c3c6c022ae0f0e57d25e13087f019b0e98e80"
     }
   ]
 }
