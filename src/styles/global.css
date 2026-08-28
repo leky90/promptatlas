@@ -22,6 +22,12 @@
   --type-hero: clamp(3.25rem, 7vw, 6rem);
   --shell: min(1440px, calc(100vw - 48px));
   --header-height: 76px;
+  --catalog-control-height: 48px;
+  --catalog-toolbar-column-gap: 24px;
+  --catalog-toolbar-row-gap: 12px;
+  --catalog-toolbar-padding-block: 14px;
+  --catalog-toolbar-primary-row-height: 70px;
+  --floating-control-lane-height: calc(52px + (2 * var(--catalog-toolbar-row-gap)));
   --shadow-image: 0 22px 70px rgb(18 19 17 / 18%);
   --pa-surface-canvas: var(--paper);
   --pa-surface-subtle: var(--paper-deep);
@@ -543,7 +549,8 @@ button {
   padding-bottom: 96px;
 }
 
-.atlas-toolbar-wrap {
+.atlas-toolbar-wrap,
+.anatomy-toolbar-wrap {
   position: sticky;
   top: var(--header-height);
   z-index: 60;
@@ -552,13 +559,32 @@ button {
   backdrop-filter: blur(12px);
 }
 
-.atlas-toolbar {
+.catalog-toolbar {
   display: grid;
   grid-template-columns: minmax(280px, 1fr) auto;
-  gap: 12px 24px;
+  grid-template-rows: var(--catalog-toolbar-primary-row-height) auto;
+  column-gap: var(--catalog-toolbar-column-gap);
+  row-gap: var(--catalog-toolbar-row-gap);
   align-items: center;
   min-height: 112px;
-  padding-block: 14px;
+  padding-block: var(--catalog-toolbar-padding-block);
+}
+
+.catalog-toolbar > [data-catalog-search] {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+}
+
+.catalog-toolbar > [data-catalog-filters] {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.catalog-toolbar > [data-catalog-status] {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
 }
 
 .search-field {
@@ -576,7 +602,7 @@ button {
 
 .search-field input {
   width: 100%;
-  height: 48px;
+  height: var(--catalog-control-height);
   padding: 0 58px 0 36px;
   color: var(--ink);
   background: var(--white);
@@ -2010,7 +2036,7 @@ button {
     min-height: 430px;
   }
 
-  .atlas-toolbar {
+  .catalog-toolbar {
     grid-template-columns: minmax(260px, 1fr) auto;
   }
 
@@ -2098,10 +2124,18 @@ button {
     min-height: 520px;
   }
 
-  .atlas-toolbar {
+  .catalog-toolbar {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
     gap: 10px;
     padding-block: 12px;
+  }
+
+  .catalog-toolbar > [data-catalog-search],
+  .catalog-toolbar > [data-catalog-filters],
+  .catalog-toolbar > [data-catalog-status] {
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .toolbar-status {
@@ -2196,7 +2230,8 @@ button {
     text-align: right;
   }
 
-  .atlas-toolbar-wrap {
+  .atlas-toolbar-wrap,
+  .anatomy-toolbar-wrap {
     position: relative;
     top: auto;
   }
@@ -2294,6 +2329,16 @@ button {
   padding-block: clamp(70px, 10vw, 150px) clamp(54px, 8vw, 110px);
 }
 
+.anatomy-detail-page .anatomy-detail-hero {
+  padding-bottom: clamp(30px, 5vw, 78px);
+}
+
+@media (min-width: 821px) {
+  .anatomy-page .anatomy-hero {
+    padding-bottom: 12px;
+  }
+}
+
 .anatomy-hero h1,
 .anatomy-detail-hero h1 {
   max-width: 980px;
@@ -2361,24 +2406,41 @@ button {
   text-transform: uppercase;
 }
 
-.anatomy-toolbar-wrap {
-  position: sticky;
-  z-index: 8;
-  top: var(--header-height);
-  background: rgb(241 238 230 / 96%);
-  border-block: 1px solid var(--ink);
-  backdrop-filter: blur(14px);
-}
-
-.anatomy-toolbar {
-  padding-block: 18px;
-}
-
 .anatomy-result {
-  margin: 12px 0 0;
+  margin: 0;
   font: 600 var(--type-control)/1 var(--font-mono);
   text-align: right;
   text-transform: uppercase;
+}
+
+.anatomy-refinement-journey {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(28px, 6vw, 96px);
+  align-items: end;
+  padding-block: 34px;
+  border-block: 1px solid var(--ink);
+}
+
+.anatomy-refinement-journey h2 {
+  max-width: 820px;
+  margin: 12px 0 0;
+  font-size: clamp(28px, 4vw, 52px);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+.anatomy-refinement-journey p:last-child {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--ink-soft);
+}
+
+.anatomy-refinement-journey__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: 8px;
 }
 
 .anatomy-category-strip {
@@ -2738,6 +2800,18 @@ button {
 }
 
 @media (max-width: 720px) {
+  .anatomy-detail-page .anatomy-detail-hero {
+    padding-bottom: 134px;
+  }
+
+  .anatomy-refinement-journey {
+    grid-template-columns: 1fr;
+  }
+
+  .anatomy-refinement-journey__actions {
+    justify-content: start;
+  }
+
   .anatomy-metrics,
   .anatomy-category-strip,
   .anatomy-dimension-grid,
@@ -3645,6 +3719,7 @@ button {
 /* Shared discovery shell — LDK-643 */
 :root {
   --floating-keyboard-offset: 0px;
+  --floating-content-offset: 0px;
   --visual-viewport-height: 100svh;
   --visual-viewport-center-y: 50svh;
   --visual-viewport-width: 100vw;
@@ -3656,7 +3731,7 @@ button {
 .shortcut-help-trigger {
   position: fixed;
   z-index: 95;
-  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
   min-height: 52px;
   color: var(--paper);
   background: var(--ink);
@@ -3665,6 +3740,10 @@ button {
   box-shadow: 7px 7px 0 rgb(18 19 17 / 18%);
   cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.shared-discovery-controls {
+  display: contents;
 }
 
 .spotlight-launcher:hover,
@@ -4150,13 +4229,117 @@ button {
   border-top: 1px solid var(--ink);
 }
 
+.discovery-layer-guide {
+  padding-block: clamp(48px, 7vw, 90px);
+}
+
+.discovery-layer-guide header {
+  display: grid;
+  grid-template-columns: minmax(180px, .35fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: end;
+}
+
+.discovery-layer-guide h2 {
+  max-width: 960px;
+  margin: 0;
+  font-size: clamp(32px, 5vw, 68px);
+  line-height: .94;
+  letter-spacing: -.055em;
+}
+
+.discovery-layer-guide ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 40px 0 0;
+  padding: 0;
+  border-block: 1px solid var(--ink);
+  list-style: none;
+}
+
+.discovery-layer-guide li {
+  min-height: 168px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  padding: 22px;
+  border-right: 1px solid var(--ink);
+}
+
+.discovery-layer-guide li:last-child {
+  border-right: 0;
+}
+
+.discovery-layer-guide li > span {
+  color: var(--ink-soft);
+  font: 600 var(--type-meta)/1 var(--font-mono);
+}
+
+.discovery-layer-guide li > strong {
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.1;
+}
+
+.discovery-layer-guide li > a,
+.discovery-layer-guide nav a,
+.primitive-card__anatomy-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 var(--type-meta)/1.2 var(--font-mono);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.discovery-layer-guide nav {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+.discovery-layer-guide nav a {
+  min-width: 0;
+  justify-content: space-between;
+  padding: 13px 12px;
+  border: 1px solid var(--line);
+  border-right: 0;
+}
+
+.discovery-layer-guide nav a:last-child {
+  border-right: 1px solid var(--line);
+}
+
+.discovery-layer-guide nav span,
+.discovery-layer-guide nav strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.discovery-layer-guide nav span {
+  color: var(--ink-soft);
+}
+
 .discover-toolbar-wrap {
-  position: sticky;
-  top: var(--header-height);
-  z-index: 70;
   color: var(--paper);
   background: var(--ink);
   border-bottom: 1px solid rgb(241 238 230 / 24%);
+}
+
+.discover-controls-scope {
+  position: relative;
+}
+
+.discover-controls-scope::after {
+  content: "";
+  display: block;
+  height: 36px;
+}
+
+.discover-controls-sticky {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 70;
 }
 
 .discover-toolbar {
@@ -4191,7 +4374,7 @@ button {
 
 .discover-search input {
   min-width: 0;
-  height: 50px;
+  height: var(--catalog-control-height);
   padding: 0 18px 0 48px;
   color: var(--ink);
   background: var(--paper);
@@ -4205,7 +4388,7 @@ button {
 
 .discover-search button {
   min-width: 74px;
-  height: 50px;
+  height: var(--catalog-control-height);
   padding: 0 16px;
   color: var(--ink);
   background: var(--acid);
@@ -4324,7 +4507,7 @@ button {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
   gap: 42px;
-  padding-top: 36px;
+  padding-top: 0;
 }
 
 .taxonomy-panel {
@@ -4582,6 +4765,20 @@ button {
   padding-inline: 13px;
 }
 
+.primitive-card__anatomy-link {
+  grid-column: 1 / -1;
+  min-height: 44px;
+  justify-content: space-between;
+  padding: 10px 12px;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+
+.primitive-card__anatomy-link:hover,
+.primitive-card__anatomy-link:focus-visible {
+  background: var(--acid);
+}
+
 .primitive-card__copy {
   min-height: 46px;
   display: inline-flex;
@@ -4768,6 +4965,29 @@ button {
 }
 
 @media (max-width: 959px) {
+  .discovery-layer-guide header,
+  .discovery-layer-guide ol {
+    grid-template-columns: 1fr;
+  }
+
+  .discovery-layer-guide li {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .discovery-layer-guide li:last-child {
+    border-bottom: 0;
+  }
+
+  .discovery-layer-guide nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .discovery-layer-guide nav a:nth-child(2n) {
+    border-right: 1px solid var(--line);
+  }
+
   .discover-intro {
     grid-template-columns: 1fr;
   }
@@ -4809,7 +5029,11 @@ button {
 
   .discover-layout {
     grid-template-columns: 1fr;
-    padding-top: 28px;
+    padding-top: 0;
+  }
+
+  .discover-controls-scope::after {
+    height: 28px;
   }
 
   .taxonomy-panel {
@@ -4853,6 +5077,10 @@ button {
     font-size: var(--type-hero);
   }
 
+  .discover-intro__metrics {
+    margin-top: max(38px, var(--floating-control-lane-height));
+  }
+
   .discover-intro__metrics span {
     flex: 1 1 50%;
     padding-inline: 12px;
@@ -4870,11 +5098,6 @@ button {
   .discover-specimens figure {
     left: calc(var(--specimen-index) * 30px);
     width: calc(100% - 60px);
-  }
-
-  .discover-toolbar-wrap {
-    position: relative;
-    top: auto;
   }
 
   .discover-search input {
@@ -4961,6 +5184,31 @@ button {
 
   .discover-empty .button {
     grid-column: 1;
+  }
+}
+
+@media (max-width: 620px) {
+  .discover-controls-scope::after {
+    height: 0;
+  }
+
+  .discover-controls-sticky,
+  .discover-toolbar-wrap {
+    position: relative;
+    top: auto;
+  }
+
+  .discovery-layer-guide nav {
+    grid-template-columns: 1fr;
+  }
+
+  .discovery-layer-guide nav a {
+    border-right: 1px solid var(--line);
+  }
+
+  .anatomy-refinement-journey__actions,
+  .anatomy-refinement-journey__actions .button {
+    width: 100%;
   }
 }
 
@@ -5184,6 +5432,15 @@ button {
 .filter-chip,
 .saved-filter {
   min-height: 44px;
+}
+
+[data-catalog-toolbar="standard"] [data-catalog-filters] button,
+[data-catalog-toolbar="standard"] [data-catalog-status] button,
+[data-catalog-toolbar="dense"] input,
+[data-catalog-toolbar="dense"] button,
+[data-catalog-toolbar="dense"] a[data-skip-to-results] {
+  height: var(--catalog-control-height);
+  min-height: var(--catalog-control-height);
 }
 
 .learning-output,
@@ -5939,13 +6196,121 @@ body.composer-page .site-footer {
 }
 
 :root[data-compact-visual-viewport] .spotlight-launcher {
-  width: 64px;
+  position: absolute;
+  top: 8px;
+  bottom: auto;
+  left: var(--visual-viewport-center-x);
+  width: 52px;
   grid-template-columns: 1fr;
   justify-items: center;
   padding-inline: 0;
+  transform: translateX(-50%);
+  box-shadow: none;
 }
 
 :root[data-compact-visual-viewport] .spotlight-launcher span,
 :root[data-compact-visual-viewport] .spotlight-launcher kbd {
   display: none;
+}
+
+:root[data-compact-visual-viewport] .spotlight-launcher:hover {
+  transform: translate(-50%, -2px);
+}
+
+:root[data-compact-visual-viewport] .shortcut-help-trigger {
+  position: absolute;
+  right: 14px;
+  bottom: auto;
+  left: auto;
+  box-shadow: none;
+}
+
+:root[data-compact-visual-viewport] .brand__text {
+  display: none;
+}
+
+:root[data-compact-visual-viewport] .shared-discovery-controls {
+  position: relative;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+:root[data-compact-visual-viewport][data-panned-visual-viewport] .shared-discovery-controls {
+  display: contents;
+}
+
+:root[data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher {
+  position: fixed;
+  top: auto;
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
+  left: var(--visual-viewport-center-x);
+  transform: translateX(-50%);
+}
+
+:root[data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher:hover {
+  transform: translate(-50%, -2px);
+}
+
+:root[data-compact-visual-viewport][data-panned-visual-viewport] .shortcut-help-trigger {
+  position: fixed;
+  right: auto;
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--floating-keyboard-offset) + var(--floating-content-offset));
+  left: calc(var(--visual-viewport-right) - max(16px, env(safe-area-inset-right)) - 52px);
+}
+
+:root[data-floating-controls-inline] .shared-discovery-controls {
+  position: relative;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+:root[data-floating-controls-inline] .spotlight-launcher {
+  position: absolute;
+  top: 8px;
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: none;
+}
+
+:root[data-floating-controls-inline] .spotlight-launcher:hover {
+  transform: translate(-50%, -2px);
+}
+
+:root[data-floating-controls-inline] .shortcut-help-trigger {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  bottom: auto;
+  left: auto;
+  box-shadow: none;
+}
+
+:root[data-floating-controls-inline][data-compact-visual-viewport][data-panned-visual-viewport] .shared-discovery-controls {
+  display: flex;
+}
+
+:root[data-floating-controls-inline][data-compact-visual-viewport][data-panned-visual-viewport] .spotlight-launcher {
+  position: absolute;
+  top: 8px;
+  bottom: auto;
+  left: var(--visual-viewport-center-x);
+}
+
+:root[data-floating-controls-inline][data-compact-visual-viewport][data-panned-visual-viewport] .shortcut-help-trigger {
+  position: absolute;
+  top: 8px;
+  right: auto;
+  bottom: auto;
+  left: calc(var(--visual-viewport-right) - max(16px, env(safe-area-inset-right)) - 52px);
 }

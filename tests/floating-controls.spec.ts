@@ -2,6 +2,13 @@ import { expect, test } from "@playwright/test";
 
 const supportedRoutes = ["/", "/discover/", "/anatomy/", "/composer/", "/compare/", "/methodology/"];
 
+const rectanglesOverlap = (first: { top: number; right: number; bottom: number; left: number }, second: { top: number; right: number; bottom: number; left: number }, gap = 4) => (
+  first.bottom > second.top - gap
+  && first.top < second.bottom + gap
+  && first.right > second.left - gap
+  && first.left < second.right + gap
+);
+
 test("floating controls expose search and shortcut help without collisions", async ({ page }) => {
   test.setTimeout(60_000);
   for (const width of [1920, 1280, 1024, 768, 390]) {
@@ -40,6 +47,540 @@ test("floating controls expose search and shortcut help without collisions", asy
         expect(geometry.documentWidth, `${route} width at ${width}px/${zoom * 100}%`).toBeLessThanOrEqual(geometry.clientWidth + 1);
       }
     }
+  }
+});
+
+test("floating controls clear protected content and refinement actions", async ({ page }) => {
+  const viewportMatrix = [1920, 1280, 1024, 768, 390].flatMap((width) => [1, 1.25, 1.5].map((zoom) => ({
+    width: Math.floor(width / zoom),
+    height: Math.floor((width === 390 ? 844 : 900) / zoom),
+  })));
+  const scenarios = [
+    ...viewportMatrix.map((viewport) => ({
+      route: "/anatomy/",
+      ...viewport,
+      targets: ".anatomy-hero > *, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] [data-catalog-filters], [data-catalog-toolbar] [data-catalog-status]",
+    })),
+    ...viewportMatrix.map((viewport) => ({
+      route: "/discover/",
+      ...viewport,
+      targets: ".discover-intro__copy > *, .discover-specimens figure, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick",
+    })),
+    { route: "/anatomy/subject-person-role/", width: 1024, height: 720, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
+    { route: "/anatomy/subject-person-role/", width: 819, height: 720, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
+    { route: "/anatomy/subject-person-role/", width: 1440, height: 1000, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
+    { route: "/anatomy/camera-angle/", width: 390, height: 844, targets: ".anatomy-refinement-journey h2, .anatomy-refinement-journey p, .anatomy-refinement-journey .button" },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto(scenario.route);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const geometry = await page.evaluate((targetSelector) => ({
+      controls: [
+        document.querySelector<HTMLElement>("[data-spotlight-launcher]")!.getBoundingClientRect(),
+        document.querySelector<HTMLElement>("[data-shortcut-trigger]")!.getBoundingClientRect(),
+      ],
+      targets: [...document.querySelectorAll<HTMLElement>(targetSelector)]
+        .filter((target) => target.getClientRects().length > 0)
+        .map((target) => target.getBoundingClientRect()),
+      headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
+      viewportHeight: window.innerHeight,
+    }), scenario.targets);
+
+    for (const control of geometry.controls) {
+      expect(control.top, `${scenario.route} control top at ${scenario.width}x${scenario.height}`).toBeGreaterThanOrEqual(geometry.headerBottom + 4);
+      expect(control.bottom, `${scenario.route} control bottom at ${scenario.width}x${scenario.height}`).toBeLessThanOrEqual(geometry.viewportHeight);
+      for (const target of geometry.targets) {
+        expect(rectanglesOverlap(control, target), `${scenario.route} at ${scenario.width}x${scenario.height}`).toBe(false);
+      }
+    }
+  }
+});
+
+test("floating controls preserve scroll position and stay collision-free on Discover", async ({ page }) => {
+  const targetSelector = ".discover-intro__copy > *, .discover-specimens figure, .discovery-layer-guide a, [data-catalog-toolbar] [data-catalog-search], [data-catalog-toolbar] .discover-toolbar__actions, .taxonomy-quick, .primitive-card__anatomy-link";
+  const scenarios = [
+    { width: 1024, height: 720, scrollY: [80, 15, 500, 1510] },
+    { width: 819, height: 720, scrollY: [80, 15, 200, 320, 2231] },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto("/discover/");
+    for (const scrollY of scenario.scrollY) {
+      await page.evaluate((nextScrollY) => window.scrollTo(0, nextScrollY), scrollY);
+      await expect.poll(() => page.evaluate(() => window.scrollY), {
+        message: `${scenario.width}x${scenario.height} preserves scrollY=${scrollY}`,
+      }).toBe(scrollY);
+      const readGeometry = () => page.evaluate((selector) => {
+        const controls = [
+          document.querySelector<HTMLElement>("[data-spotlight-launcher]")!,
+          document.querySelector<HTMLElement>("[data-shortcut-trigger]")!,
+        ];
+        const targets = [...document.querySelectorAll<HTMLElement>(selector)]
+          .filter((target) => target.getClientRects().length > 0)
+          .map((target) => target.getBoundingClientRect());
+        return {
+          inline: document.documentElement.hasAttribute("data-floating-controls-inline"),
+          controls: controls.map((control) => ({
+            rect: control.getBoundingClientRect(),
+            position: getComputedStyle(control).position,
+          })),
+          targets,
+          blockedAnatomyLinks: [...document.querySelectorAll<HTMLElement>(".primitive-card__anatomy-link")]
+            .filter((target) => {
+              const rect = target.getBoundingClientRect();
+              return rect.bottom > 0
+                && rect.top < window.innerHeight
+                && rect.right > 0
+                && rect.left < window.innerWidth;
+            })
+            .filter((target) => {
+              const rect = target.getBoundingClientRect();
+              const left = Math.max(0, rect.left);
+              const right = Math.min(window.innerWidth, rect.right);
+              const top = Math.max(0, rect.top);
+              const bottom = Math.min(window.innerHeight, rect.bottom);
+              const hit = document.elementFromPoint((left + right) / 2, (top + bottom) / 2);
+              return !hit || !(hit === target || target.contains(hit));
+            }).length,
+          headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
+          viewportHeight: window.innerHeight,
+        };
+      }, targetSelector);
+
+      await expect.poll(async () => {
+        const geometry = await readGeometry();
+        return geometry.controls.flatMap(({ rect }) => geometry.targets
+          .filter((target) => rectanglesOverlap(rect, target))).length;
+      }, { message: `${scenario.width}x${scenario.height} at scrollY=${scrollY}` }).toBe(0);
+
+      await expect.poll(async () => (await readGeometry()).blockedAnatomyLinks, {
+        message: `${scenario.width}x${scenario.height} anatomy links remain pointer-reachable at scrollY=${scrollY}`,
+      }).toBe(0);
+
+      const geometry = await readGeometry();
+      for (const control of geometry.controls) {
+        if (geometry.inline) {
+          expect(control.position).not.toBe("fixed");
+        } else {
+          expect(control.rect.top).toBeGreaterThanOrEqual(geometry.headerBottom + 4);
+          expect(control.rect.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+        }
+      }
+    }
+  }
+});
+
+test("Discover sticky controls release before refinement actions scroll underneath", async ({ page }) => {
+  const scenarios = [
+    { width: 1024, height: 720, exactScrollY: 2050 },
+    { width: 819, height: 720, exactScrollY: 2809 },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto("/discover/");
+    const maxScrollY = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
+    const positions = new Set<number>();
+    for (let scrollY = 0; scrollY <= maxScrollY; scrollY += 1600) positions.add(scrollY);
+    const exactPosition = Math.min(scenario.exactScrollY, maxScrollY);
+    positions.add(exactPosition);
+    positions.add(maxScrollY);
+    const orderedPositions = [exactPosition, ...[...positions]
+      .filter((scrollY) => scrollY !== exactPosition)
+      .sort((left, right) => left - right)];
+    const samples: Array<{ href: string; hit: string; scrollY: number }> = [];
+    let blockedCount = 0;
+
+    for (const scrollY of orderedPositions) {
+      await page.evaluate((nextScrollY) => window.scrollTo(0, nextScrollY), scrollY);
+      await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+      const blockers = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>(".primitive-card__anatomy-link")]
+        .flatMap((target) => {
+          const rect = target.getBoundingClientRect();
+          if (rect.bottom <= 0 || rect.top >= window.innerHeight) return [];
+          const hit = document.elementFromPoint(
+            Math.min(window.innerWidth - 1, Math.max(0, rect.left + rect.width / 2)),
+            Math.min(window.innerHeight - 1, Math.max(0, rect.top + rect.height / 2)),
+          );
+          return hit?.closest(".discover-toolbar-wrap")
+            ? [{
+              href: target.getAttribute("href") ?? "",
+              hit: hit instanceof HTMLElement ? hit.className || hit.tagName : "unknown",
+              scrollY: window.scrollY,
+            }]
+            : [];
+        }));
+      blockedCount += blockers.length;
+      samples.push(...blockers.slice(0, Math.max(0, 5 - samples.length)));
+    }
+
+    await expect(page.locator(".discover-controls-sticky")).toHaveCSS("position", "sticky");
+    expect(blockedCount, `${scenario.width}x${scenario.height}: ${JSON.stringify(samples)}`).toBe(0);
+  }
+});
+
+test("Discover sticky controls keep taxonomy quick actions reachable while releasing", async ({ page }) => {
+  const scenarios = [
+    { width: 1024, height: 720, scrollY: 1300 },
+    { width: 819, height: 720, scrollY: 1905 },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize({ width: scenario.width, height: scenario.height });
+    await page.goto("/discover/");
+    const stickyScrollY = await page.evaluate(() => {
+      const scope = document.querySelector<HTMLElement>(".discover-controls-scope")!;
+      const header = document.querySelector<HTMLElement>(".site-header")!;
+      return Math.max(0, scope.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height + 10);
+    });
+    await page.evaluate((scrollY) => window.scrollTo(0, scrollY), stickyScrollY);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const stickyGeometry = await page.evaluate(() => ({
+      groupTop: document.querySelector<HTMLElement>(".discover-controls-sticky")!.getBoundingClientRect().top,
+      headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
+      quickTop: document.querySelector<HTMLElement>(".taxonomy-quick")!.getBoundingClientRect().top,
+      toolbarBottom: document.querySelector<HTMLElement>(".discover-toolbar-wrap")!.getBoundingClientRect().bottom,
+    }));
+    expect(Math.abs(stickyGeometry.groupTop - stickyGeometry.headerBottom)).toBeLessThanOrEqual(1);
+    expect(stickyGeometry.quickTop).toBeGreaterThanOrEqual(stickyGeometry.toolbarBottom - 1);
+
+    await page.evaluate((scrollY) => window.scrollTo(0, scrollY), scenario.scrollY);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const subject = page.locator('.taxonomy-quick [data-group-filter="subject"]');
+    const pointer = await subject.evaluate((target) => {
+      const rect = target.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const hit = document.elementFromPoint(x, y);
+      return {
+        hitOwnsTarget: hit === target || target.contains(hit),
+        x,
+        y,
+      };
+    });
+    expect(pointer.hitOwnsTarget, `${scenario.width}x${scenario.height} pointer hit`).toBe(true);
+    await page.mouse.click(pointer.x, pointer.y);
+    await expect(subject).toHaveAttribute("aria-pressed", "true");
+
+    await page.goto("/discover/");
+    await page.evaluate((scrollY) => window.scrollTo(0, scrollY), scenario.scrollY);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const all = page.locator('.taxonomy-quick [data-group-filter="all"]');
+    await all.evaluate((target) => target.focus({ preventScroll: true }));
+    await expect(all).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scenario.scrollY);
+    const focusHitOwnsTarget = await all.evaluate((target) => {
+      const rect = target.getBoundingClientRect();
+      const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return hit === target || target.contains(hit);
+    });
+    expect(focusHitOwnsTarget, `${scenario.width}x${scenario.height} focused control remains visible`).toBe(true);
+  }
+});
+
+test("Discover pinned controls preserve vertical scroll during native Tab traversal", async ({ page }) => {
+  const scenarios = [
+    { width: 1024, height: 720 },
+    { width: 819, height: 720 },
+    { width: 682, height: 600 },
+    { width: 621, height: 720 },
+  ];
+
+  for (const scenario of scenarios) {
+    await page.setViewportSize(scenario);
+    await page.goto("/discover/");
+    await page.evaluate(() => {
+      document.documentElement.style.scrollBehavior = "auto";
+      const scope = document.querySelector<HTMLElement>(".discover-controls-scope")!;
+      const group = document.querySelector<HTMLElement>(".discover-controls-sticky")!;
+      const header = document.querySelector<HTMLElement>(".site-header")!;
+      const runway = scope.getBoundingClientRect().height - group.getBoundingClientRect().height;
+      const stickyStart = scope.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height;
+      const targetScrollY = stickyStart + Math.max(1, Math.floor(runway / 2));
+      window.scrollTo(0, targetScrollY);
+    });
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    const pinnedScrollY = await page.evaluate(() => window.scrollY);
+    const pinned = await page.evaluate(() => ({
+      groupTop: document.querySelector<HTMLElement>(".discover-controls-sticky")!.getBoundingClientRect().top,
+      headerBottom: document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom,
+    }));
+    expect(Math.abs(pinned.groupTop - pinned.headerBottom), `${scenario.width}x${scenario.height} starts pinned`).toBeLessThanOrEqual(1);
+
+    const search = page.locator("#primitive-search");
+    const searchPoint = await search.evaluate((target) => {
+      const rect = target.getBoundingClientRect();
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    });
+    await page.mouse.click(searchPoint.x, searchPoint.y);
+    await expect(search).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(pinnedScrollY);
+    const focusableCount = await page.locator('.discover-controls-sticky input:not([disabled]), .discover-controls-sticky button:not([disabled]), .discover-controls-sticky a[href]')
+      .evaluateAll((elements) => elements.filter((element) => (element as HTMLElement).getClientRects().length > 0).length);
+    expect(focusableCount).toBeGreaterThanOrEqual(9);
+
+    for (let index = 1; index < focusableCount; index += 1) {
+      await page.keyboard.press("Tab");
+      await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+      const state = await page.evaluate(() => {
+        const active = document.activeElement as HTMLElement | null;
+        const group = document.querySelector<HTMLElement>(".discover-controls-sticky")!;
+        const quick = active?.closest<HTMLElement>(".taxonomy-quick");
+        const activeRect = active?.getBoundingClientRect();
+        const quickRect = quick?.getBoundingClientRect();
+        return {
+          activeInsideGroup: Boolean(active && group.contains(active)),
+          focusVisibleVertically: Boolean(activeRect && activeRect.bottom > 0 && activeRect.top < window.innerHeight),
+          focusVisibleInQuick: !quickRect || Boolean(activeRect && activeRect.right > quickRect.left && activeRect.left < quickRect.right),
+          scrollY: window.scrollY,
+        };
+      });
+      expect(state.activeInsideGroup, `${scenario.width}x${scenario.height} Tab ${index}`).toBe(true);
+      expect(state.focusVisibleVertically, `${scenario.width}x${scenario.height} Tab ${index}`).toBe(true);
+      expect(state.focusVisibleInQuick, `${scenario.width}x${scenario.height} Tab ${index}`).toBe(true);
+      expect(Math.abs(state.scrollY - pinnedScrollY), `${scenario.width}x${scenario.height} Tab ${index} scroll`).toBeLessThanOrEqual(1);
+    }
+  }
+});
+
+test("Discover rapid Tab exit cancels pending pinned scroll restoration", async ({ page }) => {
+  const cdp = await page.context().newCDPSession(page);
+  const pressNativeTab = async (modifiers = 0) => {
+    const event = {
+      key: "Tab",
+      code: "Tab",
+      windowsVirtualKeyCode: 9,
+      nativeVirtualKeyCode: 9,
+      modifiers,
+    };
+    await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", ...event });
+    await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", ...event });
+  };
+  const scenarios = [
+    { width: 682, height: 600 },
+    { width: 621, height: 720 },
+  ];
+
+  for (const scenario of scenarios) {
+    for (const direction of ["forward", "reverse"] as const) {
+      await page.setViewportSize(scenario);
+      await page.goto("/discover/");
+      await page.evaluate(() => {
+        const root = document.documentElement;
+        root.style.scrollBehavior = "auto";
+        const scope = document.querySelector<HTMLElement>(".discover-controls-scope")!;
+        const group = document.querySelector<HTMLElement>(".discover-controls-sticky")!;
+        const header = document.querySelector<HTMLElement>(".site-header")!;
+        const runway = scope.getBoundingClientRect().height - group.getBoundingClientRect().height;
+        const stickyStart = scope.getBoundingClientRect().top + window.scrollY - header.getBoundingClientRect().height;
+        window.scrollTo(0, stickyStart + Math.max(1, Math.floor(runway / 2)));
+        root.style.removeProperty("scroll-behavior");
+      });
+      await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+      const pinnedScrollY = await page.evaluate(() => window.scrollY);
+
+      const start = direction === "forward"
+        ? page.locator('.taxonomy-quick [data-group-filter="lighting"]')
+        : page.locator('.discover-search button[type="submit"]');
+      await start.evaluate((target) => target.focus({ preventScroll: true }));
+      await expect(start).toBeFocused();
+      await page.evaluate(() => {
+        const nativeRequestAnimationFrame = window.requestAnimationFrame.bind(window);
+        const nativeCancelAnimationFrame = window.cancelAnimationFrame.bind(window);
+        const pending = new Map<number, FrameRequestCallback>();
+        const events: Array<{ type: string; id?: number; trusted?: boolean; href?: string | null; group?: string; elementId?: string }> = [];
+        let nextId = -1;
+
+        window.requestAnimationFrame = (callback) => {
+          const id = nextId;
+          nextId -= 1;
+          pending.set(id, callback);
+          events.push({ type: "raf-schedule", id });
+          return id;
+        };
+        window.cancelAnimationFrame = (id) => {
+          if (pending.delete(id)) {
+            events.push({ type: "raf-cancel", id });
+            return;
+          }
+          nativeCancelAnimationFrame(id);
+        };
+
+        const recordFocus = (type: string, event: Event) => {
+          const target = event.target instanceof HTMLElement ? event.target : null;
+          events.push({
+            type,
+            trusted: event.isTrusted,
+            href: target?.getAttribute("href"),
+            group: target?.dataset.groupFilter,
+            elementId: target?.id,
+          });
+        };
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Tab") recordFocus("keydown", event);
+        }, true);
+        document.addEventListener("focusin", (event) => recordFocus("focusin", event), true);
+
+        Object.assign(window, {
+          __rapidTabGate: {
+            events,
+            pending,
+            release: () => {
+              window.requestAnimationFrame = nativeRequestAnimationFrame;
+              window.cancelAnimationFrame = nativeCancelAnimationFrame;
+              const callbacks = [...pending.values()];
+              pending.clear();
+              return new Promise<void>((resolve) => {
+                nativeRequestAnimationFrame((timestamp) => {
+                  events.push({ type: "raf-release" });
+                  callbacks.forEach((callback) => callback(timestamp));
+                  nativeRequestAnimationFrame(() => nativeRequestAnimationFrame(() => resolve()));
+                });
+              });
+            },
+          },
+        });
+      });
+
+      const modifiers = direction === "reverse" ? 8 : 0;
+      await pressNativeTab(modifiers);
+      const expectedInside = direction === "forward"
+        ? page.locator('.taxonomy-quick [data-group-filter="color"]')
+        : page.locator("#primitive-search");
+      await expect(expectedInside).toBeFocused();
+      await pressNativeTab(modifiers);
+
+      const expectedExitHref = direction === "forward"
+        ? "/media/primitives/001-primitive-subject-role.webp"
+        : "/anatomy/?category=color";
+      const race = await page.evaluate((href) => {
+        const gate = (window as typeof window & {
+          __rapidTabGate: {
+            events: Array<{ type: string; id?: number; trusted?: boolean; href?: string | null; group?: string; elementId?: string }>;
+            pending: Map<number, FrameRequestCallback>;
+            release: () => Promise<void>;
+          };
+        }).__rapidTabGate;
+        const active = document.activeElement as HTMLElement | null;
+        const keydownIndexes = gate.events
+          .map((event, index) => ({ event, index }))
+          .filter(({ event }) => event.type === "keydown");
+        const insideFocusIndex = gate.events.findIndex((event) => (
+          event.type === "focusin"
+          && (event.group === "color" || event.elementId === "primitive-search")
+        ));
+        const outsideFocusIndex = gate.events.findIndex((event) => event.type === "focusin" && event.href === href);
+        const restoreSchedules = gate.events
+          .slice(insideFocusIndex + 1, keydownIndexes[1]?.index)
+          .filter((event) => event.type === "raf-schedule");
+        const restoreId = restoreSchedules[0]?.id;
+        return {
+          activeHref: active?.getAttribute("href"),
+          activeOwnerIsTop: active?.ownerDocument.defaultView === window.top,
+          activeOutsideGroup: !document.querySelector<HTMLElement>(".discover-controls-sticky")!.contains(active),
+          keydowns: gate.events
+            .filter((event) => event.type === "keydown")
+            .map((event) => ({
+              type: event.type,
+              trusted: event.trusted,
+              identity: event.group ?? event.elementId ?? "",
+            })),
+          releaseCount: gate.events.filter((event) => event.type === "raf-release").length,
+          insideFocusRecorded: insideFocusIndex >= 0,
+          outsideFocusRecorded: outsideFocusIndex >= 0,
+          restoreScheduleCount: restoreSchedules.length,
+          restoreCanceledAfterExit: gate.events
+            .slice(outsideFocusIndex + 1)
+            .some((event) => event.type === "raf-cancel" && event.id === restoreId),
+          expectedActive: active?.getAttribute("href") === href,
+        };
+      }, expectedExitHref);
+      expect(race, `${scenario.width}x${scenario.height} ${direction} gated race`).toEqual({
+        activeHref: expectedExitHref,
+        activeOwnerIsTop: true,
+        activeOutsideGroup: true,
+        keydowns: [
+          { type: "keydown", trusted: true, identity: direction === "forward" ? "lighting" : "" },
+          { type: "keydown", trusted: true, identity: direction === "forward" ? "color" : "primitive-search" },
+        ],
+        releaseCount: 0,
+        insideFocusRecorded: true,
+        outsideFocusRecorded: true,
+        restoreScheduleCount: 1,
+        restoreCanceledAfterExit: true,
+        expectedActive: true,
+      });
+      await page.evaluate(() => (window as typeof window & {
+        __rapidTabGate: { release: () => Promise<void> };
+      }).__rapidTabGate.release());
+
+      await expect.poll(() => page.evaluate((originalScrollY) => ({
+        activeOutsideGroup: !document.querySelector<HTMLElement>(".discover-controls-sticky")!.contains(document.activeElement),
+        movedFromPinned: Math.abs(window.scrollY - originalScrollY) > 100,
+      }), pinnedScrollY), { message: `${scenario.width}x${scenario.height} ${direction} native exit` })
+        .toEqual({ activeOutsideGroup: true, movedFromPinned: true });
+      const focus = await page.evaluate(() => {
+        const rect = (document.activeElement as HTMLElement).getBoundingClientRect();
+        return { centerY: rect.top + rect.height / 2, viewportHeight: window.innerHeight };
+      });
+      expect(focus.centerY, `${scenario.width}x${scenario.height} ${direction} focus center`).toBeGreaterThanOrEqual(0);
+      expect(focus.centerY, `${scenario.width}x${scenario.height} ${direction} focus center`).toBeLessThanOrEqual(focus.viewportHeight);
+    }
+  }
+});
+
+test("floating controls use the inline fallback when no safe vertical lane exists", async ({ page }) => {
+  await page.addInitScript(() => {
+    const viewport = new EventTarget() as EventTarget & {
+      height: number;
+      offsetTop: number;
+      offsetLeft: number;
+      width: number;
+      pageLeft: number;
+      pageTop: number;
+      scale: number;
+    };
+    Object.assign(viewport, {
+      height: 720,
+      offsetTop: 0,
+      offsetLeft: 65,
+      width: 300,
+      pageLeft: 65,
+      pageTop: 0,
+      scale: 1.3,
+    });
+    Object.defineProperty(window, "visualViewport", { configurable: true, value: viewport });
+  });
+  await page.setViewportSize({ width: 390, height: 720 });
+  await page.goto("/discover/");
+  await page.evaluate(() => {
+    const blocker = document.createElement("div");
+    blocker.dataset.floatingTarget = "";
+    blocker.dataset.testFloatingBlocker = "";
+    blocker.style.cssText = "position:fixed;inset:80px 0 0;pointer-events:none";
+    document.body.append(blocker);
+    window.dispatchEvent(new Event("scroll"));
+  });
+
+  await expect.poll(() => page.locator("html").evaluate((root) => ({
+    compact: root.hasAttribute("data-compact-visual-viewport"),
+    inline: root.hasAttribute("data-floating-controls-inline"),
+    panned: root.hasAttribute("data-panned-visual-viewport"),
+  }))).toEqual({ compact: true, inline: true, panned: true });
+  const controls = await page.locator("[data-spotlight-launcher], [data-shortcut-trigger]").evaluateAll((elements) => elements.map((element) => ({
+    height: element.getBoundingClientRect().height,
+    left: element.getBoundingClientRect().left,
+    position: getComputedStyle(element).position,
+    right: element.getBoundingClientRect().right,
+  })));
+  for (const control of controls) {
+    expect(control.position).not.toBe("fixed");
+    expect(control.height).toBeLessThanOrEqual(64);
+    expect(control.left).toBeGreaterThanOrEqual(65);
+    expect(control.right).toBeLessThanOrEqual(365);
   }
 });
 
@@ -247,11 +788,14 @@ test("floating controls follow a horizontally panned visual viewport", async ({ 
 
   const assertInsideVisualViewport = async () => page.evaluate(() => {
     const viewport = window.visualViewport!;
+    const visibleTop = viewport.offsetTop;
+    const visibleBottom = viewport.offsetTop + viewport.height;
     const visibleLeft = viewport.offsetLeft;
     const visibleRight = viewport.offsetLeft + viewport.width;
     const launcher = document.querySelector<HTMLElement>("[data-spotlight-launcher]")!.getBoundingClientRect();
     const help = document.querySelector<HTMLElement>("[data-shortcut-trigger]")!.getBoundingClientRect();
-    return { visibleLeft, visibleRight, launcher, help };
+    const headerBottom = document.querySelector<HTMLElement>(".site-header")!.getBoundingClientRect().bottom;
+    return { visibleTop, visibleBottom, visibleLeft, visibleRight, headerBottom, launcher, help };
   });
 
   for (const offsetLeft of [65, 130]) {
@@ -262,6 +806,12 @@ test("floating controls follow a horizontally panned visual viewport", async ({ 
     expect(geometry.help.left).toBeGreaterThanOrEqual(geometry.visibleLeft);
     expect(geometry.help.right).toBeLessThanOrEqual(geometry.visibleRight);
     expect(geometry.launcher.right).toBeLessThanOrEqual(geometry.help.left - 4);
+    expect(geometry.launcher.height).toBeLessThanOrEqual(64);
+    expect(geometry.help.height).toBeLessThanOrEqual(64);
+    expect(geometry.launcher.top).toBeGreaterThanOrEqual(geometry.headerBottom + 4);
+    expect(geometry.help.top).toBeGreaterThanOrEqual(geometry.headerBottom + 4);
+    expect(geometry.launcher.bottom).toBeLessThanOrEqual(geometry.visibleBottom);
+    expect(geometry.help.bottom).toBeLessThanOrEqual(geometry.visibleBottom);
   }
 
   await page.getByRole("button", { name: "Tìm trong Prompt Atlas" }).click();

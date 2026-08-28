@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
 import PrimitiveCard from "../components/PrimitiveCard.astro";
 import { primitiveEntries, primitiveGroups, primitiveManifestVersion } from "../lib/primitives";
+import { primitiveAnatomyGroupMappings } from "../lib/primitive-anatomy";
 
 const specimens = [primitiveEntries[0], primitiveEntries[90], primitiveEntries[166]];
 const jsonLd = {
@@ -24,10 +25,10 @@ const jsonLd = {
 >
   <section class="discover-intro shell" aria-labelledby="discover-title">
     <div class="discover-intro__copy">
-      <p class="eyebrow">PROMPT PRIMITIVES / DATASET {primitiveManifestVersion}</p>
-      <h1 id="discover-title">Xây một khung hình<br /><em>từ ngôn ngữ nhìn thấy.</em></h1>
-      <p>187 primitive đã được kiểm chứng bằng ảnh tham chiếu. Lọc theo cấu trúc hình ảnh, đọc prompt fragment, rồi đưa thành phần vào Composer mà không rời mạch khám phá.</p>
-      <div class="discover-intro__metrics" aria-label="Quy mô thư viện">
+      <p class="eyebrow" data-floating-target>PROMPT PRIMITIVES / DATASET {primitiveManifestVersion}</p>
+      <h1 id="discover-title" data-floating-target>Xây một khung hình<br /><em>từ ngôn ngữ nhìn thấy.</em></h1>
+      <p data-floating-target>187 primitive đã được kiểm chứng bằng ảnh tham chiếu. Lọc theo cấu trúc hình ảnh, đọc prompt fragment, rồi đưa thành phần vào Composer mà không rời mạch khám phá.</p>
+      <div class="discover-intro__metrics" aria-label="Quy mô thư viện" data-floating-target>
         <span><strong>187</strong> primitives</span>
         <span><strong>07</strong> nhóm taxonomy</span>
         <span><strong>1:1</strong> ảnh / prompt</span>
@@ -35,7 +36,7 @@ const jsonLd = {
     </div>
     <div class="discover-specimens" aria-label="Mẫu Prompt primitives">
       {specimens.map((primitive, index) => (
-        <figure style={`--specimen-index:${index}`}>
+        <figure style={`--specimen-index:${index}`} data-floating-target>
           <img src={primitive.thumbnail} width="640" height="512" alt={primitive.alt.vi} fetchpriority={index === 0 ? "high" : undefined} />
           <figcaption><span>{String(primitive.index).padStart(3, "0")}</span><strong>{primitive.labelVi}</strong></figcaption>
         </figure>
@@ -43,34 +44,59 @@ const jsonLd = {
     </div>
   </section>
 
-  <section class="discover-workspace" aria-label="Thư viện Prompt primitives" data-discover-workspace>
-    <div class="discover-toolbar-wrap">
-      <div class="discover-toolbar shell">
-        <form class="discover-search" role="search" data-discover-search-form>
-          <label for="primitive-search">Tìm trong Prompt primitives</label>
-          <span><Icon name="search" size={18} /></span>
-          <input id="primitive-search" type="search" name="q" autocomplete="off" placeholder="vai trò, vật liệu, góc máy, ánh sáng…" data-discover-search />
-          <button type="submit">Tìm</button>
-        </form>
+  <section class="discovery-layer-guide shell" aria-label="Styles, Prompt primitives và Image Anatomy" data-floating-target>
+    <header>
+      <p class="eyebrow">BA LỚP / MỘT HÀNH TRÌNH</p>
+      <h2>Chọn ngôn ngữ, cấu trúc chỉ dẫn, rồi tinh chỉnh điều mắt thấy.</h2>
+    </header>
+    <ol>
+      <li><span>01</span><strong>Styles định hình ngôn ngữ thị giác.</strong><a href="/">Khám phá Styles <Icon name="arrow-right" size={16} /></a></li>
+      <li><span>02</span><strong>Prompt primitives cấu trúc chỉ dẫn.</strong><a href="#discover-results">Chọn primitive <Icon name="arrow-down" size={16} /></a></li>
+      <li><span>03</span><strong>Image Anatomy tinh chỉnh thuộc tính quan sát được.</strong><a href="/anatomy/">Mở Image Anatomy <Icon name="arrow-right" size={16} /></a></li>
+    </ol>
+    <nav aria-label="Ánh xạ Prompt primitive sang Image Anatomy">
+      {primitiveAnatomyGroupMappings.map((mapping) => (
+        <a href={mapping.href}>
+          <span>{mapping.primitiveGroupLabel}</span>
+          <strong>{mapping.anatomyCategoryLabel}</strong>
+          <Icon name="arrow-right" size={15} />
+        </a>
+      ))}
+    </nav>
+  </section>
 
-        <div class="discover-toolbar__actions">
-          <a class="discover-skip-results" href="#discover-results" data-skip-to-results>Bỏ qua bộ lọc, tới kết quả</a>
-          <button class="facet-toggle" type="button" data-facet-toggle aria-expanded="false" aria-controls="taxonomy-panel">
-            Taxonomy <span data-active-filter-count>0</span>
-          </button>
-          <div class="view-switch" role="group" aria-label="Kiểu hiển thị">
-            <button type="button" data-view="grid" aria-pressed="true">Lưới</button>
-            <button type="button" data-view="list" aria-pressed="false">Danh sách</button>
+  <section class="discover-workspace" aria-label="Thư viện Prompt primitives" data-discover-workspace>
+    <div class="discover-controls-scope">
+      <div class="discover-controls-sticky">
+        <div class="discover-toolbar-wrap">
+          <div class="discover-toolbar shell" data-catalog-toolbar="dense">
+            <form class="discover-search" role="search" data-discover-search-form data-catalog-search data-floating-target>
+              <label for="primitive-search">Tìm trong Prompt primitives</label>
+              <span><Icon name="search" size={18} /></span>
+              <input id="primitive-search" type="search" name="q" autocomplete="off" placeholder="vai trò, vật liệu, góc máy, ánh sáng…" data-discover-search />
+              <button type="submit">Tìm</button>
+            </form>
+
+            <div class="discover-toolbar__actions" data-floating-target>
+              <a class="discover-skip-results" href="#discover-results" data-skip-to-results>Bỏ qua bộ lọc, tới kết quả</a>
+              <button class="facet-toggle" type="button" data-facet-toggle aria-expanded="false" aria-controls="taxonomy-panel">
+                Taxonomy <span data-active-filter-count>0</span>
+              </button>
+              <div class="view-switch" role="group" aria-label="Kiểu hiển thị">
+                <button type="button" data-view="grid" aria-pressed="true">Lưới</button>
+                <button type="button" data-view="list" aria-pressed="false">Danh sách</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="taxonomy-quick shell" aria-label="Lọc nhanh theo nhóm">
-      <button type="button" data-group-filter="all" aria-pressed="true"><span>00</span>Tất cả <b>{primitiveEntries.length}</b></button>
-      {primitiveGroups.map((group) => (
-        <button type="button" data-group-filter={group.id} aria-pressed="false"><span>{group.order}</span>{group.label} <b>{group.count}</b></button>
-      ))}
+        <div class="taxonomy-quick shell" aria-label="Lọc nhanh theo nhóm" data-floating-target>
+          <button type="button" data-group-filter="all" aria-pressed="true"><span>00</span>Tất cả <b>{primitiveEntries.length}</b></button>
+          {primitiveGroups.map((group) => (
+            <button type="button" data-group-filter={group.id} aria-pressed="false"><span>{group.order}</span>{group.label} <b>{group.count}</b></button>
+          ))}
+        </div>
+      </div>
     </div>
 
     <div class="discover-layout shell">

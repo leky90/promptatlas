@@ -20,33 +20,35 @@ const jsonLd = {
 
 <BaseLayout title="Image Anatomy V2: 116 thuộc tính hình ảnh | Prompt Atlas" description="Tra cứu 116 thuộc tính hình ảnh, giá trị Core và Advanced bằng ví dụ trực quan đã kiểm định." bodyClass="anatomy-page" jsonLd={jsonLd}>
   <header class="anatomy-hero shell">
-    <p class="eyebrow">IMAGE ANATOMY / V2</p>
-    <h1>Gọi đúng tên.<br /><em>Đổi đúng thuộc tính.</em></h1>
-    <p>Đi từ nhóm đến thuộc tính, giá trị và ví dụ. Mỗi thay đổi đều gắn với cụm prompt và dấu hiệu có thể quan sát.</p>
-    <dl class="anatomy-metrics" aria-label="Quy mô Image Anatomy">
+    <p class="eyebrow" data-floating-target>IMAGE ANATOMY / V2</p>
+    <h1 data-floating-target>Gọi đúng tên.<br /><em>Đổi đúng thuộc tính.</em></h1>
+    <p data-floating-target>Đi từ nhóm đến thuộc tính, giá trị và ví dụ. Mỗi thay đổi đều gắn với cụm prompt và dấu hiệu có thể quan sát.</p>
+    <dl class="anatomy-metrics" aria-label="Quy mô Image Anatomy" data-floating-target>
       <div><dt>Nhóm</dt><dd>{anatomyCategories.length}</dd></div>
       <div><dt>Thuộc tính</dt><dd>{anatomyDimensions.length}</dd></div>
       <div><dt>Giá trị</dt><dd>360</dd></div>
       <div><dt>Ví dụ</dt><dd>600</dd></div>
     </dl>
-    <p class="anatomy-hierarchy"><b>Cấu trúc</b> {anatomyHierarchy}</p>
+    <p class="anatomy-hierarchy" data-floating-target><b>Cấu trúc</b> {anatomyHierarchy}</p>
   </header>
 
   <section class="anatomy-browser" aria-labelledby="anatomy-browser-title">
     <div class="anatomy-toolbar-wrap">
-      <div class="anatomy-toolbar shell">
-        <div class="search-field">
+      <div class="anatomy-toolbar catalog-toolbar shell" data-catalog-toolbar="standard">
+        <div class="search-field" data-catalog-search data-floating-target>
           <label for="anatomy-search">Tìm thuộc tính hoặc giá trị</label>
           <span class="search-field__icon"><Icon name="search" size={18} /></span>
           <input id="anatomy-search" type="search" autocomplete="off" placeholder="góc máy, da, ánh sáng, màu…" data-anatomy-search />
         </div>
-        <div class="filter-row" role="group" aria-label="Lọc theo nhóm Image Anatomy">
+        <div class="filter-row" role="group" aria-label="Lọc theo nhóm Image Anatomy" data-catalog-filters data-floating-target>
           <button class="filter-chip is-active" type="button" data-category-filter="all" aria-pressed="true">Tất cả</button>
           {anatomyCategories.map((category) => (
             <button class="filter-chip" type="button" data-category-filter={category.categoryId} aria-pressed="false">{category.label.vi}</button>
           ))}
         </div>
-        <p class="anatomy-result"><strong data-anatomy-count>{anatomyDimensions.length}</strong> / {anatomyDimensions.length} thuộc tính</p>
+        <div class="catalog-toolbar__status" data-catalog-status data-floating-target>
+          <p class="anatomy-result"><strong data-anatomy-count>{anatomyDimensions.length}</strong> / {anatomyDimensions.length} thuộc tính</p>
+        </div>
       </div>
     </div>
 

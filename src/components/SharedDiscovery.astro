@@ -67,30 +67,32 @@ const index = [
 const serializedIndex = JSON.stringify(index).replace(/</gu, "\\u003c");
 ---
 
-<button
-  class="spotlight-launcher"
-  type="button"
-  data-spotlight-trigger
-  data-spotlight-launcher
-  aria-label="Tìm trong Prompt Atlas"
-  aria-haspopup="dialog"
-  aria-controls="spotlight-dialog"
->
-  <Icon name="search" size={19} />
-  <span>Tìm trong Prompt Atlas</span>
-  <kbd>⌘K</kbd>
-</button>
+<div class="shared-discovery-controls">
+  <button
+    class="spotlight-launcher"
+    type="button"
+    data-spotlight-trigger
+    data-spotlight-launcher
+    aria-label="Tìm trong Prompt Atlas"
+    aria-haspopup="dialog"
+    aria-controls="spotlight-dialog"
+  >
+    <Icon name="search" size={19} />
+    <span>Tìm trong Prompt Atlas</span>
+    <kbd>⌘K</kbd>
+  </button>
 
-<button
-  class="shortcut-help-trigger"
-  type="button"
-  data-shortcut-trigger
-  aria-label="Xem hướng dẫn phím tắt"
-  aria-haspopup="dialog"
-  aria-controls="shortcut-dialog"
->
-  <Icon name="help-circle" size={22} />
-</button>
+  <button
+    class="shortcut-help-trigger"
+    type="button"
+    data-shortcut-trigger
+    aria-label="Xem hướng dẫn phím tắt"
+    aria-haspopup="dialog"
+    aria-controls="shortcut-dialog"
+  >
+    <Icon name="help-circle" size={22} />
+  </button>
+</div>
 
 <dialog id="spotlight-dialog" class="spotlight-dialog" data-spotlight-dialog aria-labelledby="spotlight-title">
   <div class="spotlight-shell">

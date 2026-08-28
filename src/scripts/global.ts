@@ -255,6 +255,54 @@ function initializeSharedDiscovery() {
 
   const root = document.documentElement;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let clearanceFrame = 0;
+  const syncFloatingClearance = () => {
+    const overflowAnchor = root.style.overflowAnchor;
+    root.style.overflowAnchor = "none";
+    try {
+      root.removeAttribute("data-floating-controls-inline");
+      root.style.setProperty("--floating-content-offset", "0px");
+      const protectedTargets = [...document.querySelectorAll<HTMLElement>("[data-floating-target]")]
+        .filter((target) => target.getClientRects().length > 0);
+      if (protectedTargets.length === 0) return;
+
+      const controls = [launcher, ...document.querySelectorAll<HTMLElement>("[data-shortcut-trigger]")];
+      const controlRects = controls.map((control) => control.getBoundingClientRect());
+      const targetRects = protectedTargets.map((target) => target.getBoundingClientRect());
+      const gap = 4;
+      const forbiddenOffsets = controlRects.flatMap((control) => targetRects
+        .filter((target) => control.right > target.left - gap && control.left < target.right + gap)
+        .map((target) => ({
+          lower: control.top - target.bottom - gap,
+          upper: control.bottom - target.top + gap,
+        }))
+        .filter(({ lower, upper }) => upper > 0 && lower < upper));
+
+      let offset = 0;
+      for (let step = 0; step <= forbiddenOffsets.length; step += 1) {
+        const collisions = forbiddenOffsets.filter(({ lower, upper }) => offset > lower && offset < upper);
+        if (collisions.length === 0) break;
+        offset = Math.ceil(Math.max(...collisions.map(({ upper }) => upper)));
+      }
+
+      if (offset <= 0) return;
+      const headerBottom = document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect().bottom ?? 0;
+      const viewportTop = window.visualViewport?.offsetTop ?? 0;
+      const maximumOffset = Math.floor(Math.min(...controlRects.map((control) => control.top)) - Math.max(headerBottom, viewportTop) - gap);
+      if (offset <= maximumOffset) {
+        root.style.setProperty("--floating-content-offset", `${offset}px`);
+      } else {
+        root.setAttribute("data-floating-controls-inline", "");
+      }
+    } finally {
+      root.getBoundingClientRect();
+      root.style.overflowAnchor = overflowAnchor;
+    }
+  };
+  const scheduleFloatingClearance = () => {
+    window.cancelAnimationFrame(clearanceFrame);
+    clearanceFrame = window.requestAnimationFrame(syncFloatingClearance);
+  };
   const syncViewportInsets = () => {
     const viewport = window.visualViewport;
     const viewportWidth = viewport?.width ?? window.innerWidth;
@@ -269,11 +317,16 @@ function initializeSharedDiscovery() {
     root.style.setProperty("--visual-viewport-center-x", `${viewportLeft + viewportWidth / 2}px`);
     root.style.setProperty("--visual-viewport-right", `${viewportLeft + viewportWidth}px`);
     root.toggleAttribute("data-compact-visual-viewport", viewportWidth <= 360);
+    root.toggleAttribute("data-panned-visual-viewport", viewportLeft > 0);
+    scheduleFloatingClearance();
   };
   syncViewportInsets();
   window.visualViewport?.addEventListener("resize", syncViewportInsets);
   window.visualViewport?.addEventListener("scroll", syncViewportInsets);
   window.addEventListener("resize", syncViewportInsets);
+  window.addEventListener("scroll", scheduleFloatingClearance, { passive: true });
+  window.addEventListener("load", scheduleFloatingClearance, { once: true });
+  document.fonts?.ready.then(scheduleFloatingClearance);
 
   let index: DiscoveryIndexItem[] = [];
   try {
