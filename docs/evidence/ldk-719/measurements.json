@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "issue": "LDK-719",
+  "baseRevision": "b2523b11b23796789ecd3f9502ea165f1cbe0b5d",
+  "sourceRevision": "0add1afc984ff2fa1067e19f4978b30be12c1ccb",
+  "measurementWindowUtc": {
+    "startedAt": "2026-08-28T18:18:09.803Z",
+    "endedAt": "2026-08-28T18:19:37.147Z"
+  },
+  "target": {
+    "kind": "local-production-build",
+    "origin": "http://127.0.0.1:4719",
+    "authentication": "none",
+    "routes": {
+      "home": "/",
+      "discover": "/discover/",
+      "anatomy": "/anatomy/"
+    }
+  },
+  "budget": {
+    "largestContentfulPaintMs": 2500,
+    "cumulativeLayoutShift": 0.1
+  },
+  "runner": {
+    "lighthouseVersion": "13.4.1",
+    "nodeVersion": "24.18.1",
+    "npmVersion": "11.16.0",
+    "chromiumCliVersion": "144.0.7558.0",
+    "formFactor": "mobile",
+    "screenEmulation": {
+      "width": 412,
+      "height": 823,
+      "deviceScaleFactor": 1.75,
+      "mobile": true
+    },
+    "throttlingMethod": "simulate",
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 562.5,
+      "downloadThroughputKbps": 1474.56,
+      "uploadThroughputKbps": 675,
+      "cpuSlowdownMultiplier": 4
+    },
+    "sequentialRuns": true,
+    "repetitionsPerRoute": 3
+  },
+  "summary": {
+    "status": "pass",
+    "home": {
+      "worstLargestContentfulPaintMs": 2104.40685,
+      "worstCumulativeLayoutShift": 0
+    },
+    "discover": {
+      "worstLargestContentfulPaintMs": 2254.459,
+      "worstCumulativeLayoutShift": 0.0008884555349455379
+    },
+    "anatomy": {
+      "worstLargestContentfulPaintMs": 1801.1419,
+      "worstCumulativeLayoutShift": 0.03829642347517886
+    }
+  },
+  "measurements": [
+    {
+      "run": 1,
+      "route": "home",
+      "fetchTime": "2026-08-28T18:18:09.803Z",
+      "largestContentfulPaintMs": 2104.40685,
+      "cumulativeLayoutShift": 0,
+      "performanceScore": 0.98,
+      "rawReport": "raw/run-1/home.report.json.gz",
+      "rawSha256": "62ba0013138bf190ab0e12a48d5d9418387f7a34d052e7e41733f9573eb8f9c7",
+      "gzipSha256": "69aa2d381d5eb6096038ef20dd1521f5c438f0406d7069b87e528c89f0c26244"
+    },
+    {
+      "run": 1,
+      "route": "discover",
+      "fetchTime": "2026-08-28T18:18:20.683Z",
+      "largestContentfulPaintMs": 2254.459,
+      "cumulativeLayoutShift": 0.0008884555349455379,
+      "performanceScore": 0.97,
+      "rawReport": "raw/run-1/discover.report.json.gz",
+      "rawSha256": "43ca8546f8b5351b5b74a6deca917f524df26724c6296173d9716c37b201d4fc",
+      "gzipSha256": "47592281394f9055df9d246ec4bd6139bd0b2572a7b7daa40d500de1ec5c75d2"
+    },
+    {
+      "run": 1,
+      "route": "anatomy",
+      "fetchTime": "2026-08-28T18:18:32.115Z",
+      "largestContentfulPaintMs": 1801.1419,
+      "cumulativeLayoutShift": 0.03829642347517886,
+      "performanceScore": 0.99,
+      "rawReport": "raw/run-1/anatomy.report.json.gz",
+      "rawSha256": "9e9b716bf84f2ebfcf7bbd5b96ac189d80bd6703ee7330d2fd447bfed0b1bd4f",
+      "gzipSha256": "c4db9037ef6df6693e9ea0c1f03b2917dd55a7a09f21e8c516bd0fd8c1ee0304"
+    },
+    {
+      "run": 2,
+      "route": "home",
+      "fetchTime": "2026-08-28T18:18:42.232Z",
+      "largestContentfulPaintMs": 1952.4545,
+      "cumulativeLayoutShift": 0,
+      "performanceScore": 0.99,
+      "rawReport": "raw/run-2/home.report.json.gz",
+      "rawSha256": "4bc966e0d93fe195c78481f593f812c21a9a83f91e948ea0a3d0f294c3fd23cd",
+      "gzipSha256": "a837c93b4e969e73bd8589b45d9ea6e5bb39100bf9425159bb925ff1f980eec8"
+    },
+    {
+      "run": 2,
+      "route": "discover",
+      "fetchTime": "2026-08-28T18:18:53.103Z",
+      "largestContentfulPaintMs": 2177.0477,
+      "cumulativeLayoutShift": 0.0008884555349455379,
+      "performanceScore": 0.98,
+      "rawReport": "raw/run-2/discover.report.json.gz",
+      "rawSha256": "0e7afbfed767b1b16e6c077f5f64974c2b0c43ade1f5084fb551bf7580a89d0c",
+      "gzipSha256": "cc7a2f281173b9f2f3313aa6e035461c40dcb6ae7eb9271ec28b92faf17307aa"
+    },
+    {
+      "run": 2,
+      "route": "anatomy",
+      "fetchTime": "2026-08-28T18:19:04.675Z",
+      "largestContentfulPaintMs": 1651.2781,
+      "cumulativeLayoutShift": 0.03829642347517886,
+      "performanceScore": 1,
+      "rawReport": "raw/run-2/anatomy.report.json.gz",
+      "rawSha256": "9bfe0e636355b7a2200c6b037ab9e1961c89f6ce1c7042388f79727a0dbda8fc",
+      "gzipSha256": "4e6f4e62c9dfdad024096f80db21ec0cfd3900ac65834e791cfe63bb8bbf8bf6"
+    },
+    {
+      "run": 3,
+      "route": "home",
+      "fetchTime": "2026-08-28T18:19:14.785Z",
+      "largestContentfulPaintMs": 2104.1703,
+      "cumulativeLayoutShift": 0,
+      "performanceScore": 0.98,
+      "rawReport": "raw/run-3/home.report.json.gz",
+      "rawSha256": "4c5e6c5e9f0d0c34b54a44eaae6baa0221d2ebe2f1eec5e0b6332ebf76de7a2f",
+      "gzipSha256": "31fc72b81c9918ec278dfe51e2af8edbbba875287a520cd09e962600e0478ee6"
+    },
+    {
+      "run": 3,
+      "route": "discover",
+      "fetchTime": "2026-08-28T18:19:25.670Z",
+      "largestContentfulPaintMs": 2176.9624,
+      "cumulativeLayoutShift": 0.0008884555349455379,
+      "performanceScore": 0.98,
+      "rawReport": "raw/run-3/discover.report.json.gz",
+      "rawSha256": "a94618b5879ee19c83182f53a2f9809c79c32ad699989da8f0e3b95f847c25e1",
+      "gzipSha256": "70120023784a351c90b8cfec1add6d8d739ef2613135305d817813c13e05f084"
+    },
+    {
+      "run": 3,
+      "route": "anatomy",
+      "fetchTime": "2026-08-28T18:19:37.147Z",
+      "largestContentfulPaintMs": 1651.0337,
+      "cumulativeLayoutShift": 0.03829642347517886,
+      "performanceScore": 1,
+      "rawReport": "raw/run-3/anatomy.report.json.gz",
+      "rawSha256": "b54221bd391cc9627c00f25b3020def82a4bf44a41b6208c956325a6af94cd89",
+      "gzipSha256": "90f58faa3109959bec0051c1ff8f713e5376d0b0c897cedd6eca657fcccf9d4c"
+    }
+  ]
+}
