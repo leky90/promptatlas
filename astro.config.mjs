@@ -7,6 +7,6 @@ export default defineConfig({
   integrations: [sitemap()],
   prefetch: false,
   build: {
-    inlineStylesheets: "always",
+    inlineStylesheets: "auto",
   },
 });

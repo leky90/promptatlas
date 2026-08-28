@@ -291,10 +291,10 @@ test("mobile Home LCP title uses a network-independent font stack", async ({ pag
   expect(fontFamily).toContain("system-ui");
 });
 
-test("production pages inline the global stylesheet", async ({ page }) => {
+test("production pages retain a referenced Astro stylesheet for delivery validation", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(0);
+  await expect(page.locator('link[rel="stylesheet"][href*="/_astro/"]')).not.toHaveCount(0);
 });
 
 test("below-fold Home cards do not compete with the hero image", async ({ page }) => {
@@ -335,6 +335,26 @@ test("Spotlight index stays off the critical HTML path and loads on demand", asy
   const indexRequest = page.waitForRequest((request) => new URL(request.url()).pathname === "/spotlight-index.json");
   await page.getByRole("button", { name: /Tìm trong Prompt Atlas/u }).click();
   await indexRequest;
+  const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
+  await dialog.getByRole("combobox").fill("góc máy");
+  await expect(dialog.locator("[data-spotlight-result-row]").first()).toBeVisible();
+});
+
+test("Spotlight retries the index after a transient request failure", async ({ page }) => {
+  let requests = 0;
+  await page.route("**/spotlight-index.json", async (route) => {
+    requests += 1;
+    if (requests === 1) await route.abort("failed");
+    else await route.continue();
+  });
+  await page.goto("/");
+
+  await page.getByRole("button", { name: /Tìm trong Prompt Atlas/u }).click();
+  await expect.poll(() => requests).toBe(1);
+  await page.getByRole("button", { name: "Đóng tìm kiếm" }).click();
+  await page.getByRole("button", { name: /Tìm trong Prompt Atlas/u }).click();
+
+  await expect.poll(() => requests).toBe(2);
   const dialog = page.getByRole("dialog", { name: "Tìm trong Prompt Atlas" });
   await dialog.getByRole("combobox").fill("góc máy");
   await expect(dialog.locator("[data-spotlight-result-row]").first()).toBeVisible();

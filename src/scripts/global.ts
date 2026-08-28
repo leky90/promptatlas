@@ -361,23 +361,31 @@ function initializeSharedDiscovery() {
     if (indexRequest) return indexRequest;
     const url = indexSource.dataset.indexUrl;
     indexRequest = (async () => {
+      let loaded = false;
       try {
         if (!url) throw new Error("Spotlight index URL is missing");
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Spotlight index request failed: ${response.status}`);
         const parsed = await response.json();
         index = Array.isArray(parsed) ? parsed : [];
+        indexReady = true;
+        loaded = true;
       } catch {
         index = [];
-      } finally {
-        indexReady = true;
+        indexReady = false;
         if (dialog.open) {
+          resultList.replaceChildren();
+          count.textContent = "Không tải được chỉ mục. Đóng và mở lại để thử lại.";
+        }
+      } finally {
+        if (loaded && dialog.open) {
           render();
           if (pendingNavigation !== 0) {
             setActive(pendingNavigation > 0 ? 0 : resultRows.length - 1);
             pendingNavigation = 0;
           }
         }
+        if (!loaded) indexRequest = null;
       }
     })();
     return indexRequest;
