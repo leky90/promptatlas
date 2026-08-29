@@ -41,6 +41,8 @@ test("public contact path exposes the owner-declared mailbox, SLA and escalation
   await expect(contact).toContainText("1 ngày làm việc");
   await expect(contact).toContainText("4 giờ làm việc");
   await expect(contact).toContainText("75% SLA");
+  await expect(contact).toContainText("Site outage, security incident, privacy incident");
+  await expect(contact).toContainText("bất kỳ tình huống nào có nguy cơ tiếp tục gây hại");
   await expect(contact).toContainText("không phải xác nhận thư đã được giao hoặc đọc");
 
   const footer = page.locator("footer");
