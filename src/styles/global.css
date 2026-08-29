@@ -1867,6 +1867,85 @@ button {
   line-height: 1.6;
 }
 
+.policy-hero {
+  min-height: 58svh;
+}
+
+.policy-hero h1 {
+  max-width: 1050px;
+}
+
+.policy-content h3 {
+  max-width: 820px;
+  margin: 42px 0 0;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.policy-content ul {
+  max-width: 820px;
+  display: grid;
+  gap: 14px;
+  margin: 34px 0 0;
+  padding-left: 24px;
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.policy-content a {
+  color: var(--ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.policy-contact-card {
+  max-width: 820px;
+  margin-top: 40px;
+  padding: clamp(24px, 4vw, 44px);
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.policy-contact-card h3 {
+  margin-top: 0;
+}
+
+.policy-contact-card dl {
+  display: grid;
+  margin: 28px 0 0;
+}
+
+.policy-contact-card dl div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 0.7fr);
+  gap: 24px;
+  padding: 16px 0;
+  border-top: 1px solid rgb(241 238 230 / 20%);
+}
+
+.policy-contact-card dt {
+  color: #b9bab3;
+}
+
+.policy-contact-card dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.policy-contact-card p,
+.policy-note {
+  margin: 22px 0 0;
+  color: #c9c8c0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.policy-content > section {
+  scroll-margin-top: calc(var(--header-height) + 24px);
+}
+
 .method-flow {
   display: grid;
   grid-template-columns: 1fr auto 1.2fr auto 1fr auto 1fr;
@@ -2937,6 +3016,11 @@ button {
 
   .method-layout {
     gap: 40px;
+  }
+
+  .policy-contact-card dl div {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .method-index {

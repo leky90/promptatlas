@@ -9,6 +9,9 @@ const routes = [
   "/review",
   "/compare/",
   "/methodology/",
+  "/about/",
+  "/privacy/",
+  "/terms/",
 ] as const;
 
 test("primary routes share the approved typography tokens and hero scale", async ({ page }) => {

@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Chính sách quyền riêng tư | Prompt Atlas"
+  description="Chính sách giải thích dữ liệu được xử lý khi bạn dùng website Prompt Atlas tĩnh và local-first."
+  canonicalPath="/privacy/"
+  bodyClass="policy-page"
+>
+  <header class="method-hero policy-hero shell">
+    <p class="eyebrow">PROMPT ATLAS / PRIVACY</p>
+    <h1>Chính sách quyền riêng tư</h1>
+    <p>Ngày hiệu lực: 29/08/2026. Prompt Atlas là một website tham chiếu tĩnh do LDKTech vận hành.</p>
+  </header>
+
+  <div class="method-layout policy-layout shell">
+    <aside class="method-index" aria-label="Mục lục chính sách quyền riêng tư">
+      <p class="eyebrow">TRÊN TRANG NÀY</p>
+      <a href="#device">01 / Trên thiết bị</a>
+      <a href="#not-collected">02 / Không thu thập</a>
+      <a href="#infrastructure">03 / Hạ tầng</a>
+      <a href="#sharing">04 / Chia sẻ</a>
+      <a href="#contact">05 / Liên hệ</a>
+      <a href="#changes">06 / Thay đổi</a>
+    </aside>
+
+    <div class="method-content policy-content">
+      <section id="device">
+        <p class="method-content__number">01</p>
+        <h2>Dữ liệu được giữ trên thiết bị.</h2>
+        <ul>
+          <li>Favorites được lưu bằng <code>localStorage</code> trong trình duyệt.</li>
+          <li>Draft Composer, thứ tự thành phần và lựa chọn blend được lưu bằng <code>localStorage</code>.</li>
+          <li>Trạng thái review nội bộ, khi route review được sử dụng, có thể dùng <code>localStorage</code> và <code>sessionStorage</code>.</li>
+          <li>Recipe chia sẻ được mã hóa trong phần fragment (<code>#...</code>) của URL. Trình duyệt không gửi fragment này trong HTTP request tới máy chủ; bất kỳ ai nhận liên kết vẫn có thể đọc recipe chứa trong liên kết.</li>
+          <li>Tệp recipe bạn nhập được xử lý trong trình duyệt và không được tải lên backend của Prompt Atlas.</li>
+        </ul>
+        <p>Bạn có thể xóa Favorites hoặc draft bằng điều khiển trong sản phẩm, xóa dữ liệu website trong cài đặt trình duyệt, hoặc dùng chế độ duyệt web riêng tư. Dữ liệu cục bộ tồn tại cho đến khi bạn xóa, website reset mục tương ứng hoặc trình duyệt tự dọn dữ liệu.</p>
+      </section>
+
+      <section id="not-collected">
+        <p class="method-content__number">02</p>
+        <h2>Dữ liệu không được thu thập ở tầng ứng dụng.</h2>
+        <p>Prompt Atlas hiện không có tài khoản, đăng nhập, form gửi dữ liệu, database người dùng, analytics sản phẩm, advertising tracker hoặc cookie do ứng dụng đặt. Tìm kiếm và lọc chạy trong trình duyệt. Website không đồng bộ Favorites hay draft giữa các thiết bị.</p>
+      </section>
+
+      <section id="infrastructure">
+        <p class="method-content__number">03</p>
+        <h2>Hạ tầng lưu trữ và request metadata.</h2>
+        <p>Khi bạn tải website, nhà cung cấp hosting/CDN có thể xử lý dữ liệu kỹ thuật cần thiết để phân phối và bảo vệ dịch vụ, như địa chỉ IP, user agent, thời điểm request, URL được yêu cầu và thông tin bảo mật mạng. Prompt Atlas không dùng dữ liệu đó để tạo hồ sơ hành vi hoặc quảng cáo.</p>
+        <p>Thời hạn lưu log của hạ tầng phụ thuộc cấu hình và chính sách của nhà cung cấp; tài liệu này không hứa một thời hạn chưa được operator xác minh.</p>
+        <h3>Clipboard, tải xuống và liên kết ngoài</h3>
+        <p>Chức năng sao chép dùng API clipboard của trình duyệt sau thao tác của bạn. Tải recipe tạo tệp cục bộ. Nếu bạn mở liên kết tới website bên thứ ba, bên đó áp dụng chính sách riêng của họ.</p>
+      </section>
+
+      <section id="sharing">
+        <p class="method-content__number">04</p>
+        <h2>Nội dung bạn chia sẻ.</h2>
+        <p>Không đặt dữ liệu cá nhân, bí mật hoặc nội dung không có quyền sử dụng vào recipe hay URL chia sẻ. Người có liên kết có thể chuyển tiếp hoặc lưu nội dung trong fragment.</p>
+      </section>
+
+      <section id="contact">
+        <p class="method-content__number">05</p>
+        <h2>Liên hệ và yêu cầu.</h2>
+        <p>Gửi yêu cầu privacy, rights hoặc takedown tới <a href="mailto:ldktech2017@gmail.com">ldktech2017@gmail.com</a>. Thời hạn phản hồi ban đầu là 1 ngày làm việc, trong support window thứ Hai–thứ Sáu, 09:00–18:00, múi giờ Asia/Ho_Chi_Minh, không tính ngày nghỉ lễ.</p>
+        <p class="policy-note">Liên kết email không tự gửi dữ liệu tới Prompt Atlas và không chứng minh thư đã được giao hoặc đọc.</p>
+      </section>
+
+      <section id="changes">
+        <p class="method-content__number">06</p>
+        <h2>Thay đổi chính sách.</h2>
+        <p>Nếu Prompt Atlas thêm tài khoản, analytics, form gửi dữ liệu, backend sync hoặc mục đích xử lý mới, chính sách phải được cập nhật trước khi tính năng đó được phát hành.</p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
