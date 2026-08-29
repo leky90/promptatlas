@@ -35,6 +35,7 @@ test("public contact path exposes the owner-declared mailbox, SLA and escalation
   await page.goto("/about/#contact");
 
   const contact = page.locator("#contact");
+  await expect(contact).toContainText("Ky Le");
   await expect(contact.getByRole("link", { name: "ldktech2017@gmail.com" })).toHaveAttribute("href", "mailto:ldktech2017@gmail.com");
   await expect(contact).toContainText("2 ngày làm việc");
   await expect(contact).toContainText("1 ngày làm việc");
