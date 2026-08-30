@@ -20,6 +20,12 @@ const completeOutput = async (page: import("@playwright/test").Page) => {
   await page.getByRole("button", { name: "Lưu đánh giá bất biến" }).click();
 };
 
+test("primary navigation links directly to the Review canonical route", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#site-navigation").getByRole("link", { name: "Review mù" }))
+    .toHaveAttribute("href", "/review/");
+});
+
 test("blind review stays neutral until completion and supports keyboard-localized evidence", async ({ page }) => {
   await page.goto("/review/");
   await expect(page.locator("[data-blind-review]")).toBeVisible();
