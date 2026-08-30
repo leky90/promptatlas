@@ -21,9 +21,10 @@ const completeOutput = async (page: import("@playwright/test").Page) => {
 };
 
 test("blind review stays neutral until completion and supports keyboard-localized evidence", async ({ page }) => {
-  await page.goto("/review");
+  await page.goto("/review/");
   await expect(page.locator("[data-blind-review]")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Review mù" })).toHaveAttribute("href", "/review");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://prompt-atlas.ldktech.com/review/");
+  await expect(page.getByRole("link", { name: "Review mù" })).toHaveAttribute("href", "/review/");
   await expect(page.locator("[data-review-status]")).toContainText("Đang mù");
   expect(await page.locator("html").innerText()).not.toMatch(/OpenAI|Google|ChatGPT|Gemini/iu);
   expect(await page.locator("#blind-review-data").textContent()).not.toMatch(/OpenAI|Google|legacy-chatgpt-ui|legacy-gflow-cli/iu);
