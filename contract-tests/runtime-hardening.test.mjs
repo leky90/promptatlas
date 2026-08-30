@@ -29,7 +29,7 @@ test("Review publishes complete default Open Graph and Twitter metadata", async 
     '<meta property="og:site_name" content="Prompt Atlas by LDKTech">',
     '<meta property="og:title" content="Không gian blind review ảnh | Prompt Atlas">',
     '<meta property="og:description" content="Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only.">',
-    '<meta property="og:url" content="https://prompt-atlas.ldktech.com/review">',
+    '<meta property="og:url" content="https://prompt-atlas.ldktech.com/review/">',
     '<meta property="og:image" content="https://prompt-atlas.ldktech.com/media/og-cover.webp">',
     '<meta property="og:image:width" content="1200">',
     '<meta property="og:image:height" content="630">',

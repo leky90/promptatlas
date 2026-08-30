@@ -55,7 +55,7 @@ const reviewData = JSON.stringify({
 });
 const title = "Không gian blind review ảnh | Prompt Atlas";
 const description = "Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only.";
-const canonical = new URL("/review", Astro.site);
+const canonical = new URL("/review/", Astro.site);
 const ogImage = new URL("/media/og-cover.webp", Astro.site);
 ---
 
@@ -87,7 +87,7 @@ const ogImage = new URL("/media/og-cover.webp", Astro.site);
   <header class="neutral-header">
     <a class="neutral-brand" href="/">Prompt Atlas</a>
     <nav aria-label="Blind review">
-      <a href="/review" aria-current="page">Review mù</a>
+      <a href="/review/" aria-current="page">Review mù</a>
       <a href="/">Atlas</a>
     </nav>
   </header>
