@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import test from "node:test";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { after, before, test } from "node:test";
+import { fileURLToPath } from "node:url";
+
+const projectRoot = fileURLToPath(new URL("..", import.meta.url));
+let buildDirectory;
+let builtHeaders;
 
 const requiredHeaders = {
   "x-content-type-options": "nosniff",
@@ -37,6 +45,7 @@ function parseRouteBlocks(source) {
     if (line.trim() === "") continue;
     if (!/^\s/u.test(line)) {
       route = line.trim();
+      assert.equal(blocks.has(route), false, `duplicate Cloudflare Pages route block: ${route}`);
       blocks.set(route, new Map());
       continue;
     }
@@ -53,19 +62,38 @@ function parseRouteBlocks(source) {
   return blocks;
 }
 
-test("Cloudflare Pages applies the required baseline headers to every route", async () => {
-  const source = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
-  const actual = parseGlobalHeaders(source);
+function cacheControlDirectives(value) {
+  return value
+    .split(",")
+    .map((directive) => directive.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+before(async () => {
+  buildDirectory = await mkdtemp(path.join(tmpdir(), "ldk-738-headers-"));
+  execFileSync(
+    path.join(projectRoot, "node_modules", ".bin", "astro"),
+    ["build", "--outDir", buildDirectory],
+    { cwd: projectRoot, stdio: "pipe" },
+  );
+  builtHeaders = await readFile(path.join(buildDirectory, "_headers"), "utf8");
+});
+
+after(async () => {
+  await rm(buildDirectory, { recursive: true, force: true });
+});
+
+test("Cloudflare Pages applies the required baseline headers to every route", () => {
+  const actual = parseGlobalHeaders(builtHeaders);
 
   for (const [name, value] of Object.entries(requiredHeaders)) {
     assert.equal(actual.get(name), value, `${name} must match the approved baseline`);
   }
 });
 
-test("Cloudflare Pages gives immutable caching only to Astro hashed assets", async () => {
-  const source = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
-  const blocks = parseRouteBlocks(source);
-  const lines = source.split(/\r?\n/u);
+test("Cloudflare Pages gives immutable caching only to Astro hashed assets", () => {
+  const blocks = parseRouteBlocks(builtHeaders);
+  const lines = builtHeaders.split(/\r?\n/u);
   const assetIndex = lines.findIndex((line) => line.trim() === "/_astro/*");
   assert.notEqual(assetIndex, -1, "Cloudflare Pages must define a hashed-asset header rule");
   assert.equal(
@@ -75,7 +103,7 @@ test("Cloudflare Pages gives immutable caching only to Astro hashed assets", asy
   );
   assert.deepEqual(
     [...blocks]
-      .filter(([, headers]) => headers.get("cache-control")?.includes("immutable"))
+      .filter(([, headers]) => cacheControlDirectives(headers.get("cache-control") ?? "").includes("immutable"))
       .map(([route]) => route),
     ["/_astro/*"],
     "immutable caching must not apply to stable routes",
