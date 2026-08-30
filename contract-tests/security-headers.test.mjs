@@ -7,6 +7,8 @@ const requiredHeaders = {
   "x-frame-options": "DENY",
   "referrer-policy": "strict-origin-when-cross-origin",
   "permissions-policy": "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
+  "content-security-policy": "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; manifest-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
+  "strict-transport-security": "max-age=31536000; includeSubDomains",
 };
 
 function parseGlobalHeaders(source) {
@@ -34,7 +36,21 @@ test("Cloudflare Pages applies the required baseline headers to every route", as
   for (const [name, value] of Object.entries(requiredHeaders)) {
     assert.equal(actual.get(name), value, `${name} must match the approved baseline`);
   }
+});
 
-  assert.equal(actual.has("content-security-policy"), false, "CSP rollout is outside LDK-718");
-  assert.equal(actual.has("strict-transport-security"), false, "HSTS rollout is outside LDK-718");
+test("Cloudflare Pages gives immutable caching only to Astro hashed assets", async () => {
+  const source = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
+  const lines = source.split(/\r?\n/u);
+  const assetIndex = lines.findIndex((line) => line.trim() === "/_astro/*");
+  assert.notEqual(assetIndex, -1, "Cloudflare Pages must define a hashed-asset header rule");
+  assert.equal(
+    lines[assetIndex + 1]?.trim(),
+    "Cache-Control: public, max-age=31536000, immutable",
+    "content-hashed Astro assets must be long-lived and immutable",
+  );
+
+  const healthIndex = lines.findIndex((line) => line.trim() === "/health.json");
+  assert.notEqual(healthIndex, -1, "the health contract must have an explicit cache rule");
+  assert.equal(lines[healthIndex + 1]?.trim(), "Cache-Control: no-store");
+  assert.equal(lines[healthIndex + 2]?.trim(), "Content-Type: application/json; charset=utf-8");
 });

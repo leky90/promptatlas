@@ -53,7 +53,10 @@ const reviewData = JSON.stringify({
   outputs,
   dimensions,
 });
+const title = "Không gian blind review ảnh | Prompt Atlas";
+const description = "Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only.";
 const canonical = new URL("/review", Astro.site);
+const ogImage = new URL("/media/og-cover.webp", Astro.site);
 ---
 
 <!doctype html>
@@ -62,9 +65,22 @@ const canonical = new URL("/review", Astro.site);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#151613" />
-  <meta name="description" content="Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only." />
+  <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
-  <title>Không gian blind review ảnh | Prompt Atlas</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Prompt Atlas by LDKTech" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+  <title>{title}</title>
 </head>
 <body class="blind-review-page">
   <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
