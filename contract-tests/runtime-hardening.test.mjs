@@ -17,8 +17,8 @@ before(() => {
 
 test("the dedicated health endpoint exposes only the documented safe response", async () => {
   const raw = await readFile(path.join(dist, "health.json"), "utf8");
+  assert.equal(raw, '{"status":"ok"}\n');
   assert.deepEqual(JSON.parse(raw), { status: "ok" });
-  assert.equal(raw.endsWith("\n"), true, "health response must be deterministic text");
 });
 
 test("Review publishes complete default Open Graph and Twitter metadata", async () => {
@@ -34,6 +34,10 @@ test("Review publishes complete default Open Graph and Twitter metadata", async 
     '<meta property="og:image:width" content="1200">',
     '<meta property="og:image:height" content="630">',
     '<meta name="twitter:card" content="summary_large_image">',
+    '<meta name="twitter:title" content="Không gian blind review ảnh | Prompt Atlas">',
+    '<meta name="twitter:description" content="Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only.">',
+    '<meta name="twitter:image" content="https://prompt-atlas.ldktech.com/media/og-cover.webp">',
+    '<link rel="canonical" href="https://prompt-atlas.ldktech.com/review/">',
   ];
 
   for (const tag of required) assert.equal(html.includes(tag), true, `Review is missing ${tag}`);

@@ -29,6 +29,30 @@ function parseGlobalHeaders(source) {
   return headers;
 }
 
+function parseRouteBlocks(source) {
+  const blocks = new Map();
+  let route;
+
+  for (const line of source.split(/\r?\n/u)) {
+    if (line.trim() === "") continue;
+    if (!/^\s/u.test(line)) {
+      route = line.trim();
+      blocks.set(route, new Map());
+      continue;
+    }
+    if (!route) continue;
+
+    const separator = line.indexOf(":");
+    if (separator === -1) continue;
+    blocks.get(route).set(
+      line.slice(0, separator).trim().toLowerCase(),
+      line.slice(separator + 1).trim(),
+    );
+  }
+
+  return blocks;
+}
+
 test("Cloudflare Pages applies the required baseline headers to every route", async () => {
   const source = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
   const actual = parseGlobalHeaders(source);
@@ -40,6 +64,7 @@ test("Cloudflare Pages applies the required baseline headers to every route", as
 
 test("Cloudflare Pages gives immutable caching only to Astro hashed assets", async () => {
   const source = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
+  const blocks = parseRouteBlocks(source);
   const lines = source.split(/\r?\n/u);
   const assetIndex = lines.findIndex((line) => line.trim() === "/_astro/*");
   assert.notEqual(assetIndex, -1, "Cloudflare Pages must define a hashed-asset header rule");
@@ -47,6 +72,13 @@ test("Cloudflare Pages gives immutable caching only to Astro hashed assets", asy
     lines[assetIndex + 1]?.trim(),
     "Cache-Control: public, max-age=31536000, immutable",
     "content-hashed Astro assets must be long-lived and immutable",
+  );
+  assert.deepEqual(
+    [...blocks]
+      .filter(([, headers]) => headers.get("cache-control")?.includes("immutable"))
+      .map(([route]) => route),
+    ["/_astro/*"],
+    "immutable caching must not apply to stable routes",
   );
 
   const healthIndex = lines.findIndex((line) => line.trim() === "/health.json");
