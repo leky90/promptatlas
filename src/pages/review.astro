@@ -53,7 +53,7 @@ const reviewData = JSON.stringify({
   outputs,
   dimensions,
 });
-const canonical = new URL("/review", Astro.site);
+const canonical = new URL("/review/", Astro.site);
 ---
 
 <!doctype html>
@@ -71,7 +71,7 @@ const canonical = new URL("/review", Astro.site);
   <header class="neutral-header">
     <a class="neutral-brand" href="/">Prompt Atlas</a>
     <nav aria-label="Blind review">
-      <a href="/review" aria-current="page">Review mù</a>
+      <a href="/review/" aria-current="page">Review mù</a>
       <a href="/">Atlas</a>
     </nav>
   </header>
