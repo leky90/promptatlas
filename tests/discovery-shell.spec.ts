@@ -282,13 +282,14 @@ test("mobile Home selects a responsive hero asset", async ({ page }) => {
     .toMatch(/cyberpunk-plus-ukiyo-e-plus-glitch-art-chatgpt-mobile\.webp$/u);
 });
 
-test("mobile Home LCP title uses a network-independent font stack", async ({ page }) => {
+test("mobile Home LCP title keeps the shared Instrument Sans contract", async ({ page }) => {
   await page.setViewportSize({ width: 412, height: 823 });
   await page.goto("/");
-  const fontFamily = await page.locator("#hero-title").evaluate((title) => getComputedStyle(title).fontFamily);
+  await page.evaluate(() => document.fonts.ready);
+  const fontFamily = await page.locator("#hero-title.hero-title--contrast")
+    .evaluate((title) => getComputedStyle(title).fontFamily);
 
-  expect(fontFamily).not.toContain("Instrument Sans Variable");
-  expect(fontFamily).toContain("system-ui");
+  expect(fontFamily).toContain("Instrument Sans Variable");
 });
 
 test("production pages retain a referenced Astro stylesheet for delivery validation", async ({ page }) => {
