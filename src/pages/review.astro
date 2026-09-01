@@ -71,7 +71,10 @@ const canonical = new URL("/review/", Astro.site);
 <body class="blind-review-page">
   <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
   <header class="neutral-header">
-    <a class="neutral-brand" href="/">Prompt Atlas</a>
+    <a class="neutral-brand" href="/" aria-label="Prompt Atlas — về Atlas">
+      <img src="/brand/prompt-atlas-mark-primary.svg" width="32" height="32" alt="" />
+      <span>Prompt Atlas</span>
+    </a>
     <nav aria-label="Blind review">
       <a href="/review/" aria-current="page">Review mù</a>
       <a href="/">Atlas</a>
@@ -81,7 +84,7 @@ const canonical = new URL("/review/", Astro.site);
   <section class="review-hero shell" aria-labelledby="review-title">
     <div>
       <p class="eyebrow">IMAGE-ONLY / PROTOCOL 0.2</p>
-      <h1 id="review-title">Blind review, không nhìn nhãn.</h1>
+      <h1 id="review-title" class="hero-title hero-title--focus">Blind review, không nhìn nhãn.</h1>
       <p>Chấm output bằng evidence quan sát được. Mapping danh tính được niêm phong ngoài payload trình duyệt trong suốt review.</p>
     </div>
     <div class="review-status" data-review-status role="status" aria-live="polite">
@@ -213,7 +216,8 @@ const canonical = new URL("/review/", Astro.site);
   .skip-link { position: fixed; z-index: 100; top: 8px; left: 8px; padding: 10px 14px; background: #151613; color: #fff; transform: translateY(-160%); }
   .skip-link:focus { transform: translateY(0); }
   .neutral-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px; padding: 12px clamp(16px, 4vw, 48px); border-bottom: 1px solid #151613; background: #f4f0e7; }
-  .neutral-brand { font-weight: 900; letter-spacing: -.03em; text-decoration: none; }
+  .neutral-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 780; letter-spacing: -.03em; text-decoration: none; }
+  .neutral-brand img { width: 32px; height: 32px; }
   .neutral-header nav { display: flex; align-items: center; gap: 18px; }
   .neutral-header nav a { font: 700 var(--type-meta)/1 var(--font-mono); text-transform: uppercase; }
   .neutral-header nav a[aria-current="page"] { text-decoration-thickness: 3px; text-underline-offset: 6px; }
@@ -221,7 +225,7 @@ const canonical = new URL("/review/", Astro.site);
   .button { min-height: 44px; padding: 10px 16px; border: 1px solid #151613; background: #151613; color: #f4f0e7; font-weight: 800; cursor: pointer; }
   .button--ghost { background: transparent; color: #151613; }
   .review-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .34fr); gap: 32px; padding-block: clamp(48px, 7vw, 92px) 32px; }
-  .review-hero h1 { max-width: 900px; margin: 8px 0 12px; font-size: var(--type-hero); line-height: .92; letter-spacing: -.06em; }
+  .review-hero h1 { max-width: 900px; margin-block: 8px 12px; }
   .review-hero > div > p:last-child { max-width: 680px; font-size: 18px; }
   .review-status { align-self: end; border: 1px solid #151613; background: #151613; color: #f4f0e7; padding: 20px; }
   .review-status span, .review-status small { display: block; color: #b9b5ac; font: var(--type-meta)/1.4 var(--font-mono); text-transform: uppercase; }

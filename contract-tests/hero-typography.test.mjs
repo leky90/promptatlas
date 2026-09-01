@@ -53,3 +53,10 @@ test("the Atlas homepage keeps the shared hero font at mobile widths", async () 
     /\.atlas-page\s+#hero-title\s*\{[^}]*font-family\s*:/su,
   );
 });
+
+test("Blind Review uses the focus title and real brand mark without BaseLayout", async () => {
+  const review = await read("src/pages/review.astro");
+  assert.match(review, /hero-title hero-title--focus/u);
+  assert.match(review, /\/brand\/prompt-atlas-mark-primary\.svg/u);
+  assert.doesNotMatch(review, /<BaseLayout/u);
+});
