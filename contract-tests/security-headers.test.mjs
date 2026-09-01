@@ -7,6 +7,8 @@ const requiredHeaders = {
   "x-frame-options": "DENY",
   "referrer-policy": "strict-origin-when-cross-origin",
   "permissions-policy": "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
+  "content-security-policy": "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; manifest-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
+  "strict-transport-security": "max-age=31536000; includeSubDomains",
 };
 
 function parseGlobalHeaders(source) {
@@ -27,14 +29,11 @@ function parseGlobalHeaders(source) {
   return headers;
 }
 
-test("Cloudflare Pages applies the required baseline headers to every route", async () => {
+test("Cloudflare Pages source declares the approved global header baseline", async () => {
   const source = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
   const actual = parseGlobalHeaders(source);
 
   for (const [name, value] of Object.entries(requiredHeaders)) {
     assert.equal(actual.get(name), value, `${name} must match the approved baseline`);
   }
-
-  assert.equal(actual.has("content-security-policy"), false, "CSP rollout is outside LDK-718");
-  assert.equal(actual.has("strict-transport-security"), false, "HSTS rollout is outside LDK-718");
 });
