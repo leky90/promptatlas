@@ -15,8 +15,15 @@ test("shared hero typography exposes the approved semantic variants", async () =
   ]) {
     assert.match(css, new RegExp(selector.replace(".", "\\.")));
   }
+  const foundation = css.match(
+    /^\.hero-title\s*\{(?<declarations>[^}]*)\}/mu,
+  );
+  assert.ok(
+    foundation?.groups?.declarations,
+    "shared .hero-title declaration block is missing",
+  );
   assert.match(css, /font-synthesis:\s*none/u);
-  assert.match(css, /line-break:\s*strict/u);
+  assert.match(foundation.groups.declarations, /line-break:\s*strict/u);
   assert.match(css, /text-wrap:\s*balance/u);
 });
 
