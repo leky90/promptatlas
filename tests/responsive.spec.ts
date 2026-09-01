@@ -45,6 +45,12 @@ async function inspectHeroInk(page: Page) {
       const [red, green, blue, alpha] = context.getImageData(0, 0, 1, 1).data;
       return [red, green, blue, alpha];
     };
+    const glyphFill = (style: CSSStyleDeclaration): Rgba => colorChannels(
+      style.getPropertyValue("-webkit-text-fill-color") || style.color,
+    );
+    const glyphStroke = (style: CSSStyleDeclaration): Rgba => colorChannels(
+      style.getPropertyValue("-webkit-text-stroke-color") || style.color,
+    );
     const titleStyle = getComputedStyle(element);
     const titleRect = element.getBoundingClientRect();
     const titleStroke = length(titleStyle.getPropertyValue("-webkit-text-stroke-width"));
@@ -55,7 +61,8 @@ async function inspectHeroInk(page: Page) {
       fontStyle: string;
       horizontalOverhang: { left: number; right: number };
       lineBounds: Rect[];
-      color: Rgba;
+      fillColor: Rgba;
+      strokeColor: Rgba;
       strokeWidth: number;
     } = null;
     let marker: null | {
@@ -88,10 +95,11 @@ async function inspectHeroInk(page: Page) {
         surfaces.push({ bounds, name: `emphasis-line-${index + 1}`, owner: emphasis });
       }
       emphasisEvidence = {
-        color: colorChannels(style.color),
+        fillColor: glyphFill(style),
         fontStyle: style.fontStyle,
         horizontalOverhang,
         lineBounds,
+        strokeColor: glyphStroke(style),
         strokeWidth,
       };
 
@@ -179,7 +187,7 @@ async function inspectHeroInk(page: Page) {
         y: clipTop,
       },
       title: toRect(titleRect, titleStroke),
-      titleColor: colorChannels(titleStyle.color),
+      titleFillColor: glyphFill(titleStyle),
       titleStrokeWidth: titleStroke,
       viewport: {
         clientWidth: document.documentElement.clientWidth,
@@ -239,9 +247,9 @@ async function inspectHeroPixels(page: Page, audit: HeroInkAudit) {
 
   const emphasisBounds = audit.emphasis ? unionRects(audit.emphasis.lineBounds) : null;
   return {
-    emphasis: inspect(emphasisBounds, audit.emphasis?.color ?? null),
+    emphasis: inspect(emphasisBounds, audit.emphasis?.fillColor ?? null),
     marker: inspect(audit.marker?.bounds ?? null, audit.marker?.backgroundColor ?? null),
-    title: inspect(audit.title, audit.titleColor),
+    title: inspect(audit.title, audit.titleFillColor),
   };
 }
 
@@ -254,15 +262,16 @@ function semanticHeroViolations(
 ) {
   const violations: string[] = [];
   if (variant === "contrast") {
-    if (audit.emphasis?.color[3] !== 0) {
+    if (audit.emphasis?.fillColor[3] !== 0) {
       violations.push("contrast emphasis fill must be transparent");
     }
-    if (!audit.emphasis || audit.emphasis.strokeWidth <= 0 || pixels.emphasis.dark <= 40) {
+    if (!audit.emphasis || audit.emphasis.strokeWidth <= 0
+      || audit.emphasis.strokeColor[3] === 0 || pixels.emphasis.dark <= 40) {
       violations.push("contrast emphasis must render a visible outline stroke");
     }
   }
   if (variant === "focus") {
-    if (audit.titleColor[3] !== 255) violations.push("focus title fill must be opaque");
+    if (audit.titleFillColor[3] !== 255) violations.push("focus title fill must be opaque");
     if (audit.titleStrokeWidth !== 0) violations.push("focus title must not have an outline");
     if (pixels.title.dark <= 100) violations.push("focus title must render solid dark ink");
   }
@@ -335,7 +344,7 @@ test("all approved hero titles fit desktop and mobile without clipping", async (
 test("semantic ink oracle rejects a solid-filled contrast emphasis", async ({ page }) => {
   await page.goto("/");
   await page.locator(".hero-title em").evaluate((emphasis) => {
-    (emphasis as HTMLElement).style.color = "#101010";
+    (emphasis as HTMLElement).style.webkitTextFillColor = "#101010";
   });
 
   const audit = await inspectHeroInk(page);
@@ -345,11 +354,27 @@ test("semantic ink oracle rejects a solid-filled contrast emphasis", async ({ pa
   ]);
 });
 
+test("semantic ink oracle rejects a transparent contrast stroke even when the fill is dark", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".hero-title em").evaluate((emphasis) => {
+    const element = emphasis as HTMLElement;
+    element.style.webkitTextFillColor = "#101010";
+    element.style.webkitTextStrokeColor = "transparent";
+  });
+
+  const audit = await inspectHeroInk(page);
+  const pixels = await inspectHeroPixels(page, audit);
+  expect(semanticHeroViolations("contrast", audit, pixels)).toEqual([
+    "contrast emphasis fill must be transparent",
+    "contrast emphasis must render a visible outline stroke",
+  ]);
+});
+
 test("semantic ink oracle rejects a transparent outlined focus title", async ({ page }) => {
   await page.goto("/review/");
   await page.locator(".hero-title").evaluate((title) => {
     const element = title as HTMLElement;
-    element.style.color = "transparent";
+    element.style.webkitTextFillColor = "transparent";
     element.style.webkitTextStroke = "2px #101010";
   });
 
