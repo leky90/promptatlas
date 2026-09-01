@@ -1,5 +1,34 @@
 import { expect, test } from "@playwright/test";
 
+test("all approved hero titles fit desktop and mobile without clipping", async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    for (const route of ["/", "/discover/", "/anatomy/", "/compare/", "/composer/", "/review/"]) {
+      await page.goto(route);
+      const geometry = await page.locator(".hero-title").evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return {
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          scrollWidth: document.documentElement.scrollWidth,
+          clientWidth: document.documentElement.clientWidth,
+          overflow: style.overflow,
+        };
+      });
+      expect(geometry.left, `${route} left edge at ${viewport.width}px`).toBeGreaterThanOrEqual(0);
+      expect(geometry.right, `${route} right edge at ${viewport.width}px`).toBeLessThanOrEqual(viewport.width + 1);
+      expect(geometry.top, `${route} diacritic top at ${viewport.width}px`).toBeGreaterThanOrEqual(0);
+      expect(geometry.scrollWidth, `${route} horizontal overflow at ${viewport.width}px`).toBeLessThanOrEqual(geometry.clientWidth + 1);
+      expect(geometry.overflow).not.toBe("hidden");
+    }
+  }
+});
+
 test("tablet discovery and Composer remain usable without horizontal overflow", async ({ page }) => {
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.goto("/discover/");

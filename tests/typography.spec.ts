@@ -14,6 +14,51 @@ const routes = [
   "/terms/",
 ] as const;
 
+const heroRoutes = [
+  ["/", "contrast"],
+  ["/discover/", "concept"],
+  ["/anatomy/", "concept"],
+  ["/compare/", "contrast"],
+  ["/composer/", "action"],
+  ["/review/", "focus"],
+] as const;
+
+test("hero titles share one foundation and render only their semantic emphasis", async ({ page }) => {
+  for (const [route, variant] of heroRoutes) {
+    await page.goto(route);
+    const title = page.locator(`.hero-title--${variant}`);
+    await expect(title).toHaveCount(1);
+
+    const titleStyle = await title.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        family: style.fontFamily,
+        size: style.fontSize,
+        weight: style.fontWeight,
+        lineHeight: style.lineHeight,
+        letterSpacing: style.letterSpacing,
+        synthesis: style.fontSynthesis,
+      };
+    });
+
+    expect(titleStyle.family).toContain("Instrument Sans");
+    expect(Number(titleStyle.weight)).toBe(620);
+    expect(Number.parseFloat(titleStyle.lineHeight) / Number.parseFloat(titleStyle.size)).toBeCloseTo(0.9, 5);
+    expect(Number.parseFloat(titleStyle.letterSpacing) / Number.parseFloat(titleStyle.size)).toBeCloseTo(-0.06, 5);
+    expect(titleStyle.synthesis).toContain("none");
+
+    const emphasis = title.locator("em");
+    if (variant === "focus") {
+      await expect(emphasis).toHaveCount(0);
+    } else {
+      await expect(emphasis).toHaveCount(1);
+    }
+    if (variant === "concept") {
+      await expect(emphasis).toHaveCSS("font-style", "italic");
+    }
+  }
+});
+
 test("primary routes share the approved typography tokens and hero scale", async ({ page }) => {
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 1440 ? 1000 : 844 });
