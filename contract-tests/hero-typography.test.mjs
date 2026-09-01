@@ -16,6 +16,7 @@ test("shared hero typography exposes the approved semantic variants", async () =
     assert.match(css, new RegExp(selector.replace(".", "\\.")));
   }
   assert.match(css, /font-synthesis:\s*none/u);
+  assert.match(css, /line-break:\s*strict/u);
   assert.match(css, /text-wrap:\s*balance/u);
 });
 

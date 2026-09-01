@@ -5,6 +5,7 @@
   font-size: var(--type-hero);
   font-weight: 620;
   font-synthesis: none;
+  line-break: strict;
   line-height: 0.9;
   letter-spacing: -0.06em;
   text-wrap: balance;
