@@ -282,6 +282,7 @@ test("all approved hero titles fit desktop and mobile without clipping", async (
   let clippingAncestorsInspected = 0;
   for (const viewport of [
     { width: 1440, height: 900 },
+    { width: 375, height: 812 },
     { width: 390, height: 844 },
   ]) {
     await page.setViewportSize(viewport);
