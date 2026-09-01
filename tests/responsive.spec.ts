@@ -1,12 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
+import sharp from "sharp";
 
 const heroRoutes = [
-  ["/", "contrast", "home"],
-  ["/discover/", "concept", "discover"],
-  ["/anatomy/", "concept", "anatomy"],
-  ["/compare/", "contrast", "compare"],
-  ["/composer/", "action", "composer"],
-  ["/review/", "focus", "review"],
+  ["/", "contrast"],
+  ["/discover/", "concept"],
+  ["/anatomy/", "concept"],
+  ["/compare/", "contrast"],
+  ["/composer/", "action"],
+  ["/review/", "focus"],
 ] as const;
 
 const pixelEvidenceRoutes = new Set(["/", "/discover/", "/composer/", "/review/"]);
@@ -32,6 +33,17 @@ async function inspectHeroInk(page: Page) {
     };
     const clips = (value: string) => ["auto", "clip", "hidden", "scroll"].includes(value);
     const length = (value: string) => Number.parseFloat(value) || 0;
+    const colorChannels = (value: string): [number, number, number] => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1;
+      canvas.height = 1;
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Canvas 2D context is required for hero color measurement");
+      context.fillStyle = value;
+      context.fillRect(0, 0, 1, 1);
+      const [red, green, blue] = context.getImageData(0, 0, 1, 1).data;
+      return [red, green, blue];
+    };
     const titleStyle = getComputedStyle(element);
     const titleRect = element.getBoundingClientRect();
     const titleStroke = length(titleStyle.getPropertyValue("-webkit-text-stroke-width"));
@@ -42,9 +54,15 @@ async function inspectHeroInk(page: Page) {
       fontStyle: string;
       horizontalOverhang: { left: number; right: number };
       lineBounds: Rect[];
+      color: [number, number, number];
       strokeWidth: number;
     } = null;
-    let marker: null | { bounds: Rect; background: string; content: string } = null;
+    let marker: null | {
+      background: string;
+      backgroundColor: [number, number, number];
+      bounds: Rect;
+      content: string;
+    } = null;
 
     if (emphasis) {
       const style = getComputedStyle(emphasis);
@@ -68,7 +86,13 @@ async function inspectHeroInk(page: Page) {
       for (const [index, bounds] of lineBounds.entries()) {
         surfaces.push({ bounds, name: `emphasis-line-${index + 1}`, owner: emphasis });
       }
-      emphasisEvidence = { fontStyle: style.fontStyle, horizontalOverhang, lineBounds, strokeWidth };
+      emphasisEvidence = {
+        color: colorChannels(style.color),
+        fontStyle: style.fontStyle,
+        horizontalOverhang,
+        lineBounds,
+        strokeWidth,
+      };
 
       const pseudo = getComputedStyle(emphasis, "::after");
       if (pseudo.content !== "none") {
@@ -81,7 +105,12 @@ async function inspectHeroInk(page: Page) {
           right: anchor.right - length(pseudo.right),
           top: bottom - length(pseudo.height),
         };
-        marker = { background: pseudo.backgroundColor, bounds, content: pseudo.content };
+        marker = {
+          background: pseudo.backgroundColor,
+          backgroundColor: colorChannels(pseudo.backgroundColor),
+          bounds,
+          content: pseudo.content,
+        };
         surfaces.push({ bounds, name: "marker", owner: emphasis });
       }
     }
@@ -149,6 +178,7 @@ async function inspectHeroInk(page: Page) {
         y: clipTop,
       },
       title: toRect(titleRect, titleStroke),
+      titleColor: colorChannels(titleStyle.color),
       viewport: {
         clientWidth: document.documentElement.clientWidth,
         height: innerHeight,
@@ -159,6 +189,60 @@ async function inspectHeroInk(page: Page) {
   });
 }
 
+type HeroInkAudit = Awaited<ReturnType<typeof inspectHeroInk>>;
+type Rect = { bottom: number; left: number; right: number; top: number };
+
+function unionRects(rects: Rect[]): Rect {
+  return rects.reduce((union, rect) => ({
+    bottom: Math.max(union.bottom, rect.bottom),
+    left: Math.min(union.left, rect.left),
+    right: Math.max(union.right, rect.right),
+    top: Math.min(union.top, rect.top),
+  }));
+}
+
+async function inspectHeroPixels(page: Page, audit: HeroInkAudit) {
+  const screenshot = await page.screenshot({
+    animations: "disabled",
+    caret: "hide",
+    clip: audit.screenshotClip,
+  });
+  const { data, info } = await sharp(screenshot).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const scaleX = info.width / audit.screenshotClip.width;
+  const scaleY = info.height / audit.screenshotClip.height;
+  const inspect = (bounds: Rect | null, expected: [number, number, number] | null = null) => {
+    if (!bounds) return { dark: 0, matching: 0 };
+    const left = Math.max(0, Math.floor((bounds.left - audit.screenshotClip.x) * scaleX));
+    const right = Math.min(info.width, Math.ceil((bounds.right - audit.screenshotClip.x) * scaleX));
+    const top = Math.max(0, Math.floor((bounds.top - audit.screenshotClip.y) * scaleY));
+    const bottom = Math.min(info.height, Math.ceil((bounds.bottom - audit.screenshotClip.y) * scaleY));
+    let dark = 0;
+    let matching = 0;
+    for (let y = top; y < bottom; y += 1) {
+      for (let x = left; x < right; x += 1) {
+        const offset = (y * info.width + x) * info.channels;
+        const red = data[offset];
+        const green = data[offset + 1];
+        const blue = data[offset + 2];
+        const alpha = data[offset + 3];
+        if (alpha >= 192 && red * 0.2126 + green * 0.7152 + blue * 0.0722 < 110) dark += 1;
+        if (expected && alpha >= 192
+          && Math.abs(red - expected[0]) <= 45
+          && Math.abs(green - expected[1]) <= 45
+          && Math.abs(blue - expected[2]) <= 45) matching += 1;
+      }
+    }
+    return { dark, matching };
+  };
+
+  const emphasisBounds = audit.emphasis ? unionRects(audit.emphasis.lineBounds) : null;
+  return {
+    emphasis: inspect(emphasisBounds, audit.emphasis?.color ?? null),
+    marker: inspect(audit.marker?.bounds ?? null, audit.marker?.backgroundColor ?? null),
+    title: inspect(audit.title, audit.titleColor),
+  };
+}
+
 test("all approved hero titles fit desktop and mobile without clipping", async ({ page }) => {
   let clippingAncestorsInspected = 0;
   for (const viewport of [
@@ -166,7 +250,7 @@ test("all approved hero titles fit desktop and mobile without clipping", async (
     { width: 390, height: 844 },
   ]) {
     await page.setViewportSize(viewport);
-    for (const [route, variant, snapshotName] of heroRoutes) {
+    for (const [route, variant] of heroRoutes) {
       await page.goto(route);
       const audit = await inspectHeroInk(page);
       expect(audit.fontEvidence.status, `${route} font set at ${viewport.width}px`).toBe("loaded");
@@ -203,11 +287,18 @@ test("all approved hero titles fit desktop and mobile without clipping", async (
       }
 
       if (pixelEvidenceRoutes.has(route)) {
-        await expect(page).toHaveScreenshot(`hero-ink-${snapshotName}-${viewport.width}.png`, {
-          animations: "disabled",
-          caret: "hide",
-          clip: audit.screenshotClip,
-        });
+        const pixels = await inspectHeroPixels(page, audit);
+        expect(pixels.title.dark, `${route} rendered title ink at ${viewport.width}px`).toBeGreaterThan(100);
+        if (variant === "contrast") {
+          expect(pixels.emphasis.dark, `${route} rendered outline stroke at ${viewport.width}px`).toBeGreaterThan(40);
+        }
+        if (variant === "concept") {
+          expect(pixels.emphasis.matching, `${route} rendered italic accent ink at ${viewport.width}px`).toBeGreaterThan(40);
+        }
+        if (variant === "action") {
+          expect(pixels.marker.matching, `${route} rendered marker fill at ${viewport.width}px`).toBeGreaterThan(40);
+          expect(pixels.marker.dark, `${route} rendered glyph ink over marker at ${viewport.width}px`).toBeGreaterThan(10);
+        }
       }
     }
   }
