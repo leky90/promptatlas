@@ -45,3 +45,11 @@ test("each Atlas hero opts into exactly one approved variant", async () => {
     assert.equal((source.match(/<em>/gu) ?? []).length, 1, path);
   }
 });
+
+test("the Atlas homepage keeps the shared hero font at mobile widths", async () => {
+  const css = await read("src/styles/global.css");
+  assert.doesNotMatch(
+    css,
+    /\.atlas-page\s+#hero-title\s*\{[^}]*font-family\s*:/su,
+  );
+});

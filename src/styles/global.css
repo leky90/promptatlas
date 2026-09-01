@@ -2251,10 +2251,6 @@ button {
     display: none;
   }
 
-  .atlas-page #hero-title {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
   .hero__lead {
     margin-top: 24px;
     font-size: 18px;
