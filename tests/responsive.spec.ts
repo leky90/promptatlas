@@ -10,7 +10,8 @@ const heroRoutes = [
   ["/review/", "focus"],
 ] as const;
 
-const pixelEvidenceRoutes = new Set(["/", "/discover/", "/composer/", "/review/"]);
+const pixelEvidenceRoutes = new Set(["/", "/discover/", "/compare/", "/composer/", "/review/"]);
+type Rgba = [number, number, number, number];
 
 async function inspectHeroInk(page: Page) {
   await page.evaluate(() => document.fonts.ready);
@@ -33,7 +34,7 @@ async function inspectHeroInk(page: Page) {
     };
     const clips = (value: string) => ["auto", "clip", "hidden", "scroll"].includes(value);
     const length = (value: string) => Number.parseFloat(value) || 0;
-    const colorChannels = (value: string): [number, number, number] => {
+    const colorChannels = (value: string): Rgba => {
       const canvas = document.createElement("canvas");
       canvas.width = 1;
       canvas.height = 1;
@@ -41,8 +42,8 @@ async function inspectHeroInk(page: Page) {
       if (!context) throw new Error("Canvas 2D context is required for hero color measurement");
       context.fillStyle = value;
       context.fillRect(0, 0, 1, 1);
-      const [red, green, blue] = context.getImageData(0, 0, 1, 1).data;
-      return [red, green, blue];
+      const [red, green, blue, alpha] = context.getImageData(0, 0, 1, 1).data;
+      return [red, green, blue, alpha];
     };
     const titleStyle = getComputedStyle(element);
     const titleRect = element.getBoundingClientRect();
@@ -54,12 +55,12 @@ async function inspectHeroInk(page: Page) {
       fontStyle: string;
       horizontalOverhang: { left: number; right: number };
       lineBounds: Rect[];
-      color: [number, number, number];
+      color: Rgba;
       strokeWidth: number;
     } = null;
     let marker: null | {
       background: string;
-      backgroundColor: [number, number, number];
+      backgroundColor: Rgba;
       bounds: Rect;
       content: string;
     } = null;
@@ -179,6 +180,7 @@ async function inspectHeroInk(page: Page) {
       },
       title: toRect(titleRect, titleStroke),
       titleColor: colorChannels(titleStyle.color),
+      titleStrokeWidth: titleStroke,
       viewport: {
         clientWidth: document.documentElement.clientWidth,
         height: innerHeight,
@@ -210,7 +212,7 @@ async function inspectHeroPixels(page: Page, audit: HeroInkAudit) {
   const { data, info } = await sharp(screenshot).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const scaleX = info.width / audit.screenshotClip.width;
   const scaleY = info.height / audit.screenshotClip.height;
-  const inspect = (bounds: Rect | null, expected: [number, number, number] | null = null) => {
+  const inspect = (bounds: Rect | null, expected: Rgba | null = null) => {
     if (!bounds) return { dark: 0, matching: 0 };
     const left = Math.max(0, Math.floor((bounds.left - audit.screenshotClip.x) * scaleX));
     const right = Math.min(info.width, Math.ceil((bounds.right - audit.screenshotClip.x) * scaleX));
@@ -241,6 +243,30 @@ async function inspectHeroPixels(page: Page, audit: HeroInkAudit) {
     marker: inspect(audit.marker?.bounds ?? null, audit.marker?.backgroundColor ?? null),
     title: inspect(audit.title, audit.titleColor),
   };
+}
+
+type HeroPixels = Awaited<ReturnType<typeof inspectHeroPixels>>;
+
+function semanticHeroViolations(
+  variant: typeof heroRoutes[number][1],
+  audit: HeroInkAudit,
+  pixels: HeroPixels,
+) {
+  const violations: string[] = [];
+  if (variant === "contrast") {
+    if (audit.emphasis?.color[3] !== 0) {
+      violations.push("contrast emphasis fill must be transparent");
+    }
+    if (!audit.emphasis || audit.emphasis.strokeWidth <= 0 || pixels.emphasis.dark <= 40) {
+      violations.push("contrast emphasis must render a visible outline stroke");
+    }
+  }
+  if (variant === "focus") {
+    if (audit.titleColor[3] !== 255) violations.push("focus title fill must be opaque");
+    if (audit.titleStrokeWidth !== 0) violations.push("focus title must not have an outline");
+    if (pixels.title.dark <= 100) violations.push("focus title must render solid dark ink");
+  }
+  return violations;
 }
 
 test("all approved hero titles fit desktop and mobile without clipping", async ({ page }) => {
@@ -289,6 +315,7 @@ test("all approved hero titles fit desktop and mobile without clipping", async (
       if (pixelEvidenceRoutes.has(route)) {
         const pixels = await inspectHeroPixels(page, audit);
         expect(pixels.title.dark, `${route} rendered title ink at ${viewport.width}px`).toBeGreaterThan(100);
+        expect(semanticHeroViolations(variant, audit, pixels), `${route} semantic ink at ${viewport.width}px`).toEqual([]);
         if (variant === "contrast") {
           expect(pixels.emphasis.dark, `${route} rendered outline stroke at ${viewport.width}px`).toBeGreaterThan(40);
         }
@@ -303,6 +330,35 @@ test("all approved hero titles fit desktop and mobile without clipping", async (
     }
   }
   expect(clippingAncestorsInspected, "clipping ancestors inspected across the route matrix").toBeGreaterThan(0);
+});
+
+test("semantic ink oracle rejects a solid-filled contrast emphasis", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(".hero-title em").evaluate((emphasis) => {
+    (emphasis as HTMLElement).style.color = "#101010";
+  });
+
+  const audit = await inspectHeroInk(page);
+  const pixels = await inspectHeroPixels(page, audit);
+  expect(semanticHeroViolations("contrast", audit, pixels)).toEqual([
+    "contrast emphasis fill must be transparent",
+  ]);
+});
+
+test("semantic ink oracle rejects a transparent outlined focus title", async ({ page }) => {
+  await page.goto("/review/");
+  await page.locator(".hero-title").evaluate((title) => {
+    const element = title as HTMLElement;
+    element.style.color = "transparent";
+    element.style.webkitTextStroke = "2px #101010";
+  });
+
+  const audit = await inspectHeroInk(page);
+  const pixels = await inspectHeroPixels(page, audit);
+  expect(semanticHeroViolations("focus", audit, pixels)).toEqual([
+    "focus title fill must be opaque",
+    "focus title must not have an outline",
+  ]);
 });
 
 test("hero ink audit catches clipped markers even when document overflow is suppressed", async ({ page }) => {
