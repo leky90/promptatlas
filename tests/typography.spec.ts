@@ -14,6 +14,103 @@ const routes = [
   "/terms/",
 ] as const;
 
+const heroRoutes = [
+  ["/", "contrast"],
+  ["/discover/", "concept"],
+  ["/anatomy/", "concept"],
+  ["/compare/", "contrast"],
+  ["/composer/", "action"],
+  ["/review/", "focus"],
+] as const;
+
+test("hero measurements wait for the actual normal and italic Instrument Sans faces", async ({ page }) => {
+  await page.route(/instrument-sans-.*\.woff2$/u, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    await route.continue();
+  });
+
+  for (const [route, variant] of [
+    ["/", "contrast"],
+    ["/discover/", "concept"],
+  ] as const) {
+    await page.goto(route, { waitUntil: "domcontentloaded" });
+    await page.evaluate(() => document.fonts.ready);
+    const evidence = await page.locator(`.hero-title--${variant}`).evaluate((element) => {
+      const titleStyle = getComputedStyle(element);
+      const emphasis = element.querySelector("em");
+      const emphasisStyle = emphasis ? getComputedStyle(emphasis) : null;
+      const faces = [...document.fonts]
+        .filter((face) => face.family.replace(/["']/gu, "") === "Instrument Sans Variable")
+        .map((face) => ({ status: face.status, style: face.style, weight: face.weight }));
+      const covers = (style: string, weight: number) => faces.some((face) => {
+        const [minimum, maximum = minimum] = face.weight.split(/\s+/u).map(Number);
+        return face.status === "loaded" && face.style === style && weight >= minimum && weight <= maximum;
+      });
+      return {
+        status: document.fonts.status,
+        normalLoaded: covers("normal", Number(titleStyle.fontWeight)),
+        italicLoaded: emphasisStyle ? covers("italic", Number(emphasisStyle.fontWeight)) : false,
+      };
+    });
+
+    expect(evidence.status, `${route} font set`).toBe("loaded");
+    expect(evidence.normalLoaded, `${route} normal face`).toBe(true);
+    if (variant === "concept") expect(evidence.italicLoaded, `${route} italic face`).toBe(true);
+  }
+});
+
+test("hero titles share one foundation and render only their semantic emphasis", async ({ page }) => {
+  for (const [route, variant] of heroRoutes) {
+    await page.goto(route);
+    await page.evaluate(() => document.fonts.ready);
+    const title = page.locator(`.hero-title--${variant}`);
+    await expect(title).toHaveCount(1);
+
+    const titleStyle = await title.evaluate((element) => {
+      const style = getComputedStyle(element);
+      const emphasis = element.querySelector("em");
+      const emphasisStyle = emphasis ? getComputedStyle(emphasis) : null;
+      const faces = [...document.fonts]
+        .filter((face) => face.family.replace(/["']/gu, "") === "Instrument Sans Variable")
+        .map((face) => ({ status: face.status, style: face.style, weight: face.weight }));
+      const covers = (fontStyle: string, weight: number) => faces.some((face) => {
+        const [minimum, maximum = minimum] = face.weight.split(/\s+/u).map(Number);
+        return face.status === "loaded" && face.style === fontStyle && weight >= minimum && weight <= maximum;
+      });
+      return {
+        family: style.fontFamily,
+        size: style.fontSize,
+        weight: style.fontWeight,
+        lineHeight: style.lineHeight,
+        letterSpacing: style.letterSpacing,
+        synthesis: style.fontSynthesis,
+        fontSetStatus: document.fonts.status,
+        normalFaceLoaded: covers("normal", Number(style.fontWeight)),
+        italicFaceLoaded: emphasisStyle ? covers("italic", Number(emphasisStyle.fontWeight)) : false,
+      };
+    });
+
+    expect(titleStyle.family).toContain("Instrument Sans");
+    expect(Number(titleStyle.weight)).toBe(620);
+    expect(Number.parseFloat(titleStyle.lineHeight) / Number.parseFloat(titleStyle.size)).toBeCloseTo(0.9, 5);
+    expect(Number.parseFloat(titleStyle.letterSpacing) / Number.parseFloat(titleStyle.size)).toBeCloseTo(-0.06, 5);
+    expect(titleStyle.synthesis).toContain("none");
+    expect(titleStyle.fontSetStatus).toBe("loaded");
+    expect(titleStyle.normalFaceLoaded, `${route} normal Instrument Sans face`).toBe(true);
+
+    const emphasis = title.locator("em");
+    if (variant === "focus") {
+      await expect(emphasis).toHaveCount(0);
+    } else {
+      await expect(emphasis).toHaveCount(1);
+    }
+    if (variant === "concept") {
+      await expect(emphasis).toHaveCSS("font-style", "italic");
+      expect(titleStyle.italicFaceLoaded, `${route} italic Instrument Sans face`).toBe(true);
+    }
+  }
+});
+
 test("primary routes share the approved typography tokens and hero scale", async ({ page }) => {
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 1440 ? 1000 : 844 });

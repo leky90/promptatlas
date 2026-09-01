@@ -32,6 +32,12 @@ test("blind review stays neutral until completion and supports keyboard-localize
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://prompt-atlas.ldktech.com/review/");
   await expect(page.getByRole("link", { name: "Review mù" })).toHaveAttribute("href", "/review/");
   await expect(page.locator("[data-review-status]")).toContainText("Đang mù");
+  await expect(page.locator(".neutral-brand img")).toHaveAttribute(
+    "src",
+    "/brand/prompt-atlas-mark-primary.svg",
+  );
+  await expect(page.locator("#review-title")).toHaveClass(/hero-title--focus/u);
+  await expect(page.locator("[data-spotlight-launcher], [data-composer-tray]")).toHaveCount(0);
   expect(await page.locator("html").innerText()).not.toMatch(/OpenAI|Google|ChatGPT|Gemini/iu);
   expect(await page.locator("#blind-review-data").textContent()).not.toMatch(/OpenAI|Google|legacy-chatgpt-ui|legacy-gflow-cli/iu);
   const downloadedStyles = await page.evaluate(async () => {
