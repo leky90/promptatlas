@@ -29,3 +29,19 @@ test("both document shells load the shared hero contract and true italic face", 
     assert.match(source, /styles\/hero-typography\.css/u);
   }
 });
+
+test("each Atlas hero opts into exactly one approved variant", async () => {
+  const routes = [
+    ["src/pages/index.astro", "contrast"],
+    ["src/pages/discover.astro", "concept"],
+    ["src/pages/anatomy/index.astro", "concept"],
+    ["src/pages/compare.astro", "contrast"],
+    ["src/components/ComposerWorkspace.astro", "action"],
+  ];
+
+  for (const [path, variant] of routes) {
+    const source = await read(path);
+    assert.match(source, new RegExp(`hero-title hero-title--${variant}`));
+    assert.equal((source.match(/<em>/gu) ?? []).length, 1, path);
+  }
+});
