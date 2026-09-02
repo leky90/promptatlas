@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import "@fontsource-variable/instrument-sans";
+import "@fontsource-variable/instrument-sans/wght-italic.css";
+import "../styles/hero-typography.css";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/600.css";
 
@@ -53,7 +55,10 @@ const reviewData = JSON.stringify({
   outputs,
   dimensions,
 });
-const canonical = new URL("/review", Astro.site);
+const title = "Không gian blind review ảnh | Prompt Atlas";
+const description = "Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only.";
+const canonical = new URL("/review/", Astro.site);
+const ogImage = new URL("/media/og-cover.webp", Astro.site);
 ---
 
 <!doctype html>
@@ -62,16 +67,32 @@ const canonical = new URL("/review", Astro.site);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#151613" />
-  <meta name="description" content="Workspace review ảnh A/B/N trung tính với scoring theo dimension, evidence vùng ảnh, confidence và adjudication append-only." />
+  <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
-  <title>Không gian blind review ảnh | Prompt Atlas</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Prompt Atlas by LDKTech" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+  <title>{title}</title>
 </head>
 <body class="blind-review-page">
   <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
   <header class="neutral-header">
-    <a class="neutral-brand" href="/">Prompt Atlas</a>
+    <a class="neutral-brand" href="/" aria-label="Prompt Atlas — về Atlas">
+      <img src="/brand/prompt-atlas-mark-primary.svg" width="32" height="32" alt="" />
+      <span>Prompt Atlas</span>
+    </a>
     <nav aria-label="Blind review">
-      <a href="/review" aria-current="page">Review mù</a>
+      <a href="/review/" aria-current="page">Review mù</a>
       <a href="/">Atlas</a>
     </nav>
   </header>
@@ -79,7 +100,7 @@ const canonical = new URL("/review", Astro.site);
   <section class="review-hero shell" aria-labelledby="review-title">
     <div>
       <p class="eyebrow">IMAGE-ONLY / PROTOCOL 0.2</p>
-      <h1 id="review-title">Blind review, không nhìn nhãn.</h1>
+      <h1 id="review-title" class="hero-title hero-title--focus">Blind review, không nhìn nhãn.</h1>
       <p>Chấm output bằng evidence quan sát được. Mapping danh tính được niêm phong ngoài payload trình duyệt trong suốt review.</p>
     </div>
     <div class="review-status" data-review-status role="status" aria-live="polite">
@@ -211,7 +232,8 @@ const canonical = new URL("/review", Astro.site);
   .skip-link { position: fixed; z-index: 100; top: 8px; left: 8px; padding: 10px 14px; background: #151613; color: #fff; transform: translateY(-160%); }
   .skip-link:focus { transform: translateY(0); }
   .neutral-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px; padding: 12px clamp(16px, 4vw, 48px); border-bottom: 1px solid #151613; background: #f4f0e7; }
-  .neutral-brand { font-weight: 900; letter-spacing: -.03em; text-decoration: none; }
+  .neutral-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 780; letter-spacing: -.03em; text-decoration: none; }
+  .neutral-brand img { width: 32px; height: 32px; }
   .neutral-header nav { display: flex; align-items: center; gap: 18px; }
   .neutral-header nav a { font: 700 var(--type-meta)/1 var(--font-mono); text-transform: uppercase; }
   .neutral-header nav a[aria-current="page"] { text-decoration-thickness: 3px; text-underline-offset: 6px; }
@@ -219,7 +241,7 @@ const canonical = new URL("/review", Astro.site);
   .button { min-height: 44px; padding: 10px 16px; border: 1px solid #151613; background: #151613; color: #f4f0e7; font-weight: 800; cursor: pointer; }
   .button--ghost { background: transparent; color: #151613; }
   .review-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .34fr); gap: 32px; padding-block: clamp(48px, 7vw, 92px) 32px; }
-  .review-hero h1 { max-width: 900px; margin: 8px 0 12px; font-size: var(--type-hero); line-height: .92; letter-spacing: -.06em; }
+  .review-hero h1 { margin-block: 8px 12px; }
   .review-hero > div > p:last-child { max-width: 680px; font-size: 18px; }
   .review-status { align-self: end; border: 1px solid #151613; background: #151613; color: #f4f0e7; padding: 20px; }
   .review-status span, .review-status small { display: block; color: #b9b5ac; font: var(--type-meta)/1.4 var(--font-mono); text-transform: uppercase; }

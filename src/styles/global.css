@@ -321,21 +321,6 @@ button {
   margin-bottom: 28px;
 }
 
-.hero h1 {
-  max-width: 760px;
-  margin: 0;
-  font-size: var(--type-hero);
-  font-weight: 640;
-  line-height: 0.9;
-  letter-spacing: -0.065em;
-}
-
-.hero h1 em {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--ink);
-  font-style: normal;
-}
-
 .hero__lead {
   max-width: 540px;
   margin: 32px 0 0;
@@ -1500,7 +1485,6 @@ button {
   margin-top: 34px;
 }
 
-.compare-header h1,
 .method-hero h1 {
   margin: 0;
   font-size: var(--type-hero);
@@ -1509,7 +1493,6 @@ button {
   letter-spacing: -0.07em;
 }
 
-.compare-header h1 em,
 .method-hero h1 em {
   color: transparent;
   -webkit-text-stroke: 1.5px var(--ink);
@@ -2268,14 +2251,6 @@ button {
     display: none;
   }
 
-  .hero h1 {
-    font-size: var(--type-hero);
-  }
-
-  .atlas-page #hero-title {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
   .hero__lead {
     margin-top: 24px;
     font-size: 18px;
@@ -2422,18 +2397,12 @@ button {
   }
 }
 
-.anatomy-hero h1,
 .anatomy-detail-hero h1 {
   max-width: 980px;
   margin: 18px 0 0;
   font-size: var(--type-hero);
   line-height: .82;
   letter-spacing: -.075em;
-}
-
-.anatomy-hero h1 em {
-  color: var(--anatomy-accent);
-  font-weight: 500;
 }
 
 .anatomy-hero > p:not(.eyebrow, .anatomy-hierarchy) {
@@ -3130,7 +3099,6 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .compare-header h1,
   .method-hero h1 {
     font-size: var(--type-hero);
   }
@@ -3245,32 +3213,6 @@ button {
   align-items: end;
   padding-bottom: 42px;
   border-bottom: 2px solid var(--ink);
-}
-
-.composer-head h1 {
-  max-width: 880px;
-  margin: 16px 0 0;
-  font-size: var(--type-hero);
-  font-weight: 620;
-  line-height: 0.94;
-  letter-spacing: -0.055em;
-}
-
-.composer-head h1 em {
-  position: relative;
-  z-index: 0;
-  font-style: normal;
-}
-
-.composer-head h1 em::after {
-  content: "";
-  position: absolute;
-  right: -3px;
-  bottom: 0.06em;
-  left: -3px;
-  z-index: -1;
-  height: 0.28em;
-  background: var(--acid);
 }
 
 .composer-head > p {
@@ -3729,10 +3671,6 @@ button {
     padding-block: 34px 74px;
   }
 
-  .composer-head h1 {
-    font-size: var(--type-hero);
-  }
-
   .snapshot-banner,
   .composer-section-head,
   .composer-conflicts li {
@@ -4180,6 +4118,7 @@ button {
 /* Discovery workspace — LDK-344 */
 .discover-page {
   --discover-rule: color-mix(in srgb, var(--ink) 24%, transparent);
+  --hero-concept-accent: var(--acid-dark);
 }
 
 .discover-intro {
@@ -4193,22 +4132,6 @@ button {
 
 .discover-intro__copy {
   max-width: 760px;
-}
-
-.discover-intro h1 {
-  max-width: 760px;
-  margin: 20px 0 24px;
-  font-size: var(--type-hero);
-  line-height: 0.94;
-  letter-spacing: -0.055em;
-}
-
-.discover-intro h1 em {
-  font-weight: 450;
-  text-decoration: underline;
-  text-decoration-color: var(--acid-dark);
-  text-decoration-thickness: 0.11em;
-  text-underline-offset: 0.08em;
 }
 
 .discover-intro__copy > p:not(.eyebrow) {
@@ -5163,10 +5086,6 @@ button {
     min-height: 0;
     gap: 34px;
     padding-block: 42px 56px;
-  }
-
-  .discover-intro h1 {
-    font-size: var(--type-hero);
   }
 
   .discover-intro__metrics {
