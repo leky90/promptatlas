@@ -1,0 +1,65 @@
+{
+  "run_id": "2026-09-05T08-22-08Z-a3a1356",
+  "observed_at": "2026-09-05T08:35:51Z",
+  "environment": "production",
+  "target_revision": "git:a3a135660c72778b00a588f6deb4e42a7a1f468f",
+  "candidate_deployment": "https://763aab42.prompt-atlas-6p0.pages.dev",
+  "production_url": "https://prompt-atlas.ldktech.com",
+  "checks": {
+    "source_and_build": {
+      "status": "passed",
+      "results": [
+        "npm ci passed",
+        "npm run verify:pages passed: 32 unit tests, 68 contract tests, Astro check clean, 234 pages built and validated",
+        "npm audit --omit=dev --json reported 0 production vulnerabilities",
+        "gitleaks 8.30.1 scanned the exact candidate history slice and found no leaks"
+      ]
+    },
+    "browser_e2e": {
+      "status": "passed_with_harness_note",
+      "results": [
+        "npx playwright test --workers=1 passed 112 of 112 tests",
+        "The previously warning-producing Spotlight journey passed on fresh Firefox and WebKit runs",
+        "Each test that timed out during parallel runs passed when isolated",
+        "The timeout moved between accessibility-heavy tests during 6-worker runs, so no product defect was reproduced and no code or timeout was changed"
+      ]
+    },
+    "production_identity_and_smoke": {
+      "status": "passed",
+      "results": [
+        "Production smoke passed for 6 core routes, 231 sitemap routes, 3 media, 1 stylesheet, 3 scripts and 8 fonts",
+        "Production and immutable candidate returned identical SHA-256 bodies for /, /review/ and /health.json",
+        "Production omitted X-Robots-Tag while the immutable candidate returned noindex"
+      ]
+    },
+    "rollback_drill": {
+      "status": "passed",
+      "source": "https://linear.app/ldktech/document/ldk-788-production-rollback-refinement-and-maintenance-decision-b5c38aada43e",
+      "results": [
+        "Production was rolled back to the approved target and restored to deployment 763aab42 for candidate a3a1356",
+        "Two post-restore checks 33 seconds apart were successful",
+        "Independent Delivery Verification passed 7 of 7 checks"
+      ]
+    },
+    "uptime_monitor": {
+      "status": "passed",
+      "source": "https://linear.app/ldktech/document/ldk-789-prompt-atlas-uptime-monitor-configuration-and-evidence-12e5629a3a56",
+      "results": [
+        "UptimeRobot monitor 803909485 watches the production URL with HEAD every 5 minutes, 30 second timeout, redirects followed and 2xx/3xx accepted",
+        "The approved alert mailbox received both TEST DOWN and TEST UP receipts",
+        "Independent verification passed"
+      ]
+    },
+    "domain_dns_renewal": {
+      "status": "failed",
+      "source": "https://linear.app/ldktech/document/ldk-790-registrar-renewal-evidence-dated-redacted-record-d533d1b71f1d",
+      "results": [
+        "Registrar evidence shows expiry 2026-11-18 and auto-renew enabled",
+        "The expiry was 74 days away on 2026-09-05, failing the checkpoint requirement of more than 90 days",
+        "The redacted record identifies a responsible registrar contact but does not explicitly prove that the recovery email is correct"
+      ]
+    }
+  },
+  "verdict": "go-with-risks",
+  "blocking_decision": "The LDK-716 contract requires a fresh gate verdict of go. Reaching go requires owner-authorized registrar remediation or an explicit CPO contract decision; neither is authorized by this Tech Lead phase."
+}
